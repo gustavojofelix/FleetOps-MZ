@@ -1,0 +1,94 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: var(--z-toast);
+  top: 8px;
+  left: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 600;
+  transform: translateY(-200%);
+  transition: transform var(--duration-fast) var(--ease-standard);
+
+  &:focus {
+    transform: none;
+    text-decoration: none;
+  }
+}
+
+.shell__sidebar {
+  position: fixed;
+  z-index: var(--z-sidebar);
+  inset: 0 auto 0 0;
+  width: min(300px, 86vw);
+  transform: translateX(-100%);
+  transition:
+    transform var(--duration-slow) var(--ease-standard),
+    width var(--duration-slow) var(--ease-standard);
+  box-shadow: none;
+
+  @include up(lg) {
+    width: var(--sidebar-width);
+    transform: none;
+  }
+}
+
+:host(.shell--nav-open) .shell__sidebar {
+  transform: none;
+  box-shadow: var(--shadow-lg);
+}
+
+:host(.shell--collapsed) .shell__sidebar {
+  @include up(lg) {
+    width: var(--sidebar-width-collapsed);
+  }
+}
+
+.shell__scrim {
+  position: fixed;
+  z-index: calc(var(--z-sidebar) - 1);
+  inset: 0;
+  background: var(--color-overlay);
+  animation: scrim-in var(--duration-base) var(--ease-standard);
+}
+
+.shell__main {
+  min-width: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: padding-left var(--duration-slow) var(--ease-standard);
+
+  @include up(lg) {
+    padding-left: var(--sidebar-width);
+  }
+}
+
+:host(.shell--collapsed) .shell__main {
+  @include up(lg) {
+    padding-left: var(--sidebar-width-collapsed);
+  }
+}
+
+.shell__content {
+  flex: 1;
+  min-width: 0;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,38 @@
+<ng-template #content>
+  <div class="kpi__head">
+    <span class="kpi__label">{{ label() }}</span>
+    @if (icon(); as name) {
+      <span class="kpi__icon"><app-icon [name]="name" [size]="16" /></span>
+    }
+  </div>
+  @if (loading()) {
+    <span class="skeleton kpi__skeleton"></span>
+    <span class="skeleton skeleton--text kpi__skeleton-hint"></span>
+  } @else {
+    <span class="kpi__value">{{ value() }}</span>
+    <span class="kpi__foot">
+      @if (delta(); as d) {
+        <span class="kpi__delta" [class]="'kpi__delta kpi__delta--' + deltaTone()">
+          @if (deltaTone() !== 'neutral') {
+            <app-icon [name]="deltaTone() === 'positive' ? 'trending-up' : 'trending-down'" [size]="14" />
+          }
+          {{ d }}
+        </span>
+      }
+      @if (hint()) {
+        <span class="kpi__hint">{{ hint() }}</span>
+      }
+      <ng-content />
+    </span>
+  }
+</ng-template>
+
+@if (link(); as target) {
+  <a class="kpi kpi--link" [routerLink]="target" [queryParams]="queryParams()">
+    <ng-container [ngTemplateOutlet]="content" />
+  </a>
+} @else {
+  <div class="kpi">
+    <ng-container [ngTemplateOutlet]="content" />
+  </div>
+}

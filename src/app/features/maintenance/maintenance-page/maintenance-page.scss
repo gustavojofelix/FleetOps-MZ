@@ -1,0 +1,103 @@
+@use 'mixins' as *;
+
+.overview-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+
+  @include down(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+
+  @include up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up(xl) {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1.2fr);
+  }
+}
+
+.upcoming-card {
+  @include up(md) {
+    grid-column: 1 / -1;
+  }
+
+  @include up(xl) {
+    grid-column: auto;
+  }
+}
+
+.upcoming-list {
+  margin-top: var(--space-3);
+}
+
+.upcoming-list__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--color-info-soft);
+  color: var(--color-info-text);
+  flex-shrink: 0;
+
+  &.is-overdue {
+    background: var(--color-danger-soft);
+    color: var(--color-danger-text);
+  }
+}
+
+.upcoming-list__aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+}
+
+.upcoming-list__action-label {
+  @include down(sm) {
+    display: none;
+  }
+}
+
+.forecast {
+  padding: var(--space-4) var(--space-4) var(--space-1);
+  border-top: 1px solid var(--color-divider);
+
+  @include up(md) {
+    padding: var(--space-4) var(--space-5) var(--space-1);
+  }
+}
+
+.forecast__title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.forecast__subtitle {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.status-tabs {
+  padding: 0 var(--space-3);
+
+  @include up(md) {
+    padding: 0 var(--space-4);
+  }
+}

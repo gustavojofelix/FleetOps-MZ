@@ -1,0 +1,209 @@
+// Design tokens. Components reference these custom properties only; raw colors live here.
+
+:root {
+  color-scheme: light;
+
+  // Surfaces
+  --color-bg: #f6f8fb;
+  --color-surface: #ffffff;
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #f1f4f8;
+  --color-surface-hover: #f3f5f8;
+  --color-surface-selected: #eaf4f2;
+  --color-overlay: rgb(16 24 40 / 45%);
+
+  // Text
+  --color-text: #182230;
+  --color-text-secondary: #5d6779;
+  --color-text-muted: #6b7485;
+  --color-text-inverse: #ffffff;
+
+  // Lines
+  --color-border: #e4e7ec;
+  --color-border-strong: #cfd4dc;
+  --color-divider: #eef0f3;
+
+  // Brand
+  --color-accent: #176b65;
+  --color-accent-hover: #125852;
+  --color-accent-active: #0e4844;
+  --color-accent-soft: #e7f3f1;
+  --color-accent-soft-strong: #cfe7e3;
+  --color-accent-text: #135e58;
+  --color-on-accent: #ffffff;
+
+  // Feedback
+  --color-success: #15803d;
+  --color-success-soft: #e9f6ee;
+  --color-success-text: #116a33;
+  --color-warning: #b7791f;
+  --color-warning-soft: #fdf4e3;
+  --color-warning-text: #8a5a12;
+  --color-danger: #b42318;
+  --color-danger-hover: #981d13;
+  --color-on-danger: #ffffff;
+  --color-danger-soft: #fdecea;
+  --color-danger-text: #a11f15;
+  --color-info: #2563eb;
+  --color-info-soft: #eaf1fe;
+  --color-info-text: #1d4fc4;
+  --color-neutral-soft: #f0f2f5;
+  --color-neutral-text: #4a5468;
+
+  // Sidebar
+  --color-sidebar-bg: #ffffff;
+  --color-sidebar-text: #4a5468;
+  --color-sidebar-text-active: #135e58;
+  --color-sidebar-item-active: #e7f3f1;
+  --color-sidebar-item-hover: #f3f5f8;
+
+  // Data visualisation (validated categorical order, light surface)
+  --chart-1: #009682;
+  --chart-2: #eb6834;
+  --chart-3: #2a78d6;
+  --chart-4: #eda100;
+  --chart-5: #e87ba4;
+  --chart-6: #6250d6;
+  --chart-grid: #eef0f3;
+  --chart-axis: #d5dae1;
+  --chart-area-opacity: 0.1;
+
+  // Focus
+  --focus-ring: 0 0 0 3px rgb(23 107 101 / 28%);
+  --focus-outline: #176b65;
+
+  // Elevation
+  --shadow-xs: 0 1px 2px rgb(16 24 40 / 5%);
+  --shadow-sm: 0 1px 3px rgb(16 24 40 / 8%), 0 1px 2px rgb(16 24 40 / 4%);
+  --shadow-md: 0 6px 16px -4px rgb(16 24 40 / 10%), 0 2px 6px -2px rgb(16 24 40 / 5%);
+  --shadow-lg: 0 18px 40px -12px rgb(16 24 40 / 22%), 0 6px 14px -6px rgb(16 24 40 / 8%);
+
+  // Shape
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-pill: 999px;
+
+  // Spacing scale (4px base)
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  // Typography
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.875rem;
+  --text-md: 0.9375rem;
+  --text-lg: 1.0625rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+
+  // Layout
+  --sidebar-width: 256px;
+  --sidebar-width-collapsed: 68px;
+  --topbar-height: 60px;
+  --content-max-width: 1520px;
+  --control-height: 36px;
+  --control-height-sm: 30px;
+  --control-height-lg: 44px;
+
+  // Motion
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 260ms;
+
+  // Layers
+  --z-sticky: 20;
+  --z-sidebar: 40;
+  --z-dropdown: 60;
+  --z-dialog: 80;
+  --z-toast: 100;
+}
+
+@mixin dark-tokens {
+  color-scheme: dark;
+
+  --color-bg: #10151d;
+  --color-surface: #171f2b;
+  --color-surface-raised: #202a38;
+  --color-surface-sunken: #131a24;
+  --color-surface-hover: #1e2734;
+  --color-surface-selected: #1a2f33;
+  --color-overlay: rgb(3 7 12 / 65%);
+
+  --color-text: #f2f4f7;
+  --color-text-secondary: #a7b0be;
+  --color-text-muted: #8a94a4;
+  --color-text-inverse: #10151d;
+
+  --color-border: #2a3443;
+  --color-border-strong: #3a4657;
+  --color-divider: #232d3a;
+
+  --color-accent: #65b8aa;
+  --color-accent-hover: #7cc5b8;
+  --color-accent-active: #93d1c5;
+  --color-accent-soft: #1b3236;
+  --color-accent-soft-strong: #24434a;
+  --color-accent-text: #7fcabd;
+  --color-on-accent: #0d1a1b;
+
+  --color-success: #4ade80;
+  --color-success-soft: #15291f;
+  --color-success-text: #6ee7a0;
+  --color-warning: #f2b54d;
+  --color-warning-soft: #2e2516;
+  --color-warning-text: #f5c26b;
+  --color-danger: #f0786d;
+  --color-danger-hover: #f48f86;
+  --color-on-danger: #1f0b0a;
+  --color-danger-soft: #34191a;
+  --color-danger-text: #f6948b;
+  --color-info: #6c9ef8;
+  --color-info-soft: #172338;
+  --color-info-text: #8fb4fa;
+  --color-neutral-soft: #222c39;
+  --color-neutral-text: #b4bcc8;
+
+  --color-sidebar-bg: #141b26;
+  --color-sidebar-text: #a7b0be;
+  --color-sidebar-text-active: #8fd3c6;
+  --color-sidebar-item-active: #1b3236;
+  --color-sidebar-item-hover: #1c2531;
+
+  --chart-1: #16a08c;
+  --chart-2: #d95926;
+  --chart-3: #3987e5;
+  --chart-4: #c98500;
+  --chart-5: #d55181;
+  --chart-6: #9085e9;
+  --chart-grid: #232d3a;
+  --chart-axis: #354152;
+  --chart-area-opacity: 0.14;
+
+  --focus-ring: 0 0 0 3px rgb(101 184 170 / 35%);
+  --focus-outline: #65b8aa;
+
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 30%);
+  --shadow-sm: 0 1px 3px rgb(0 0 0 / 35%), 0 1px 2px rgb(0 0 0 / 25%);
+  --shadow-md: 0 8px 18px -6px rgb(0 0 0 / 45%), 0 2px 6px -2px rgb(0 0 0 / 30%);
+  --shadow-lg: 0 20px 44px -12px rgb(0 0 0 / 60%), 0 6px 14px -6px rgb(0 0 0 / 35%);
+}
+
+// The resolved theme is stamped on <html data-theme> by ThemeService (and by the inline
+// boot script in index.html, which prevents a flash of the wrong theme).
+:root[data-theme='dark'] {
+  @include dark-tokens;
+}

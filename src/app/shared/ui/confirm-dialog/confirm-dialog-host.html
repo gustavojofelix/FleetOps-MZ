@@ -1,0 +1,24 @@
+@let pending = confirm.pending();
+<app-modal
+  [open]="!!pending"
+  [title]="pending?.title ?? ''"
+  size="sm"
+  (closed)="confirm.settle(false)"
+>
+  <p class="muted">{{ pending?.message }}</p>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" (click)="confirm.settle(false)">
+      {{ pending?.cancelLabel ?? ('common.actions.cancel' | t) }}
+    </button>
+    <button
+      type="button"
+      class="btn"
+      [class.btn--danger]="pending?.tone !== 'primary'"
+      [class.btn--primary]="pending?.tone === 'primary'"
+      autofocus
+      (click)="confirm.settle(true)"
+    >
+      {{ pending?.confirmLabel }}
+    </button>
+  </ng-container>
+</app-modal>

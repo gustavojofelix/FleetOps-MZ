@@ -1,0 +1,17 @@
+<div class="period-filter" role="group" [attr.aria-label]="'common.labels.period' | t">
+  <label class="visually-hidden" [for]="uid + '-preset'">{{ 'common.labels.period' | t }}</label>
+  <select [id]="uid + '-preset'" class="select period-filter__preset" [value]="period().preset" (change)="selectPreset($event)">
+    @for (preset of presets(); track preset) {
+      <option [value]="preset" [selected]="preset === period().preset">{{ 'common.periods.' + preset | t }}</option>
+    }
+  </select>
+  @if (period().preset === 'custom') {
+    <div class="period-filter__range">
+      <label class="visually-hidden" [for]="uid + '-from'">{{ 'common.labels.from' | t }}</label>
+      <input [id]="uid + '-from'" type="date" class="input" [value]="period().from ?? ''" (change)="setBound('from', $event)" />
+      <span class="subtle" aria-hidden="true">–</span>
+      <label class="visually-hidden" [for]="uid + '-to'">{{ 'common.labels.to' | t }}</label>
+      <input [id]="uid + '-to'" type="date" class="input" [value]="period().to ?? ''" (change)="setBound('to', $event)" />
+    </div>
+  }
+</div>

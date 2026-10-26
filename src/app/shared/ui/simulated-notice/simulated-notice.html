@@ -1,0 +1,12 @@
+@if (visible()) {
+  @let r = rate();
+  <span
+    class="sim-tag"
+    tabindex="0"
+    [appTooltip]="r ? ('common.money.simulatedRate' | t: r) + ' · ' + ('common.money.simulatedHint' | t) : ('common.money.simulatedHint' | t)"
+  >
+    <app-icon name="info" [size]="12" />
+    {{ 'common.money.simulated' | t }}
+    <span class="visually-hidden">{{ 'common.money.simulatedHint' | t }}</span>
+  </span>
+}

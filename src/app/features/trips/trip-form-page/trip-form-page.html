@@ -1,0 +1,533 @@
+<div class="page">
+  <app-page-header [title]="title()" [subtitle]="readOnly() || notFound() ? null : subtitle()" [breadcrumbs]="breadcrumbs()" />
+
+  @if (notFound()) {
+    <section class="card">
+      <app-empty-state icon="route" [title]="'common.states.notFoundTitle' | t" [description]="'common.states.notFoundDescription' | t">
+        <a class="btn btn--secondary" routerLink="/trips">{{ 'trips.detail.backToList' | t }}</a>
+      </app-empty-state>
+    </section>
+  } @else if (!initialised()) {
+    <div class="stack" role="status" [attr.aria-label]="'common.states.loading' | t">
+      @for (i of [1, 2, 3]; track i) {
+        <section class="card">
+          <div class="card__body stack">
+            <span class="skeleton skeleton--title"></span>
+            <span class="skeleton skeleton--text"></span>
+            <span class="skeleton skeleton--text"></span>
+          </div>
+        </section>
+      }
+    </div>
+  } @else if (readOnly()) {
+    @let locked = editing()!;
+    <section class="card">
+      <div class="card__body stack">
+        <div class="alert alert--warning" role="status">
+          <app-icon name="lock" [size]="16" />
+          <div>
+            <p class="alert__title">{{ 'trips.form.readOnlyTitle' | t }}</p>
+            <p>{{ 'trips.form.readOnlyMessage' | t: { reference: locked.reference, status: ('trips.status.' + locked.status | t) } }}</p>
+          </div>
+        </div>
+        <div class="cluster">
+          <a class="btn btn--primary" [routerLink]="['/trips', locked.id]">
+            <app-icon name="arrow-left" [size]="16" />
+            {{ 'trips.form.backToTrip' | t }}
+          </a>
+          <a class="btn btn--secondary" routerLink="/trips">{{ 'trips.detail.backToList' | t }}</a>
+        </div>
+      </div>
+    </section>
+  } @else {
+    @let v = value();
+    <form class="trip-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="trip-form__main">
+        <!-- 1. Route -->
+        <section class="card form-card" id="trip-section-route" aria-labelledby="trip-section-route-title">
+          <header class="card__header card__header--bordered">
+            <div>
+              <h2 class="card__title" id="trip-section-route-title"><span class="form-card__step">1</span>{{ 'trips.sections.route' | t }}</h2>
+              <p class="card__subtitle">{{ 'trips.sections.routeDescription' | t }}</p>
+            </div>
+          </header>
+          <div class="card__body">
+          <fieldset class="form-reset" [disabled]="saving()">
+            <legend class="visually-hidden">{{ 'trips.sections.route' | t }}</legend>
+            <div class="form-grid">
+              <div class="field span-full">
+                <label class="field__label" for="tf-route">{{ 'trips.fields.route' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+                <select id="tf-route" class="select" formControlName="routeId" aria-describedby="tf-route-hint">
+                  <option value="">{{ 'trips.hints.noRoute' | t }}</option>
+                  @for (option of routeOptions(); track option.id) {
+                    <option [value]="option.id">{{ option.label }}</option>
+                  }
+                </select>
+                <p class="field__hint" id="tf-route-hint">{{ 'trips.hints.route' | t }}</p>
+              </div>
+
+              <fieldset class="form-reset location-group">
+                <legend class="location-group__title">
+                  <app-icon name="map-pin" [size]="14" />
+                  {{ 'trips.fields.origin' | t }}
+                </legend>
+                <div class="field">
+                  <label class="field__label" for="tf-origin-city">{{ 'trips.fields.city' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                  <input id="tf-origin-city" class="input" formControlName="originCity" autocomplete="off" />
+                  <app-field-error [control]="form.controls.originCity" />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="tf-origin-site">{{ 'trips.fields.site' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+                  <input id="tf-origin-site" class="input" formControlName="originSite" autocomplete="off" />
+                  <app-field-error [control]="form.controls.originSite" />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="tf-origin-country">{{ 'trips.fields.country' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                  <select id="tf-origin-country" class="select" formControlName="originCountry">
+                    @for (code of countries; track code) {
+                      <option [value]="code">{{ countryLabel(code) }}</option>
+                    }
+                  </select>
+                </div>
+              </fieldset>
+
+              <fieldset class="form-reset location-group">
+                <legend class="location-group__title">
+                  <app-icon name="flag" [size]="14" />
+                  {{ 'trips.fields.destination' | t }}
+                </legend>
+                <div class="field">
+                  <label class="field__label" for="tf-dest-city">{{ 'trips.fields.city' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                  <input id="tf-dest-city" class="input" formControlName="destinationCity" autocomplete="off" />
+                  <app-field-error [control]="form.controls.destinationCity" />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="tf-dest-site">{{ 'trips.fields.site' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+                  <input id="tf-dest-site" class="input" formControlName="destinationSite" autocomplete="off" />
+                  <app-field-error [control]="form.controls.destinationSite" />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="tf-dest-country">{{ 'trips.fields.country' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                  <select id="tf-dest-country" class="select" formControlName="destinationCountry">
+                    @for (code of countries; track code) {
+                      <option [value]="code">{{ countryLabel(code) }}</option>
+                    }
+                  </select>
+                </div>
+              </fieldset>
+
+              <div class="field">
+                <label class="field__label" for="tf-distance">{{ 'trips.fields.plannedDistance' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <div class="input-group">
+                  <input id="tf-distance" class="input" type="number" inputmode="numeric" min="1" formControlName="plannedDistanceKm" />
+                  <span class="input-group__suffix">km</span>
+                </div>
+                <app-field-error [control]="form.controls.plannedDistanceKm" />
+              </div>
+              <div class="span-full">
+                @if (crossBorder()) {
+                  <p class="alert alert--info">
+                    <app-icon name="globe" [size]="16" />
+                    <span>
+                      {{ 'trips.hints.crossBorder' | t }}
+                      @if (selectedRoute()?.borderPost; as border) {
+                        <strong>{{ 'trips.detail.viaBorder' | t: { border } }}</strong>
+                      }
+                    </span>
+                  </p>
+                } @else {
+                  <p class="field__hint">{{ 'trips.hints.domestic' | t }}</p>
+                }
+              </div>
+            </div>
+          </fieldset>
+          </div>
+        </section>
+
+        <!-- 2. Customer & cargo -->
+        <section class="card form-card" id="trip-section-cargo" aria-labelledby="trip-section-cargo-title">
+          <header class="card__header card__header--bordered">
+            <div>
+              <h2 class="card__title" id="trip-section-cargo-title"><span class="form-card__step">2</span>{{ 'trips.sections.cargo' | t }}</h2>
+              <p class="card__subtitle">{{ 'trips.sections.cargoDescription' | t }}</p>
+            </div>
+          </header>
+          <div class="card__body">
+          <fieldset class="form-reset" [disabled]="saving()">
+            <legend class="visually-hidden">{{ 'trips.sections.cargo' | t }}</legend>
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label" for="tf-customer">{{ 'trips.fields.customer' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <select id="tf-customer" class="select" formControlName="customerId">
+                  <option value="" disabled>{{ 'common.actions.select' | t }}…</option>
+                  @for (option of customerOptions(); track option.id) {
+                    <option [value]="option.id">{{ optionLabel(option) }}</option>
+                  }
+                </select>
+                <app-field-error [control]="form.controls.customerId" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="tf-customer-ref">{{ 'trips.fields.customerReference' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+                <input id="tf-customer-ref" class="input mono" formControlName="customerReference" autocomplete="off" placeholder="PO-2026-0001" />
+                <app-field-error [control]="form.controls.customerReference" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="tf-cargo-type">{{ 'trips.fields.cargoType' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <select id="tf-cargo-type" class="select" formControlName="cargoType">
+                  @for (type of cargoTypes; track type) {
+                    <option [value]="type">{{ 'trips.cargoTypes.' + type | t }}</option>
+                  }
+                </select>
+              </div>
+              <div class="field">
+                <label class="field__label" for="tf-weight">{{ 'trips.fields.weight' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <div class="input-group">
+                  <input id="tf-weight" class="input" type="number" inputmode="decimal" step="0.1" min="0" formControlName="weightTonnes" />
+                  <span class="input-group__suffix">{{ 'common.units.tonnes' | t }}</span>
+                </div>
+                <app-field-error [control]="form.controls.weightTonnes" />
+              </div>
+              <div class="field span-full">
+                <label class="field__label" for="tf-cargo-desc">{{ 'trips.fields.cargoDescription' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <input id="tf-cargo-desc" class="input" formControlName="cargoDescription" autocomplete="off" />
+                <app-field-error [control]="form.controls.cargoDescription" />
+              </div>
+              @if (isContainer()) {
+                <div class="field">
+                  <label class="field__label" for="tf-container">{{ 'trips.fields.containerRef' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                  <input
+                    id="tf-container"
+                    class="input mono"
+                    formControlName="containerRef"
+                    autocomplete="off"
+                    placeholder="MSCU1234566"
+                    aria-describedby="tf-container-hint"
+                  />
+                  <p class="field__hint" id="tf-container-hint">{{ 'trips.hints.containerRef' | t }}</p>
+                  <app-field-error [control]="form.controls.containerRef" />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="tf-seal">{{ 'trips.fields.sealNumber' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+                  <input id="tf-seal" class="input mono" formControlName="sealNumber" autocomplete="off" />
+                  <app-field-error [control]="form.controls.sealNumber" />
+                </div>
+              }
+            </div>
+          </fieldset>
+          </div>
+        </section>
+
+        <!-- 3. Assignment -->
+        <section class="card form-card" id="trip-section-assignment" aria-labelledby="trip-section-assignment-title">
+          <header class="card__header card__header--bordered">
+            <div>
+              <h2 class="card__title" id="trip-section-assignment-title"><span class="form-card__step">3</span>{{ 'trips.sections.assignment' | t }}</h2>
+              <p class="card__subtitle">{{ 'trips.sections.assignmentDescription' | t }}</p>
+            </div>
+          </header>
+          <div class="card__body">
+          <fieldset class="form-reset stack" [disabled]="saving()">
+            <legend class="visually-hidden">{{ 'trips.sections.assignment' | t }}</legend>
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label" for="tf-vehicle">{{ 'trips.fields.vehicle' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <select id="tf-vehicle" class="select" formControlName="vehicleId" aria-describedby="tf-vehicle-hint">
+                  <option value="" disabled>{{ 'common.actions.select' | t }}…</option>
+                  @for (option of vehicleOptions(); track option.id) {
+                    <option [value]="option.id">{{ optionLabel(option) }}</option>
+                  }
+                </select>
+                <p class="field__hint" id="tf-vehicle-hint">{{ 'trips.hints.vehiclePrefill' | t }}</p>
+                <app-field-error [control]="form.controls.vehicleId" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="tf-driver">{{ 'trips.fields.driver' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <select id="tf-driver" class="select" formControlName="driverId">
+                  <option value="" disabled>{{ 'common.actions.select' | t }}…</option>
+                  @for (option of driverOptions(); track option.id) {
+                    <option [value]="option.id">{{ optionLabel(option) }}</option>
+                  }
+                </select>
+                <app-field-error [control]="form.controls.driverId" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="tf-trailer">{{ 'trips.fields.trailer' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+                @if (isTractor()) {
+                  <select id="tf-trailer" class="select" formControlName="trailerId" aria-describedby="tf-trailer-hint">
+                    <option value="">{{ 'trips.detail.noTrailer' | t }}</option>
+                    @for (option of trailerOptions(); track option.id) {
+                      <option [value]="option.id">{{ optionLabel(option) }}</option>
+                    }
+                  </select>
+                  <p class="field__hint" id="tf-trailer-hint">{{ 'trips.hints.trailerFiltered' | t: { cargo: ('trips.cargoTypes.' + v.cargoType | t) } }}</p>
+                } @else {
+                  <select id="tf-trailer" class="select" disabled aria-describedby="tf-trailer-hint">
+                    <option>{{ 'common.labels.notApplicable' | t }}</option>
+                  </select>
+                  <p class="field__hint" id="tf-trailer-hint">{{ 'trips.hints.trailerNotApplicable' | t }}</p>
+                }
+              </div>
+            </div>
+
+            <div aria-live="polite">
+              @if (blocking().length) {
+                <div class="alert alert--danger">
+                  <app-icon name="circle-x" [size]="16" />
+                  <div>
+                    <p class="alert__title">{{ 'trips.form.blockingTitle' | t }}</p>
+                    <ul class="issue-list">
+                      @for (issue of blocking(); track issue.code) {
+                        <li>{{ issue.message }}</li>
+                      }
+                    </ul>
+                  </div>
+                </div>
+              }
+              @if (warnings().length) {
+                <div class="alert alert--warning">
+                  <app-icon name="triangle-alert" [size]="16" />
+                  <div>
+                    <p class="alert__title">{{ 'trips.form.warningsTitle' | t }}</p>
+                    <ul class="issue-list">
+                      @for (issue of warnings(); track issue.code) {
+                        <li>{{ issue.message }}</li>
+                      }
+                    </ul>
+                  </div>
+                </div>
+              }
+              @if (checkReady() && !blocking().length && !warnings().length) {
+                <p class="alert alert--success">
+                  <app-icon name="circle-check" [size]="16" />
+                  <span>{{ 'trips.form.checksOk' | t }}</span>
+                </p>
+              }
+            </div>
+          </fieldset>
+          </div>
+        </section>
+
+        <!-- 4. Schedule -->
+        <section class="card form-card" id="trip-section-schedule" aria-labelledby="trip-section-schedule-title">
+          <header class="card__header card__header--bordered">
+            <div>
+              <h2 class="card__title" id="trip-section-schedule-title"><span class="form-card__step">4</span>{{ 'trips.sections.schedule' | t }}</h2>
+              <p class="card__subtitle">{{ 'trips.sections.scheduleDescription' | t }}</p>
+            </div>
+          </header>
+          <div class="card__body">
+          <fieldset class="form-reset" [disabled]="saving()">
+            <legend class="visually-hidden">{{ 'trips.sections.schedule' | t }}</legend>
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label" for="tf-departure">{{ 'trips.fields.plannedDeparture' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <input id="tf-departure" class="input" type="datetime-local" formControlName="plannedDeparture" aria-describedby="tf-tz-hint" />
+                <app-field-error [control]="form.controls.plannedDeparture" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="tf-arrival">{{ 'trips.fields.plannedArrival' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <input
+                  id="tf-arrival"
+                  class="input"
+                  type="datetime-local"
+                  formControlName="plannedArrival"
+                  [min]="v.plannedDeparture"
+                  [attr.aria-invalid]="form.hasError('dateOrder') && form.controls.plannedArrival.touched ? true : null"
+                  aria-describedby="tf-tz-hint"
+                />
+                <app-field-error [control]="form.controls.plannedArrival" [group]="form" groupError="dateOrder" />
+              </div>
+              <p class="field__hint span-full" id="tf-tz-hint">{{ 'trips.hints.companyTime' | t }}</p>
+              @if (suggestedArrival() && suggestedArrival() !== v.plannedArrival) {
+                <div class="alert alert--info span-full suggestion">
+                  <app-icon name="calendar-clock" [size]="16" />
+                  <span class="suggestion__text">
+                    {{ 'trips.hints.arrivalSuggestion' | t: { hours: (selectedRoute()!.typicalDurationHours | num: 1), date: (suggestedArrivalIso() | fmtDate: 'datetime') } }}
+                  </span>
+                  <button type="button" class="btn btn--secondary btn--sm" (click)="applySuggestion()">{{ 'trips.hints.applySuggestion' | t }}</button>
+                </div>
+              }
+            </div>
+          </fieldset>
+          </div>
+        </section>
+
+        <!-- 5. Commercial -->
+        <section class="card form-card" id="trip-section-commercial" aria-labelledby="trip-section-commercial-title">
+          <header class="card__header card__header--bordered">
+            <div>
+              <h2 class="card__title" id="trip-section-commercial-title"><span class="form-card__step">5</span>{{ 'trips.sections.commercial' | t }}</h2>
+              <p class="card__subtitle">{{ 'trips.sections.commercialDescription' | t }}</p>
+            </div>
+          </header>
+          <div class="card__body">
+          <fieldset class="form-reset" [disabled]="saving()">
+            <legend class="visually-hidden">{{ 'trips.sections.commercial' | t }}</legend>
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label" for="tf-revenue">{{ 'trips.fields.revenueAmount' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <input id="tf-revenue" class="input" type="number" inputmode="decimal" step="0.01" min="0" formControlName="revenueAmount" />
+                <app-field-error [control]="form.controls.revenueAmount" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="tf-currency">{{ 'trips.fields.currency' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+                <select id="tf-currency" class="select" formControlName="revenueCurrency" aria-describedby="tf-currency-hint">
+                  @for (code of currencies; track code) {
+                    <option [value]="code">{{ code }} — {{ 'currencies.' + code | t }}</option>
+                  }
+                </select>
+                <p class="field__hint" id="tf-currency-hint">{{ 'trips.hints.currency' | t }}</p>
+              </div>
+              <div class="field span-full">
+                <label class="field__label" for="tf-notes">{{ 'trips.fields.notes' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+                <textarea id="tf-notes" class="textarea" rows="3" formControlName="notes"></textarea>
+                <app-field-error [control]="form.controls.notes" />
+              </div>
+            </div>
+          </fieldset>
+          </div>
+        </section>
+      </div>
+
+      <!-- Summary -->
+      <aside class="trip-form__aside" [attr.aria-label]="'trips.form.summary' | t">
+        <section class="card summary-card">
+          <header class="card__header">
+            <div>
+              <h2 class="card__title">{{ 'trips.form.summary' | t }}</h2>
+              <p class="card__subtitle mono">
+                {{ isEdit() ? reference() : ('trips.form.referencePending' | t: { reference: reference() }) }}
+              </p>
+            </div>
+          </header>
+          <div class="card__body stack">
+            <ol class="section-nav">
+              @for (section of sections(); track section.id; let i = $index) {
+                <li>
+                  <button type="button" class="section-nav__item" [class.is-complete]="section.complete" (click)="scrollTo(section.id)">
+                    <span class="section-nav__marker" aria-hidden="true">
+                      @if (section.complete) {
+                        <app-icon name="check" [size]="12" />
+                      } @else {
+                        {{ i + 1 }}
+                      }
+                    </span>
+                    <span class="section-nav__label">{{ 'trips.sections.' + section.id | t }}</span>
+                    <span class="visually-hidden">— {{ (section.complete ? 'trips.form.sectionComplete' : 'trips.form.sectionIncomplete') | t }}</span>
+                  </button>
+                </li>
+              }
+            </ol>
+
+            <hr class="divider" />
+
+            <dl class="dl dl--1 summary-dl">
+              <div>
+                <dt>{{ 'trips.columns.route' | t }}</dt>
+                <dd>
+                  @if (v.originCity || v.destinationCity) {
+                    <span class="strong">{{ v.originCity || '…' }} → {{ v.destinationCity || '…' }}</span>
+                    @if (v.plannedDistanceKm) {
+                      <span class="muted"> · {{ v.plannedDistanceKm | distance }}</span>
+                    }
+                    @if (crossBorder()) {
+                      <span class="badge badge--info summary-dl__badge">{{ 'trips.fields.crossBorder' | t }}</span>
+                    }
+                  } @else {
+                    <span class="subtle">{{ 'trips.form.notSelected' | t }}</span>
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>{{ 'trips.fields.customer' | t }}</dt>
+                <dd>{{ customer()?.name ?? ('trips.form.notSelected' | t) }}</dd>
+              </div>
+              <div>
+                <dt>{{ 'trips.detail.cargo' | t }}</dt>
+                <dd>
+                  {{ 'trips.cargoTypes.' + v.cargoType | t }}
+                  @if (v.weightTonnes) {
+                    · {{ v.weightTonnes | num: 1 }} {{ 'common.units.tonnes' | t }}
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>{{ 'trips.detail.assignment' | t }}</dt>
+                <dd>
+                  <span class="mono">{{ vehicle()?.plateNumber ?? '—' }}</span>
+                  @if (trailer(); as tr) {
+                    + <span class="mono">{{ tr.plateNumber }}</span>
+                  }
+                  <span class="summary-dl__sub">{{ driver() ? driver()!.firstName + ' ' + driver()!.lastName : ('trips.form.notSelected' | t) }}</span>
+                </dd>
+              </div>
+              <div>
+                <dt>{{ 'trips.sections.schedule' | t }}</dt>
+                <dd>
+                  @if (v.plannedDeparture) {
+                    {{ departureIso() | fmtDate: 'datetime' }}
+                    @if (arrivalIso()) {
+                      <span class="summary-dl__sub">→ {{ arrivalIso() | fmtDate: 'datetime' }}</span>
+                    }
+                    @if (durationHours(); as hours) {
+                      <span class="summary-dl__sub">{{ 'trips.form.duration' | t }}: {{ 'trips.form.durationValue' | t: { hours: (hours | num: 1) } }}</span>
+                    }
+                  } @else {
+                    <span class="subtle">{{ 'trips.form.notSelected' | t }}</span>
+                  }
+                </dd>
+              </div>
+              <div>
+                <dt>{{ 'trips.fields.revenue' | t }}</dt>
+                <dd>
+                  @if (v.revenueAmount !== null) {
+                    <span class="strong">{{ v.revenueAmount | amount: v.revenueCurrency }}</span>
+                    @if (revenuePerKm(); as perKm) {
+                      <span class="summary-dl__sub">{{ 'trips.form.revenuePerKm' | t }}: {{ perKm | amount: v.revenueCurrency }}</span>
+                    }
+                  } @else {
+                    <span class="subtle">{{ 'trips.form.notSelected' | t }}</span>
+                  }
+                </dd>
+              </div>
+            </dl>
+
+            <hr class="divider" />
+
+            <div class="checks" aria-live="polite">
+              <p class="checks__title">{{ 'trips.form.checks' | t }}</p>
+              @if (!checkReady()) {
+                <p class="text-sm muted">{{ 'trips.form.checksPending' | t }}</p>
+              } @else if (!blocking().length && !warnings().length) {
+                <p class="text-sm text-success checks__line"><app-icon name="circle-check" [size]="14" /> {{ 'trips.form.checksOk' | t }}</p>
+              } @else {
+                @if (blocking().length) {
+                  <button type="button" class="link-button text-sm text-danger checks__line" (click)="scrollTo('assignment')">
+                    <app-icon name="circle-x" [size]="14" /> {{ 'trips.form.checksBlocking' | t: { count: blocking().length } }}
+                  </button>
+                }
+                @if (warnings().length) {
+                  <button type="button" class="link-button text-sm text-warning checks__line" (click)="scrollTo('assignment')">
+                    <app-icon name="triangle-alert" [size]="14" /> {{ 'trips.form.checksWarnings' | t: { count: warnings().length } }}
+                  </button>
+                }
+              }
+            </div>
+          </div>
+          <footer class="card__footer summary-card__actions">
+            <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="cancel()">{{ 'common.actions.cancel' | t }}</button>
+            <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">
+              <app-icon name="save" [size]="16" />
+              {{ (isEdit() ? 'common.actions.saveChanges' : 'trips.form.create') | t }}
+            </button>
+          </footer>
+        </section>
+        @if (isEdit() && editing(); as current) {
+          <p class="text-sm muted status-line">
+            {{ 'common.labels.status' | t }}: <app-status-badge kind="trip" [value]="current.status" />
+          </p>
+        }
+      </aside>
+    </form>
+  }
+</div>

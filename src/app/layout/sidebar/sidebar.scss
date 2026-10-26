@@ -1,0 +1,223 @@
+@use 'mixins' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-sidebar-bg);
+  border-right: 1px solid var(--color-border);
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: var(--topbar-height);
+  padding: 0 var(--space-4);
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.brand__mark {
+  flex-shrink: 0;
+  color: var(--color-on-accent);
+}
+
+.brand__mark-bg {
+  fill: var(--color-accent);
+}
+
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.brand__name {
+  font-size: var(--text-md);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.brand__suffix {
+  color: var(--color-accent-text);
+}
+
+.brand__org {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  @include truncate;
+}
+
+.sidebar__nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-2) var(--space-3) var(--space-4);
+}
+
+.nav-section + .nav-section {
+  margin-top: var(--space-4);
+}
+
+.nav-section__label {
+  padding: 0 var(--space-3) 6px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.nav-section__divider {
+  display: block;
+  height: 1px;
+  margin: 0 var(--space-2) var(--space-2);
+  background: var(--color-divider);
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-item {
+  @include reset-button;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 36px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-sidebar-text);
+  font-size: var(--text-base);
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+
+  &:hover {
+    background: var(--color-sidebar-item-hover);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  &.is-active {
+    background: var(--color-sidebar-item-active);
+    color: var(--color-sidebar-text-active);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: -12px;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--color-accent);
+    }
+  }
+
+  @include down(lg) {
+    height: 42px;
+  }
+}
+
+.nav-item__label {
+  flex: 1;
+  @include truncate;
+}
+
+.nav-item__count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+
+  &--dot {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    min-width: 8px;
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 2px solid var(--color-sidebar-bg);
+    box-sizing: content-box;
+  }
+}
+
+.sidebar__footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-divider);
+}
+
+.sidebar__demo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+// Collapsed rail
+:host-context(.shell--collapsed) {
+  .sidebar__brand {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .sidebar__nav {
+    padding: var(--space-2);
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding: 0;
+
+    &.is-active::before {
+      left: -8px;
+    }
+  }
+
+  .sidebar__footer {
+    padding: var(--space-2);
+  }
+}

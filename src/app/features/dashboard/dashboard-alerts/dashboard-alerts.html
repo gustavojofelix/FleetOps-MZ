@@ -1,0 +1,55 @@
+<section class="card alerts-card" aria-labelledby="dashboard-alerts-title">
+  <header class="card__header">
+    <div>
+      <h2 class="card__title" id="dashboard-alerts-title">
+        {{ 'dashboard.panels.alertsTitle' | t }}
+        @if (!loading() && alerts().length) {
+          <span class="tab__count">{{ alerts().length }}</span>
+        }
+      </h2>
+      <p class="card__subtitle">{{ 'dashboard.panels.alertsSubtitle' | t }}</p>
+    </div>
+    <app-icon class="alerts-card__header-icon" [class.is-critical]="criticalCount() > 0" name="bell-ring" [size]="18" />
+  </header>
+
+  @if (loading()) {
+    <ul class="list alerts-card__list" aria-hidden="true">
+      @for (row of skeletonRows; track row) {
+        <li class="list-row">
+          <span class="skeleton alerts-card__skeleton-icon"></span>
+          <span class="list-row__main">
+            <span class="skeleton skeleton--text alerts-card__skeleton-title"></span>
+            <span class="skeleton skeleton--text alerts-card__skeleton-meta"></span>
+          </span>
+        </li>
+      }
+    </ul>
+  } @else if (!alerts().length) {
+    <app-empty-state compact icon="circle-check" [title]="'dashboard.panels.alertsEmpty' | t" />
+  } @else {
+    <ul class="list alerts-card__list">
+      @for (alert of visible(); track alert.id) {
+        <li>
+          <a class="list-row alert-row" [routerLink]="alert.link" [queryParams]="alert.queryParams">
+            <span class="alert-row__icon" [attr.data-severity]="alert.severity"><app-icon [name]="alert.icon" [size]="16" /></span>
+            <span class="list-row__main">
+              <span class="alert-row__title">{{ alert.title }}</span>
+              <span class="alert-row__description">{{ alert.description }}</span>
+            </span>
+            <span class="list-row__aside alert-row__aside">
+              <app-status-badge kind="severity" [value]="alert.severity" />
+              <app-icon class="subtle" name="chevron-right" [size]="16" />
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+    @if (hiddenCount() > 0) {
+      <footer class="card__footer">
+        <button type="button" class="link-button" [attr.aria-expanded]="expanded()" (click)="expanded.set(!expanded())">
+          {{ expanded() ? ('common.actions.showLess' | t) : ('dashboard.panels.moreItems' | t: { count: hiddenCount() }) }}
+        </button>
+      </footer>
+    }
+  }
+</section>

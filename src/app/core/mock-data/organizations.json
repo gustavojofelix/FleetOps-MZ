@@ -1,0 +1,28 @@
+[
+  {
+    "id": "org-kuyenda",
+    "displayName": "Kuyenda Transportes",
+    "legalName": "Kuyenda Transportes e Logística, Lda (fictícia)",
+    "taxId": "400 812 337",
+    "email": "operacoes@kuyenda.example",
+    "phone": "+258 23 300 145",
+    "address": "Av. das Indústrias, Parcela 214, Munhava",
+    "city": "Beira",
+    "country": "MZ",
+    "reportingCurrency": "MZN",
+    "defaultLanguage": "pt-MZ",
+    "timeZone": "Africa/Maputo",
+    "dateFormat": "dd/MM/yyyy",
+    "distanceUnit": "km",
+    "volumeUnit": "l",
+    "notificationSettings": {
+      "maintenanceDueDays": 14,
+      "documentExpiryDays": 30,
+      "tripDelayAlerts": true,
+      "fuelAnomalyAlerts": true,
+      "expenseApprovalAlerts": true,
+      "emailDigest": false
+    },
+    "createdAt": "2021-03-15T09:00:00+02:00"
+  }
+]

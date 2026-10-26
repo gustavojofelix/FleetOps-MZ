@@ -1,0 +1,11 @@
+<span class="money__original">{{ original() }}</span>
+@if (conversion(); as c) {
+  <span
+    class="money__converted"
+    tabindex="0"
+    [appTooltip]="'common.money.simulatedRate' | t: { from: c.from, rate: c.rate, to: c.to }"
+  >
+    ≈ {{ c.text }}
+    <span class="visually-hidden">({{ 'common.money.simulatedRate' | t: { from: c.from, rate: c.rate, to: c.to } }})</span>
+  </span>
+}

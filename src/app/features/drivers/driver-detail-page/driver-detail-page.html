@@ -1,0 +1,369 @@
+<div class="page">
+  @if (driver(); as d) {
+    <app-page-header [title]="name()" [subtitle]="d.employeeNumber + ' · ' + d.city" [breadcrumbs]="breadcrumbs()">
+      <ng-container meta>
+        <app-status-badge kind="driver" [value]="d.status" />
+      </ng-container>
+      <ng-container actions>
+        <button type="button" class="btn btn--secondary" (click)="statusTarget.set(d)">
+          <app-icon name="refresh" [size]="16" />
+          {{ 'common.actions.changeStatus' | t }}
+        </button>
+        <button type="button" class="btn btn--secondary" (click)="editOpen.set(true)">
+          <app-icon name="pencil" [size]="16" />
+          {{ 'common.actions.edit' | t }}
+        </button>
+        <a class="btn btn--primary" routerLink="/trips/new" [queryParams]="{ driverId: d.id }">
+          <app-icon name="plus" [size]="16" />
+          {{ 'drivers.newTrip' | t }}
+        </a>
+      </ng-container>
+    </app-page-header>
+
+    <div class="grid kpi-grid">
+      <app-kpi-card
+        icon="route"
+        [label]="'drivers.detail.kpis.trips' | t"
+        [value]="kpis().finished | num"
+        [hint]="'drivers.detail.kpis.tripsHint' | t"
+      />
+      <app-kpi-card icon="gauge" [label]="'drivers.detail.kpis.km' | t" [value]="kpis().km | distance" [hint]="'drivers.detail.kpis.kmHint' | t" />
+      @if (currentTrip(); as trip) {
+        <app-kpi-card
+          icon="navigation"
+          [label]="'drivers.detail.kpis.activeTrip' | t"
+          [value]="trip.reference"
+          [hint]="directory.routeLabel(trip)"
+          [link]="['/trips', trip.id]"
+        />
+      } @else {
+        <app-kpi-card
+          icon="navigation"
+          [label]="'drivers.detail.kpis.activeTrip' | t"
+          [value]="'drivers.detail.kpis.activeTripNone' | t"
+          [hint]="'drivers.detail.kpis.activeTripHint' | t"
+        />
+      }
+      <app-kpi-card
+        icon="triangle-alert"
+        [label]="'drivers.detail.kpis.incidents' | t"
+        [value]="kpis().incidents | num"
+        [hint]="'drivers.detail.kpis.incidentsHint' | t: { count: kpis().highIncidents }"
+      />
+      <app-kpi-card
+        icon="id-card"
+        [label]="'drivers.detail.kpis.licence' | t"
+        [value]="licenceValue()"
+        [hint]="'drivers.detail.kpis.licenceHint' | t: { date: (d.licenceExpiry | fmtDate: 'medium') }"
+      />
+    </div>
+
+    <div class="tabs detail-tabs" role="tablist" [attr.aria-label]="name()">
+      @for (tab of tabs; track tab; let i = $index) {
+        <button
+          type="button"
+          class="tab"
+          role="tab"
+          [id]="'driver-tab-' + tab"
+          [attr.aria-selected]="activeTab() === tab"
+          [attr.aria-controls]="'driver-panel-' + tab"
+          [tabindex]="activeTab() === tab ? 0 : -1"
+          (click)="selectTab(tab)"
+          (keydown)="onTabKeydown($event, i)"
+        >
+          {{ 'drivers.detail.tabs.' + tab | t }}
+          @switch (tab) {
+            @case ('trips') { <span class="tab__count">{{ trips().length }}</span> }
+            @case ('incidents') { <span class="tab__count">{{ incidents().length }}</span> }
+            @case ('documents') { <span class="tab__count">{{ documents().length }}</span> }
+          }
+        </button>
+      }
+    </div>
+
+    <section role="tabpanel" [id]="'driver-panel-' + activeTab()" [attr.aria-labelledby]="'driver-tab-' + activeTab()">
+      @switch (activeTab()) {
+        @case ('overview') {
+          <div class="grid grid--main-side">
+            <section class="card">
+              <header class="card__header">
+                <div class="profile-heading">
+                  <span class="avatar avatar--lg" aria-hidden="true">{{ initials() }}</span>
+                  <div>
+                    <h2 class="card__title">{{ 'drivers.detail.profile' | t }}</h2>
+                    <p class="card__subtitle">{{ 'drivers.detail.hiredOn' | t: { date: (d.hireDate | fmtDate: 'medium') } }}</p>
+                  </div>
+                </div>
+              </header>
+              <div class="card__body">
+                <dl class="dl">
+                  <div>
+                    <dt>{{ 'drivers.fields.phone' | t }}</dt>
+                    <dd><a class="cell-link" [href]="'tel:' + d.phone">{{ d.phone }}</a></dd>
+                  </div>
+                  <div>
+                    <dt>{{ 'drivers.fields.email' | t }}</dt>
+                    <dd>
+                      @if (d.email) {
+                        <a class="cell-link" [href]="'mailto:' + d.email">{{ d.email }}</a>
+                      } @else {
+                        —
+                      }
+                    </dd>
+                  </div>
+                  <div><dt>{{ 'drivers.fields.employeeNumber' | t }}</dt><dd class="mono">{{ d.employeeNumber }}</dd></div>
+                  <div><dt>{{ 'drivers.fields.nationalId' | t }}</dt><dd class="mono">{{ d.nationalId || '—' }}</dd></div>
+                  <div><dt>{{ 'drivers.fields.city' | t }}</dt><dd>{{ d.city }}</dd></div>
+                  <div><dt>{{ 'drivers.fields.hireDate' | t }}</dt><dd>{{ d.hireDate | fmtDate: 'medium' }}</dd></div>
+                  <div>
+                    <dt>{{ 'drivers.fields.emergencyContact' | t }}</dt>
+                    <dd>
+                      @if (d.emergencyContactName || d.emergencyContactPhone) {
+                        {{ d.emergencyContactName || '—' }}
+                        @if (d.emergencyContactPhone) {
+                          <span class="cell-sub"><a class="cell-link" [href]="'tel:' + d.emergencyContactPhone">{{ d.emergencyContactPhone }}</a></span>
+                        }
+                      } @else {
+                        —
+                      }
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>{{ 'drivers.fields.crossBorder' | t }}</dt>
+                    <dd>
+                      @if (d.crossBorderAuthorized) {
+                        <span class="badge badge--success"><span class="badge__dot" aria-hidden="true"></span>{{ 'drivers.detail.crossBorderYes' | t }}</span>
+                      } @else {
+                        <span class="badge badge--neutral"><span class="badge__dot" aria-hidden="true"></span>{{ 'drivers.detail.crossBorderNo' | t }}</span>
+                      }
+                    </dd>
+                  </div>
+                  @if (d.notes) {
+                    <div class="span-full"><dt>{{ 'drivers.fields.notes' | t }}</dt><dd>{{ d.notes }}</dd></div>
+                  }
+                </dl>
+              </div>
+            </section>
+
+            <div class="stack">
+              <section class="card">
+                <header class="card__header">
+                  <h2 class="card__title">{{ 'drivers.detail.licence' | t }}</h2>
+                  <app-expiry-badge [date]="d.licenceExpiry" relative />
+                </header>
+                <div class="card__body">
+                  <dl class="dl dl--1">
+                    <div><dt>{{ 'drivers.fields.licenceNumber' | t }}</dt><dd class="mono">{{ d.licenceNumber }}</dd></div>
+                    <div><dt>{{ 'drivers.fields.licenceCategory' | t }}</dt><dd>{{ 'drivers.licenceCategories.' + d.licenceCategory | t }}</dd></div>
+                    <div><dt>{{ 'drivers.fields.licenceExpiry' | t }}</dt><dd>{{ d.licenceExpiry | fmtDate: 'long' }}</dd></div>
+                  </dl>
+                </div>
+              </section>
+
+              <section class="card">
+                <header class="card__header"><h2 class="card__title">{{ 'drivers.detail.assignment' | t }}</h2></header>
+                <ul class="list assignment-list">
+                  <li>
+                    @if (vehicle(); as v) {
+                      <a class="list-row" [routerLink]="['/vehicles', v.id]">
+                        <span class="avatar"><app-icon name="truck" [size]="16" /></span>
+                        <span class="list-row__main">
+                          <span class="list-row__title">{{ v.plateNumber }}</span>
+                          <span class="list-row__meta">{{ v.fleetNumber }} · {{ v.make }} {{ v.model }}</span>
+                        </span>
+                        <app-status-badge kind="vehicle" [value]="v.status" />
+                      </a>
+                    } @else {
+                      <div class="list-row">
+                        <span class="avatar"><app-icon name="truck" [size]="16" /></span>
+                        <span class="list-row__main"><span class="list-row__meta">{{ 'drivers.noVehicle' | t }}</span></span>
+                        <button type="button" class="btn btn--ghost btn--sm" (click)="editOpen.set(true)">{{ 'common.actions.edit' | t }}</button>
+                      </div>
+                    }
+                  </li>
+                  @if (currentTrip(); as trip) {
+                    <li>
+                      <a class="list-row" [routerLink]="['/trips', trip.id]">
+                        <span class="avatar"><app-icon name="route" [size]="16" /></span>
+                        <span class="list-row__main">
+                          <span class="list-row__title">{{ trip.reference }}</span>
+                          <span class="list-row__meta">{{ 'drivers.detail.currentTrip' | t }} · {{ directory.routeLabel(trip) }}</span>
+                        </span>
+                        <app-status-badge kind="trip" [value]="trip.status" />
+                      </a>
+                    </li>
+                  }
+                </ul>
+              </section>
+            </div>
+          </div>
+        }
+
+        @case ('trips') {
+          <section class="card">
+            @if (trips().length) {
+              <header class="card__header">
+                <h2 class="card__title">{{ 'drivers.detail.tabs.trips' | t }}</h2>
+                <a class="link-button text-sm" routerLink="/trips" [queryParams]="{ driverId: d.id }">{{ 'drivers.detail.viewAllTrips' | t }}</a>
+              </header>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">{{ 'common.labels.trip' | t }}</th>
+                      <th scope="col">{{ 'common.labels.route' | t }}</th>
+                      <th scope="col">{{ 'common.labels.customer' | t }}</th>
+                      <th scope="col">{{ 'common.labels.vehicle' | t }}</th>
+                      <th scope="col">{{ 'common.labels.date' | t }}</th>
+                      <th scope="col">{{ 'common.labels.status' | t }}</th>
+                      <th scope="col" class="num">{{ 'profitability.metrics.revenue' | t }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (trip of trips(); track trip.id) {
+                      <tr>
+                        <td class="data-table__primary"><a class="cell-link mono" [routerLink]="['/trips', trip.id]">{{ trip.reference }}</a></td>
+                        <td [attr.data-label]="'common.labels.route' | t">{{ directory.routeLabel(trip) }}</td>
+                        <td [attr.data-label]="'common.labels.customer' | t">{{ directory.customerName(trip.customerId) }}</td>
+                        <td [attr.data-label]="'common.labels.vehicle' | t">
+                          <a class="cell-link mono" [routerLink]="['/vehicles', trip.vehicleId]">{{ directory.plate(trip.vehicleId) }}</a>
+                        </td>
+                        <td [attr.data-label]="'common.labels.date' | t">{{ trip.plannedDeparture | fmtDate }}</td>
+                        <td [attr.data-label]="'common.labels.status' | t"><app-status-badge kind="trip" [value]="trip.status" /></td>
+                        <td class="num" [attr.data-label]="'profitability.metrics.revenue' | t"><app-money [value]="trip.revenue" /></td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <app-empty-state icon="route" compact [title]="'drivers.detail.noTrips' | t">
+                <a class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ driverId: d.id }">{{ 'drivers.newTrip' | t }}</a>
+              </app-empty-state>
+            }
+          </section>
+        }
+
+        @case ('incidents') {
+          <section class="card">
+            <header class="card__header">
+              <h2 class="card__title">{{ 'drivers.detail.tabs.incidents' | t }}</h2>
+              <div class="card__actions">
+                <button type="button" class="btn btn--secondary btn--sm" (click)="incidentOpen.set(true)">
+                  <app-icon name="plus" [size]="16" />
+                  {{ 'drivers.detail.registerIncident' | t }}
+                </button>
+              </div>
+            </header>
+            @if (incidents().length) {
+              <div class="card__body">
+                <ol class="timeline">
+                  @for (incident of incidents(); track incident.id) {
+                    <li class="timeline__item">
+                      <span
+                        class="timeline__marker"
+                        [class.timeline__marker--danger]="incident.severity === 'high'"
+                        [class.timeline__marker--warning]="incident.severity === 'medium'"
+                        [class.timeline__marker--accent]="incident.severity === 'low'"
+                      >
+                        <app-icon name="triangle-alert" [size]="10" />
+                      </span>
+                      <div class="incident">
+                        <div class="incident__head">
+                          <p class="timeline__title">{{ 'drivers.incidentTypes.' + incident.type | t }}</p>
+                          <span [class]="'badge badge--' + severityTones[incident.severity]">
+                            <span class="badge__dot" aria-hidden="true"></span>
+                            {{ 'drivers.incidentForm.severity' | t }}: {{ 'drivers.severity.' + incident.severity | t }}
+                          </span>
+                        </div>
+                        <p class="timeline__meta">
+                          {{ incident.date | fmtDate: 'medium' }}
+                          @if (incident.tripId) {
+                            ·
+                            <a class="cell-link mono" [routerLink]="['/trips', incident.tripId]">{{ 'drivers.detail.relatedTrip' | t: { trip: directory.tripReference(incident.tripId) } }}</a>
+                          }
+                        </p>
+                        @if (incident.description) {
+                          <p class="timeline__note">{{ incident.description }}</p>
+                        }
+                      </div>
+                    </li>
+                  }
+                </ol>
+              </div>
+            } @else {
+              <app-empty-state icon="shield-check" compact [title]="'drivers.detail.noIncidents' | t" [description]="'drivers.detail.noIncidentsDescription' | t" />
+            }
+          </section>
+        }
+
+        @case ('documents') {
+          <section class="card">
+            @if (documents().length) {
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">{{ 'documents.singular' | t }}</th>
+                      <th scope="col">{{ 'common.labels.reference' | t }}</th>
+                      <th scope="col">{{ 'common.labels.date' | t }}</th>
+                      <th scope="col">{{ 'common.labels.status' | t }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (doc of documents(); track doc.id) {
+                      <tr>
+                        <td class="data-table__primary">
+                          <span class="cell-strong">{{ 'documents.types.' + doc.type | t }}</span>
+                          <span class="cell-sub">{{ doc.issuer }}</span>
+                        </td>
+                        <td class="mono" [attr.data-label]="'common.labels.reference' | t">{{ doc.reference }}</td>
+                        <td [attr.data-label]="'common.labels.date' | t">{{ doc.expiryDate ? (doc.expiryDate | fmtDate) : '—' }}</td>
+                        <td [attr.data-label]="'common.labels.status' | t"><app-expiry-badge [date]="doc.expiryDate" relative /></td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <app-empty-state icon="file-text" compact [title]="'drivers.detail.noDocuments' | t">
+                <a class="btn btn--secondary btn--sm" routerLink="/documents" [queryParams]="{ entityType: 'driver' }">{{ 'documents.title' | t }}</a>
+              </app-empty-state>
+            }
+          </section>
+        }
+      }
+    </section>
+
+    <app-modal
+      variant="drawer"
+      [open]="editOpen()"
+      [title]="'drivers.edit' | t"
+      [description]="'drivers.editDescription' | t: { name: name() }"
+      (closed)="editOpen.set(false)"
+    >
+      @if (editOpen()) {
+        <app-driver-form [driver]="d" (saved)="onSaved($event)" (cancelled)="editOpen.set(false)" />
+      }
+    </app-modal>
+    @if (incidentOpen()) {
+      <app-driver-incident-dialog [driver]="d" (closed)="incidentOpen.set(false)" />
+    }
+    <app-driver-status-dialog [driver]="statusTarget()" (closed)="statusTarget.set(null)" />
+  } @else if (directory.loading()) {
+    <div class="stack" role="status" [attr.aria-label]="'common.states.loading' | t">
+      <span class="skeleton skeleton--title"></span>
+      <div class="grid kpi-grid">
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+          <app-kpi-card label="…" value="" [loading]="true" />
+        }
+      </div>
+    </div>
+  } @else {
+    <section class="card">
+      <app-empty-state icon="users" [title]="'common.states.notFoundTitle' | t" [description]="'common.states.notFoundDescription' | t">
+        <a class="btn btn--secondary" routerLink="/drivers">{{ 'drivers.detail.backToList' | t }}</a>
+      </app-empty-state>
+    </section>
+  }
+</div>

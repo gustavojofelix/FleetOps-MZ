@@ -1,0 +1,117 @@
+@let doc = document();
+<app-modal size="lg" [open]="!!doc" [title]="doc?.title ?? ('documents.preview.title' | t)" [description]="doc?.reference ?? null" (closed)="closed.emit()">
+  @if (doc) {
+    <div class="preview">
+      <figure class="preview__frame">
+        <figcaption class="preview__ribbon">
+          <app-icon name="info" [size]="14" />
+          {{ 'documents.preview.demoLabel' | t }}
+        </figcaption>
+        <div class="preview__page" aria-hidden="true">
+          <div class="preview__head">
+            <span class="preview__seal"><app-icon name="shield-check" [size]="22" /></span>
+            <div>
+              <p class="preview__issuer">{{ doc.issuer }}</p>
+              <p class="preview__type">{{ 'documents.types.' + doc.type | t }}</p>
+            </div>
+          </div>
+          <p class="preview__title">{{ doc.title }}</p>
+          <p class="preview__ref mono">{{ doc.reference }}</p>
+          <dl class="preview__facts">
+            <div>
+              <dt>{{ 'documents.preview.holder' | t }}</dt>
+              <dd>{{ directory.entityLabel(doc.entityType, doc.entityId) }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'documents.preview.issuedOn' | t }}</dt>
+              <dd>{{ doc.issueDate | fmtDate: 'medium' }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'documents.preview.validUntil' | t }}</dt>
+              <dd>{{ doc.expiryDate ? (doc.expiryDate | fmtDate: 'medium') : ('documents.preview.noExpiry' | t) }}</dd>
+            </div>
+          </dl>
+          <span class="preview__line"></span>
+          <span class="preview__line"></span>
+          <span class="preview__line preview__line--short"></span>
+          <span class="preview__line"></span>
+          <span class="preview__line preview__line--short"></span>
+          <div class="preview__signature">
+            <span class="preview__line preview__line--sign"></span>
+          </div>
+        </div>
+      </figure>
+
+      <section class="preview__meta" aria-labelledby="doc-meta-title">
+        <h3 class="preview__meta-title" id="doc-meta-title">{{ 'documents.preview.metadata' | t }}</h3>
+        <dl class="dl">
+          <div>
+            <dt>{{ 'documents.fields.status' | t }}</dt>
+            <dd><app-expiry-badge [date]="doc.expiryDate" relative /></dd>
+          </div>
+          <div>
+            <dt>{{ 'documents.fields.type' | t }}</dt>
+            <dd>{{ 'documents.types.' + doc.type | t }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'entities.' + doc.entityType | t }}</dt>
+            <dd>
+              <a class="cell-link" [routerLink]="directory.entityLink(doc.entityType, doc.entityId)" (click)="closed.emit()">
+                {{ directory.entityLabel(doc.entityType, doc.entityId) }}
+              </a>
+            </dd>
+          </div>
+          <div>
+            <dt>{{ 'documents.fields.issuer' | t }}</dt>
+            <dd>{{ doc.issuer }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'documents.fields.issueDate' | t }}</dt>
+            <dd>{{ doc.issueDate | fmtDate }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'documents.fields.expiryDate' | t }}</dt>
+            <dd>{{ doc.expiryDate ? (doc.expiryDate | fmtDate) : ('documents.preview.noExpiry' | t) }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'documents.fields.file' | t }}</dt>
+            <dd>
+              @if (doc.fileName) {
+                <span class="preview__file"><app-icon name="paperclip" [size]="14" /> {{ doc.fileName }} · {{ fileSize(doc.fileSizeKb) }}</span>
+              } @else {
+                <span class="subtle">{{ 'documents.file.none' | t }}</span>
+              }
+            </dd>
+          </div>
+          @if (doc.notes) {
+            <div>
+              <dt>{{ 'documents.fields.notes' | t }}</dt>
+              <dd class="preview__notes">{{ doc.notes }}</dd>
+            </div>
+          }
+        </dl>
+        @if (!doc.fileName) {
+          <p class="alert alert--warning">
+            <app-icon name="triangle-alert" [size]="16" />
+            <span>{{ 'documents.preview.noFile' | t }}</span>
+          </p>
+        }
+      </section>
+    </div>
+  }
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">{{ 'common.actions.close' | t }}</button>
+    @if (doc) {
+      <button type="button" class="btn btn--secondary" (click)="edit.emit(doc)">
+        <app-icon name="pencil" [size]="16" />
+        {{ 'common.actions.edit' | t }}
+      </button>
+      @if (canRenew()) {
+        <button type="button" class="btn btn--primary" (click)="renew.emit(doc)">
+          <app-icon name="refresh" [size]="16" />
+          {{ 'documents.actions.renew' | t }}
+        </button>
+      }
+    }
+  </ng-container>
+</app-modal>

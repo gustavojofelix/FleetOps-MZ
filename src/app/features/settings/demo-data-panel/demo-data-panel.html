@@ -1,0 +1,50 @@
+<section class="card" aria-labelledby="demo-panel-title">
+  <header class="card__header card__header--bordered panel-header">
+    <div>
+      <h2 class="card__title" id="demo-panel-title">{{ 'settings.data.title' | t }}</h2>
+      <p class="card__subtitle">{{ 'settings.data.subtitle' | t }}</p>
+    </div>
+    <span class="badge badge--outline">
+      <app-icon name="info" [size]="12" />
+      {{ 'common.labels.demo' | t }}
+    </span>
+  </header>
+
+  <div class="card__body panel-body">
+    <section class="form-section" aria-labelledby="demo-what-title">
+      <h3 class="form-section__title" id="demo-what-title">{{ 'settings.data.whatTitle' | t }}</h3>
+      <ul class="demo-list">
+        @for (item of items; track item.key) {
+          <li>
+            <span class="demo-list__icon" aria-hidden="true"><app-icon [name]="item.icon" [size]="16" /></span>
+            <span>{{ 'settings.data.items.' + item.key | t: { date: (today | fmtDate: 'long') } }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="form-section" aria-labelledby="demo-actions-title">
+      <h3 class="visually-hidden" id="demo-actions-title">{{ 'common.labels.actions' | t }}</h3>
+      <div class="reset-row">
+        <div class="reset-row__text">
+          <p class="strong">{{ 'settings.data.resetPrefsTitle' | t }}</p>
+          <p class="text-sm muted">{{ 'settings.data.resetPrefsDescription' | t }}</p>
+        </div>
+        <button type="button" class="btn btn--secondary" [class.btn--loading]="resettingPrefs()" [disabled]="resettingPrefs()" (click)="resetPreferences()">
+          <app-icon name="undo" [size]="16" />
+          {{ 'settings.data.resetPrefsButton' | t }}
+        </button>
+      </div>
+      <div class="reset-row reset-row--danger">
+        <div class="reset-row__text">
+          <p class="strong">{{ 'settings.data.resetDataTitle' | t }}</p>
+          <p class="text-sm muted">{{ 'settings.data.resetDataDescription' | t }}</p>
+        </div>
+        <button type="button" class="btn btn--danger" [class.btn--loading]="resettingData()" [disabled]="resettingData()" (click)="resetData()">
+          <app-icon name="rotate-ccw" [size]="16" />
+          {{ 'settings.data.resetDataButton' | t }}
+        </button>
+      </div>
+    </section>
+  </div>
+</section>

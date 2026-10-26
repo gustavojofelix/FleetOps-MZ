@@ -1,0 +1,125 @@
+<form class="card" [formGroup]="form" (ngSubmit)="save()" novalidate aria-labelledby="company-panel-title">
+  <header class="card__header card__header--bordered panel-header">
+    <div>
+      <h2 class="card__title" id="company-panel-title">{{ 'settings.company.title' | t }}</h2>
+      <p class="card__subtitle">{{ 'settings.company.subtitle' | t }}</p>
+    </div>
+    <app-settings-scope scope="company" />
+  </header>
+
+  <div class="card__body panel-body">
+    <section class="form-section" aria-labelledby="logo-title">
+      <h3 class="form-section__title" id="logo-title">{{ 'settings.company.logo' | t }}</h3>
+      <div class="logo-row">
+        <div class="logo-preview" aria-live="polite">
+          @if (logoUrl(); as url) {
+            <img [src]="url" [alt]="'settings.company.logoPreviewAlt' | t" />
+          } @else {
+            <span class="logo-preview__initials" aria-hidden="true">{{ initials() }}</span>
+            <span class="visually-hidden">{{ 'settings.company.logoPlaceholder' | t }}</span>
+          }
+        </div>
+        <div class="logo-row__controls">
+          <label
+            class="dropzone"
+            [class.dropzone--active]="dragging()"
+            (dragover)="onDragOver($event)"
+            (dragleave)="dragging.set(false)"
+            (drop)="onDrop($event)"
+          >
+            <app-icon name="upload" [size]="20" />
+            <span class="strong">{{ 'settings.company.logoDrop' | t }}</span>
+            <span class="text-xs">{{ 'settings.company.logoFormats' | t }}</span>
+            <input type="file" class="visually-hidden" accept="image/*" (change)="onFileInput($event)" />
+          </label>
+          <p class="field__hint logo-row__demo">
+            <span class="sim-tag">{{ 'common.labels.demo' | t }}</span>
+            {{ 'settings.company.logoDemo' | t }}
+          </p>
+          @if (logoName(); as name) {
+            <div class="cluster">
+              <span class="chip">
+                <app-icon name="image" [size]="14" />
+                <span class="truncate">{{ name }}</span>
+                <button type="button" [attr.aria-label]="'settings.company.logoRemove' | t" (click)="removeLogo()">
+                  <app-icon name="x" [size]="12" />
+                </button>
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <fieldset class="form-section" [disabled]="saving()">
+      <legend class="form-section__title">{{ 'settings.company.identity' | t }}</legend>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="co-display">{{ 'settings.company.fields.displayName' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="co-display" class="input" formControlName="displayName" autocomplete="organization" aria-describedby="co-display-hint" />
+          <p class="field__hint" id="co-display-hint">{{ 'settings.company.hints.displayName' | t }}</p>
+          <app-field-error [control]="form.controls.displayName" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="co-legal">{{ 'settings.company.fields.legalName' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="co-legal" class="input" formControlName="legalName" />
+          <app-field-error [control]="form.controls.legalName" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="co-nuit">{{ 'settings.company.fields.taxId' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="co-nuit" class="input mono" formControlName="taxId" inputmode="numeric" autocomplete="off" placeholder="400 812 337" aria-describedby="co-nuit-hint" />
+          <p class="field__hint" id="co-nuit-hint">{{ 'settings.company.hints.taxId' | t }}</p>
+          <app-field-error [control]="form.controls.taxId" />
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="form-section" [disabled]="saving()">
+      <legend class="form-section__title">{{ 'settings.company.contacts' | t }}</legend>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="co-email">{{ 'settings.company.fields.email' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="co-email" class="input" type="email" formControlName="email" autocomplete="email" />
+          <app-field-error [control]="form.controls.email" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="co-phone">{{ 'settings.company.fields.phone' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="co-phone" class="input" type="tel" formControlName="phone" autocomplete="tel" placeholder="+258 21 000 000" />
+          <app-field-error [control]="form.controls.phone" />
+        </div>
+        <div class="field field--full">
+          <label class="field__label" for="co-address">{{ 'settings.company.fields.address' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="co-address" class="input" formControlName="address" autocomplete="street-address" />
+          <app-field-error [control]="form.controls.address" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="co-city">{{ 'settings.company.fields.city' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="co-city" class="input" formControlName="city" autocomplete="address-level2" />
+          <app-field-error [control]="form.controls.city" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="co-country">{{ 'settings.company.fields.country' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <select id="co-country" class="select" formControlName="country">
+            @for (code of countries; track code) {
+              <option [value]="code">{{ 'countries.' + code | t }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <footer class="save-bar">
+    @if (tracker.dirty()) {
+      <span class="save-bar__status badge badge--warning" role="status">
+        <app-icon name="circle-alert" [size]="12" />
+        {{ 'settings.unsaved.badge' | t }}
+      </span>
+    }
+    <button type="button" class="btn btn--ghost" [disabled]="!tracker.dirty() || saving()" (click)="discard()">{{ 'settings.unsaved.discard' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="!tracker.dirty() || saving()">
+      <app-icon name="save" [size]="16" />
+      {{ 'common.actions.saveChanges' | t }}
+    </button>
+  </footer>
+</form>

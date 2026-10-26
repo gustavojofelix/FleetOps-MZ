@@ -1,0 +1,127 @@
+<form class="card" [formGroup]="form" (ngSubmit)="save()" novalidate aria-labelledby="regional-panel-title">
+  <header class="card__header card__header--bordered panel-header">
+    <div>
+      <h2 class="card__title" id="regional-panel-title">{{ 'settings.regional.title' | t }}</h2>
+      <p class="card__subtitle">{{ 'settings.regional.subtitle' | t }}</p>
+    </div>
+    <app-settings-scope scope="company" />
+  </header>
+
+  <div class="card__body panel-body">
+    <fieldset class="form-section" [disabled]="saving()">
+      <legend class="form-section__title">{{ 'settings.regional.languageSection' | t }}</legend>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="rg-language">{{ 'settings.regional.fields.defaultLanguage' | t }}</label>
+          <select id="rg-language" class="select" formControlName="defaultLanguage" aria-describedby="rg-language-hint">
+            @for (language of i18n.languages; track language.code) {
+              <option [value]="language.code" [attr.lang]="language.code">{{ language.nativeName }}</option>
+            }
+          </select>
+          <p class="field__hint" id="rg-language-hint">
+            @if (personalLanguage(); as personal) {
+              {{ 'settings.regional.hints.personalLanguageActive' | t: { language: personal } }}
+            } @else {
+              {{ 'settings.regional.hints.defaultLanguage' | t }}
+            }
+          </p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="rg-tz">{{ 'settings.regional.fields.timeZone' | t }}</label>
+          <select id="rg-tz" class="select" formControlName="timeZone" aria-describedby="rg-tz-hint">
+            @for (zone of timeZones; track zone) {
+              <option [value]="zone">{{ 'settings.regional.timeZones.' + zone | t }}</option>
+            }
+          </select>
+          <p class="field__hint" id="rg-tz-hint">{{ 'settings.regional.hints.timeZone' | t }}</p>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="form-section" [disabled]="saving()">
+      <legend class="form-section__title">{{ 'settings.regional.financialSection' | t }}</legend>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="rg-currency">{{ 'settings.regional.fields.reportingCurrency' | t }}</label>
+          <select id="rg-currency" class="select" formControlName="reportingCurrency" aria-describedby="rg-currency-hint">
+            @for (code of currencies; track code) {
+              <option [value]="code">{{ code }} · {{ currencyMeta[code].nameKey | t }}</option>
+            }
+          </select>
+          <p class="field__hint" id="rg-currency-hint">{{ 'settings.regional.hints.reportingCurrency' | t }}</p>
+        </div>
+      </div>
+      @if (currencyChanged()) {
+        <div class="alert alert--warning" role="status">
+          <app-icon name="triangle-alert" [size]="16" />
+          <div>
+            <p class="alert__title">{{ 'settings.regional.currencyWarningTitle' | t }}</p>
+            <p>{{ 'settings.regional.currencyWarning' | t: { currency: form.controls.reportingCurrency.value } }}</p>
+          </div>
+        </div>
+      }
+    </fieldset>
+
+    <div class="form-section">
+      <fieldset class="form-reset" [disabled]="saving()">
+        <legend class="form-section__title">{{ 'settings.regional.fields.dateFormat' | t }}</legend>
+        <div class="option-cards">
+          @for (pattern of dateFormats; track pattern) {
+            <label class="option-card" [class.is-selected]="form.controls.dateFormat.value === pattern">
+              <input type="radio" formControlName="dateFormat" [value]="pattern" />
+              <span class="option-card__text">
+                <span class="option-card__title mono">{{ pattern }}</span>
+                <span class="option-card__hint">{{ 'settings.regional.exampleToday' | t: { value: dateExample(pattern) } }}</span>
+              </span>
+            </label>
+          }
+        </div>
+      </fieldset>
+
+      <div class="form-grid">
+        <fieldset class="form-reset" [disabled]="saving()">
+          <legend class="field__label">{{ 'settings.regional.fields.distanceUnit' | t }}</legend>
+          <div class="option-cards option-cards--stack">
+            @for (unit of distanceUnits; track unit) {
+              <label class="option-card" [class.is-selected]="form.controls.distanceUnit.value === unit">
+                <input type="radio" formControlName="distanceUnit" [value]="unit" />
+                <span class="option-card__text">
+                  <span class="option-card__title">{{ 'settings.regional.distanceUnits.' + unit | t }}</span>
+                  <span class="option-card__hint">{{ 'settings.regional.example' | t: { value: distanceExample(unit) } }}</span>
+                </span>
+              </label>
+            }
+          </div>
+        </fieldset>
+        <fieldset class="form-reset" [disabled]="saving()">
+          <legend class="field__label">{{ 'settings.regional.fields.volumeUnit' | t }}</legend>
+          <div class="option-cards option-cards--stack">
+            @for (unit of volumeUnits; track unit) {
+              <label class="option-card" [class.is-selected]="form.controls.volumeUnit.value === unit">
+                <input type="radio" formControlName="volumeUnit" [value]="unit" />
+                <span class="option-card__text">
+                  <span class="option-card__title">{{ 'settings.regional.volumeUnits.' + unit | t }}</span>
+                  <span class="option-card__hint">{{ 'settings.regional.example' | t: { value: volumeExample(unit) } }}</span>
+                </span>
+              </label>
+            }
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+
+  <footer class="save-bar">
+    @if (tracker.dirty()) {
+      <span class="save-bar__status badge badge--warning" role="status">
+        <app-icon name="circle-alert" [size]="12" />
+        {{ 'settings.unsaved.badge' | t }}
+      </span>
+    }
+    <button type="button" class="btn btn--ghost" [disabled]="!tracker.dirty() || saving()" (click)="discard()">{{ 'settings.unsaved.discard' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="!tracker.dirty() || saving()">
+      <app-icon name="save" [size]="16" />
+      {{ 'common.actions.saveChanges' | t }}
+    </button>
+  </footer>
+</form>

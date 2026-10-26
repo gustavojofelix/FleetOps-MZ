@@ -1,0 +1,196 @@
+<div class="page">
+  <app-page-header [title]="'trailers.title' | t" [subtitle]="subtitle()">
+    <ng-container actions>
+      <button type="button" class="btn btn--secondary" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="plus" [size]="16" />
+        {{ 'trailers.new' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  <section class="card">
+    <div class="tabs status-tabs" role="tablist" [attr.aria-label]="'common.labels.status' | t">
+      <button type="button" class="tab" role="tab" [attr.aria-selected]="!statusFilter()" (click)="setStatus(null)">
+        {{ 'trailers.allStatuses' | t }}
+        <span class="tab__count">{{ counts().total }}</span>
+      </button>
+      @for (status of statuses; track status) {
+        <button type="button" class="tab" role="tab" [attr.aria-selected]="statusFilter() === status" (click)="setStatus(status)">
+          {{ 'trailers.status.' + status | t }}
+          <span class="tab__count">{{ counts().byStatus.get(status) ?? 0 }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar__search input-group">
+        <app-icon class="input-group__icon" name="search" [size]="16" />
+        <input
+          type="search"
+          class="input"
+          [placeholder]="'trailers.searchPlaceholder' | t"
+          [attr.aria-label]="'common.actions.search' | t"
+          [value]="list.searchInput()"
+          (input)="list.setSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="toolbar__filters">
+        <select class="select" [attr.aria-label]="'trailers.fields.type' | t" (change)="setType($event)">
+          <option value="" [selected]="!typeFilter()">{{ 'trailers.allTypes' | t }}</option>
+          @for (type of types; track type) {
+            <option [value]="type" [selected]="typeFilter() === type">{{ 'trailers.types.' + type | t }}</option>
+          }
+        </select>
+        @if (hasFilters()) {
+          <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+            <app-icon name="x" [size]="16" />
+            {{ 'common.actions.clearFilters' | t }}
+          </button>
+        }
+      </div>
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: query.value()?.total ?? 0 } }}</span>
+    </div>
+
+    @if (query.initialLoading()) {
+      <app-table-skeleton [columns]="8" />
+    } @else if (query.error()) {
+      <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+        <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+      </app-empty-state>
+    } @else {
+      @let result = query.value();
+      @if (!result?.items?.length) {
+        @if (hasFilters()) {
+          <app-empty-state icon="search" [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+            <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+          </app-empty-state>
+        } @else {
+          <app-empty-state icon="container" [title]="'common.states.emptyTitle' | t" [description]="'trailers.empty' | t">
+            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'trailers.new' | t }}</button>
+          </app-empty-state>
+        }
+      } @else {
+        <div class="table-wrap" [class.is-refreshing]="query.loading()">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('plateNumber')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('plateNumber')" (click)="list.toggleSort('plateNumber')">
+                    {{ 'trailers.columns.trailer' | t }}
+                    <app-icon [name]="list.sortIcon('plateNumber')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('type')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('type')" (click)="list.toggleSort('type')">
+                    {{ 'trailers.columns.type' | t }}
+                    <app-icon [name]="list.sortIcon('type')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('capacityTonnes')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('capacityTonnes')" (click)="list.toggleSort('capacityTonnes')">
+                    {{ 'trailers.columns.capacity' | t }}
+                    <app-icon [name]="list.sortIcon('capacityTonnes')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="num">{{ 'trailers.columns.axles' | t }}</th>
+                <th scope="col">{{ 'trailers.columns.vehicle' | t }}</th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('inspectionExpiry')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('inspectionExpiry')" (click)="list.toggleSort('inspectionExpiry')">
+                    {{ 'trailers.columns.inspection' | t }}
+                    <app-icon [name]="list.sortIcon('inspectionExpiry')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('status')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('status')" (click)="list.toggleSort('status')">
+                    {{ 'trailers.columns.status' | t }}
+                    <app-icon [name]="list.sortIcon('status')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (trailer of result!.items; track trailer.id) {
+                <tr>
+                  <td class="data-table__primary">
+                    <a class="cell-link mono" [routerLink]="['/trailers', trailer.id]">{{ trailer.plateNumber }}</a>
+                    <span class="cell-sub">{{ trailer.fleetNumber }} · {{ trailer.make }} · {{ trailer.year }}</span>
+                  </td>
+                  <td [attr.data-label]="'trailers.columns.type' | t">{{ 'trailers.types.' + trailer.type | t }}</td>
+                  <td class="num" [attr.data-label]="'trailers.columns.capacity' | t">
+                    {{ trailer.capacityTonnes | num: 1 }} {{ 'common.units.tonnes' | t }}
+                    @if (trailer.capacityLitres) {
+                      <span class="cell-sub">{{ trailer.capacityLitres | volume: 0 }}</span>
+                    }
+                  </td>
+                  <td class="num" [attr.data-label]="'trailers.columns.axles' | t">{{ trailer.axles }}</td>
+                  <td [attr.data-label]="'trailers.columns.vehicle' | t">
+                    @if (directory.vehicle(trailer.assignedVehicleId); as vehicle) {
+                      <a class="cell-link mono" [routerLink]="['/vehicles', vehicle.id]">{{ vehicle.plateNumber }}</a>
+                      <span class="cell-sub">{{ vehicle.fleetNumber }}</span>
+                    } @else {
+                      <span class="subtle">{{ 'common.labels.unassigned' | t }}</span>
+                    }
+                  </td>
+                  <td [attr.data-label]="'trailers.columns.inspection' | t"><app-expiry-badge [date]="trailer.inspectionExpiry" relative /></td>
+                  <td [attr.data-label]="'trailers.columns.status' | t"><app-status-badge kind="trailer" [value]="trailer.status" /></td>
+                  <td class="data-table__actions">
+                    <app-dropdown align="end">
+                      <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + trailer.plateNumber">
+                        <app-icon name="ellipsis" [size]="16" />
+                      </button>
+                      <div dropdownMenu>
+                        <a class="menu__item" role="menuitem" [routerLink]="['/trailers', trailer.id]">
+                          <app-icon name="eye" [size]="16" /> {{ 'common.actions.viewDetails' | t }}
+                        </a>
+                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(trailer)">
+                          <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                        </button>
+                        <button type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(trailer)">
+                          <app-icon name="refresh" [size]="16" /> {{ 'common.actions.changeStatus' | t }}
+                        </button>
+                        <div class="menu__separator"></div>
+                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(trailer)">
+                          <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                        </button>
+                      </div>
+                    </app-dropdown>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (result && result.total > 0) {
+        <app-pagination
+          [page]="result.page"
+          [pageSize]="list.pageSize()"
+          [total]="result.total"
+          (pageChange)="list.page.set($event)"
+          (pageSizeChange)="list.setPageSize($event)"
+        />
+      }
+    }
+  </section>
+</div>
+
+<app-modal
+  variant="drawer"
+  [open]="formOpen()"
+  [title]="(editing() ? 'trailers.edit' : 'trailers.new') | t"
+  [description]="editing() ? ('trailers.editDescription' | t: { plate: editing()!.plateNumber }) : ('trailers.newDescription' | t)"
+  (closed)="formOpen.set(false)"
+>
+  @if (formOpen()) {
+    <app-trailer-form [trailer]="editing()" (saved)="onSaved($event, !editing())" (cancelled)="formOpen.set(false)" />
+  }
+</app-modal>
+
+<app-trailer-status-dialog [trailer]="statusTarget()" (closed)="statusTarget.set(null)" />

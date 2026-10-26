@@ -1,0 +1,323 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  backdrop-filter: saturate(1.4) blur(8px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--topbar-height);
+  padding: 0 var(--space-3);
+
+  @include up(md) {
+    gap: var(--space-3);
+    padding: 0 var(--space-6);
+  }
+}
+
+.topbar__title {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-md);
+  font-weight: 600;
+  @include truncate;
+
+  @include up(lg) {
+    flex: 0 1 auto;
+    min-width: 140px;
+  }
+}
+
+.search-trigger {
+  @include reset-button;
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  max-width: 440px;
+  height: var(--control-height);
+  margin-left: auto;
+  padding: 0 6px 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  text-align: left;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+
+  &:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  @include up(md) {
+    display: flex;
+  }
+}
+
+.search-trigger__text {
+  flex: 1;
+  @include truncate;
+}
+
+.search-trigger__kbd {
+  padding: 2px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  background: var(--color-surface-sunken);
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+
+  @include down(lg) {
+    display: none;
+  }
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+
+  @include up(md) {
+    margin-left: 0;
+    gap: var(--space-1);
+  }
+}
+
+// Mobile: a search icon button replaces the search field.
+.topbar__search-mobile {
+  @include up(md) {
+    display: none;
+  }
+}
+
+.topbar__prefs {
+  display: none;
+  align-items: center;
+  gap: 2px;
+
+  @include up(xl) {
+    display: flex;
+  }
+}
+
+.topbar__more {
+  @include up(xl) {
+    display: none;
+  }
+}
+
+.topbar__pref {
+  gap: 6px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.topbar__bell {
+  position: relative;
+}
+
+.topbar__bell-badge {
+  position: absolute;
+  top: 3px;
+  right: 2px;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border: 2px solid var(--color-bg);
+  border-radius: var(--radius-pill);
+  background: var(--color-danger);
+  color: var(--color-on-danger);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 13px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.avatar-button {
+  @include reset-button;
+  margin-left: var(--space-1);
+  border-radius: 50%;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// Menus rendered inside dropdowns (::ng-deep because content is projected).
+:host ::ng-deep {
+  .menu__check {
+    display: inline-flex;
+    width: 16px;
+    flex-shrink: 0;
+  }
+
+  .menu__hint {
+    max-width: 280px;
+    padding: 6px 10px 8px;
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    white-space: normal;
+  }
+
+  .currency-menu {
+    min-width: 280px;
+  }
+
+  .currency-menu__code {
+    font-weight: 600;
+    width: 36px;
+  }
+
+  .currency-menu__name {
+    flex: 1;
+    color: var(--color-text-secondary);
+  }
+
+  .notifications-menu {
+    width: min(380px, calc(100vw - 24px));
+    padding: 0 var(--space-1) var(--space-1);
+
+    @include down(sm) {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      top: calc(var(--topbar-height) + 4px);
+      width: auto;
+    }
+  }
+
+  .notifications-menu__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-3) var(--space-2);
+  }
+
+  .notifications-menu__title {
+    font-weight: 600;
+  }
+
+  .notifications-menu__empty {
+    padding: var(--space-6) var(--space-3);
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .notifications-menu__all {
+    justify-content: center;
+    color: var(--color-accent-text);
+    font-weight: 500;
+  }
+
+  .notification-item {
+    align-items: flex-start;
+    gap: var(--space-3);
+    white-space: normal;
+    padding: 10px;
+  }
+
+  .notification-item__icon {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: var(--radius-md);
+    background: var(--color-info-soft);
+    color: var(--color-info-text);
+
+    &[data-severity='warning'] {
+      background: var(--color-warning-soft);
+      color: var(--color-warning-text);
+    }
+
+    &[data-severity='critical'] {
+      background: var(--color-danger-soft);
+      color: var(--color-danger-text);
+    }
+  }
+
+  .notification-item__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .notification-item__title {
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .notification-item__body {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .notification-item__time {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+  }
+
+  .notification-item.is-unread .notification-item__title {
+    font-weight: 600;
+  }
+
+  .notification-item__dot {
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .profile-card {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    min-width: 260px;
+  }
+
+  .profile-card__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .profile-card__name {
+    font-weight: 600;
+  }
+
+  .profile-card__email {
+    margin-bottom: 4px;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+  }
+}

@@ -1,0 +1,176 @@
+@use 'mixins' as *;
+@use '../settings-panel';
+
+.form-reset > legend {
+  margin-bottom: var(--space-3);
+}
+
+.theme-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+
+  @include up(sm) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.theme-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+
+  &:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  &.is-selected {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+
+  &:focus-within {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.theme-card__label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3);
+
+  input {
+    width: 16px;
+    height: 16px;
+    margin: 2px 0 0;
+    flex-shrink: 0;
+    accent-color: var(--color-accent);
+  }
+
+  app-icon {
+    margin-top: 1px;
+    color: var(--color-text-secondary);
+  }
+}
+
+// Miniature application previews. Each pane keeps its own appearance whatever theme is active:
+// the pane matching the active theme uses the live tokens; the opposite pane derives its
+// colours from the inverted text tokens.
+.theme-preview {
+  display: flex;
+  height: 84px;
+  border-bottom: 1px solid var(--color-border);
+
+  &[data-preview='light'] .theme-preview__pane--dark,
+  &[data-preview='dark'] .theme-preview__pane--light {
+    display: none;
+  }
+}
+
+.theme-preview__pane {
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  padding: 10px;
+  background: var(--pv-bg);
+}
+
+:host([data-resolved='light']) .theme-preview__pane--light,
+:host([data-resolved='dark']) .theme-preview__pane--dark {
+  --pv-bg: var(--color-bg);
+  --pv-surface: var(--color-surface);
+  --pv-line: var(--color-border-strong);
+}
+
+:host([data-resolved='light']) .theme-preview__pane--dark,
+:host([data-resolved='dark']) .theme-preview__pane--light {
+  --pv-bg: var(--color-text);
+  --pv-surface: color-mix(in srgb, var(--color-text) 88%, var(--color-text-inverse));
+  --pv-line: color-mix(in srgb, var(--color-text) 62%, var(--color-text-inverse));
+}
+
+.theme-preview__sidebar {
+  width: 22%;
+  border-radius: var(--radius-xs);
+  background: var(--pv-surface);
+}
+
+.theme-preview__content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.theme-preview__line {
+  height: 6px;
+  width: 70%;
+  border-radius: var(--radius-pill);
+  background: var(--pv-line);
+
+  &--accent {
+    width: 40%;
+    background: var(--color-accent);
+  }
+}
+
+.theme-preview__card {
+  flex: 1;
+  border-radius: var(--radius-xs);
+  background: var(--pv-surface);
+}
+
+.rates {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+}
+
+.rates__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.rates__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+
+  th,
+  td {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--color-divider);
+    text-align: left;
+    font-weight: 400;
+  }
+
+  thead th {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-text-muted);
+  }
+
+  .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+}

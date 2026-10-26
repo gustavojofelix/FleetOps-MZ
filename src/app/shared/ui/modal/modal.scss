@@ -1,0 +1,163 @@
+@use 'mixins' as *;
+
+:host {
+  display: contents;
+}
+
+.modal {
+  width: min(560px, calc(100vw - 32px));
+  max-width: none;
+  max-height: min(88vh, 900px);
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::backdrop {
+    background: var(--color-overlay);
+    backdrop-filter: blur(1px);
+  }
+
+  &[open] {
+    animation: modal-in var(--duration-slow) var(--ease-standard);
+  }
+
+  &--sm {
+    width: min(420px, calc(100vw - 32px));
+  }
+
+  &--lg {
+    width: min(820px, calc(100vw - 32px));
+  }
+
+  @include down(md) {
+    // Bottom sheet on phones: easier to reach and never clipped.
+    width: 100vw !important;
+    max-width: 100vw;
+    max-height: 92vh;
+    margin: auto 0 0;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    border-bottom: 0;
+
+    &[open] {
+      animation: sheet-in var(--duration-slow) var(--ease-standard);
+    }
+  }
+}
+
+.modal--drawer {
+  width: min(560px, 100vw);
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0 0 0 auto;
+  border-radius: 0;
+  border-width: 0 0 0 1px;
+
+  &.modal--lg {
+    width: min(720px, 100vw);
+  }
+
+  &[open] {
+    animation: drawer-in var(--duration-slow) var(--ease-standard);
+  }
+
+  .modal__panel {
+    height: 100%;
+    max-height: 100vh;
+  }
+
+  @include down(md) {
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+
+    .modal__panel {
+      max-height: 100dvh;
+    }
+  }
+}
+
+.modal__panel {
+  display: flex;
+  flex-direction: column;
+  max-height: inherit;
+}
+
+.modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+}
+
+.modal__title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.modal__description {
+  margin-top: 4px;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.modal__body {
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-5);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.modal__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--color-divider);
+  background: var(--color-surface-raised);
+
+  &:empty {
+    display: none;
+  }
+
+  @include down(md) {
+    padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+
+    ::ng-deep > .btn {
+      flex: 1 1 auto;
+    }
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
+@keyframes drawer-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}

@@ -1,0 +1,258 @@
+<div class="page">
+  <app-page-header [title]="'users.title' | t" [subtitle]="subtitle()">
+    <ng-container actions>
+      @if (activeView() === 'members') {
+        <button type="button" class="btn btn--secondary" (click)="exportCsv()">
+          <app-icon name="download" [size]="16" />
+          {{ 'common.actions.exportCsv' | t }}
+        </button>
+      }
+      <button type="button" class="btn btn--primary" (click)="inviteOpen.set(true)">
+        <app-icon name="user-plus" [size]="16" />
+        {{ 'users.invite' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  <div class="alert alert--info demo-banner" role="note">
+    <app-icon name="shield-check" [size]="18" />
+    <div>
+      <p class="alert__title">{{ 'users.banner.title' | t }}</p>
+      <p>{{ 'users.banner.body' | t }}</p>
+    </div>
+  </div>
+
+  <div class="tabs view-tabs" role="tablist" [attr.aria-label]="'users.views.label' | t">
+    @for (view of views; track view; let i = $index) {
+      <button
+        type="button"
+        class="tab"
+        role="tab"
+        [id]="'users-view-' + view"
+        [attr.aria-selected]="activeView() === view"
+        [attr.aria-controls]="'users-panel-' + view"
+        [tabindex]="activeView() === view ? 0 : -1"
+        (click)="selectView(view)"
+        (keydown)="onViewKeydown($event, i)"
+      >
+        <app-icon [name]="view === 'members' ? 'users' : 'lock'" [size]="16" />
+        {{ 'users.views.' + view | t }}
+        @if (view === 'members') {
+          <span class="tab__count">{{ counts().total }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  @if (activeView() === 'members') {
+    <section class="card" role="tabpanel" id="users-panel-members" aria-labelledby="users-view-members">
+      <div class="tabs status-tabs" role="tablist" [attr.aria-label]="'common.labels.status' | t">
+        <button type="button" class="tab" role="tab" [attr.aria-selected]="!statusFilter()" (click)="setStatus(null)">
+          {{ 'users.allStatuses' | t }}
+          <span class="tab__count">{{ counts().total }}</span>
+        </button>
+        @for (status of statuses; track status) {
+          <button type="button" class="tab" role="tab" [attr.aria-selected]="statusFilter() === status" (click)="setStatus(status)">
+            {{ 'users.status.' + status | t }}
+            <span class="tab__count">{{ counts().byStatus.get(status) ?? 0 }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar__search input-group">
+          <app-icon class="input-group__icon" name="search" [size]="16" />
+          <input
+            type="search"
+            class="input"
+            [placeholder]="'users.searchPlaceholder' | t"
+            [attr.aria-label]="'common.actions.search' | t"
+            [value]="list.searchInput()"
+            (input)="list.setSearch($any($event.target).value)"
+          />
+        </div>
+        <div class="toolbar__filters">
+          <select class="select" [attr.aria-label]="'users.columns.role' | t" (change)="setRole($event)">
+            <option value="" [selected]="!roleFilter()">{{ 'users.allRoles' | t }}</option>
+            @for (role of roles; track role) {
+              <option [value]="role" [selected]="roleFilter() === role">{{ 'users.roles.' + role | t }}</option>
+            }
+          </select>
+          @if (hasFilters()) {
+            <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+              <app-icon name="x" [size]="16" />
+              {{ 'common.actions.clearFilters' | t }}
+            </button>
+          }
+        </div>
+        <span class="toolbar__spacer"></span>
+        <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: query.value()?.total ?? 0 } }}</span>
+      </div>
+
+      @if (query.initialLoading()) {
+        <app-table-skeleton [columns]="6" />
+      } @else if (query.error()) {
+        <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+          <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+        </app-empty-state>
+      } @else {
+        @let result = query.value();
+        @if (!result?.items?.length) {
+          @if (hasFilters()) {
+            <app-empty-state icon="search" [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+              <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+            </app-empty-state>
+          } @else {
+            <app-empty-state icon="users" [title]="'common.states.emptyTitle' | t" [description]="'users.empty' | t">
+              <button type="button" class="btn btn--primary" (click)="inviteOpen.set(true)">{{ 'users.invite' | t }}</button>
+            </app-empty-state>
+          }
+        } @else {
+          <div class="table-wrap" [class.is-refreshing]="query.loading()">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th scope="col" [attr.aria-sort]="list.ariaSort('fullName')">
+                    <button type="button" class="sort-button" [attr.data-active]="list.isSorted('fullName')" (click)="list.toggleSort('fullName')">
+                      {{ 'users.columns.user' | t }}
+                      <app-icon [name]="list.sortIcon('fullName')" [size]="14" />
+                    </button>
+                  </th>
+                  <th scope="col">{{ 'users.columns.jobTitle' | t }}</th>
+                  <th scope="col" [attr.aria-sort]="list.ariaSort('role')">
+                    <button type="button" class="sort-button" [attr.data-active]="list.isSorted('role')" (click)="list.toggleSort('role')">
+                      {{ 'users.columns.role' | t }}
+                      <app-icon [name]="list.sortIcon('role')" [size]="14" />
+                    </button>
+                  </th>
+                  <th scope="col">{{ 'users.columns.status' | t }}</th>
+                  <th scope="col" [attr.aria-sort]="list.ariaSort('lastActiveAt')">
+                    <button type="button" class="sort-button" [attr.data-active]="list.isSorted('lastActiveAt')" (click)="list.toggleSort('lastActiveAt')">
+                      {{ 'users.columns.lastActive' | t }}
+                      <app-icon [name]="list.sortIcon('lastActiveAt')" [size]="14" />
+                    </button>
+                  </th>
+                  <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (user of result!.items; track user.id) {
+                  <tr>
+                    <td class="data-table__primary">
+                      <div class="user-cell">
+                        <span class="avatar" aria-hidden="true">{{ initials(user) }}</span>
+                        <span class="user-cell__text">
+                          <span class="user-cell__name">
+                            {{ user.fullName }}
+                            @if (isCurrent(user)) {
+                              <span class="badge badge--accent">{{ 'users.you' | t }}</span>
+                            }
+                          </span>
+                          <span class="cell-sub">{{ user.email }}</span>
+                        </span>
+                      </div>
+                    </td>
+                    <td [attr.data-label]="'users.columns.jobTitle' | t">
+                      @if (user.jobTitle) {
+                        {{ user.jobTitle }}
+                      } @else {
+                        <span class="subtle">—</span>
+                      }
+                    </td>
+                    <td [attr.data-label]="'users.columns.role' | t">
+                      <span class="badge" [class.badge--accent]="isProtected(user)" [class.badge--outline]="!isProtected(user)">
+                        @if (isProtected(user)) {
+                          <app-icon name="key" [size]="12" />
+                        }
+                        {{ 'users.roles.' + user.role | t }}
+                      </span>
+                    </td>
+                    <td [attr.data-label]="'users.columns.status' | t"><app-status-badge kind="user" [value]="user.status" /></td>
+                    <td [attr.data-label]="'users.columns.lastActive' | t">
+                      @if (user.status === 'invited' && user.invitedAt) {
+                        <span class="muted" [appTooltip]="user.invitedAt | fmtDate: 'datetime'">{{ 'users.invitedAgo' | t: { time: (user.invitedAt | relativeTime) } }}</span>
+                      } @else if (user.lastActiveAt) {
+                        <span [appTooltip]="user.lastActiveAt | fmtDate: 'datetime'">{{ user.lastActiveAt | relativeTime }}</span>
+                      } @else {
+                        <span class="subtle">{{ 'users.never' | t }}</span>
+                      }
+                    </td>
+                    <td class="data-table__actions">
+                      <app-dropdown align="end">
+                        <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + user.fullName">
+                          <app-icon name="ellipsis" [size]="16" />
+                        </button>
+                        <div dropdownMenu>
+                          @if (isProtected(user)) {
+                            <p class="menu__hint">
+                              <app-icon name="lock" [size]="14" />
+                              <span>{{ 'users.ownerLockedHint' | t }}</span>
+                            </p>
+                            <div class="menu__separator"></div>
+                            <button type="button" class="menu__item" role="menuitem" (click)="selectView('roles')">
+                              <app-icon name="eye" [size]="16" /> {{ 'users.actions.viewPermissions' | t }}
+                            </button>
+                          } @else {
+                            <button type="button" class="menu__item" role="menuitem" (click)="openRoleDialog(user)">
+                              <app-icon name="shield-check" [size]="16" /> {{ 'users.actions.changeRole' | t }}
+                            </button>
+                            @switch (user.status) {
+                              @case ('invited') {
+                                <button type="button" class="menu__item" role="menuitem" (click)="resendInvite(user)">
+                                  <app-icon name="send" [size]="16" /> {{ 'users.actions.resendInvite' | t }}
+                                </button>
+                                <div class="menu__separator"></div>
+                                <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="deleteInvite(user)">
+                                  <app-icon name="trash" [size]="16" /> {{ 'users.actions.deleteInvite' | t }}
+                                </button>
+                              }
+                              @case ('inactive') {
+                                <button type="button" class="menu__item" role="menuitem" (click)="reactivate(user)">
+                                  <app-icon name="rotate-ccw" [size]="16" /> {{ 'users.actions.reactivate' | t }}
+                                </button>
+                              }
+                              @default {
+                                @if (!isCurrent(user)) {
+                                  <div class="menu__separator"></div>
+                                  <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="deactivate(user)">
+                                    <app-icon name="ban" [size]="16" /> {{ 'users.actions.deactivate' | t }}
+                                  </button>
+                                }
+                              }
+                            }
+                          }
+                        </div>
+                      </app-dropdown>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          @if (result && result.total > 0) {
+            <app-pagination
+              [page]="result.page"
+              [pageSize]="list.pageSize()"
+              [total]="result.total"
+              (pageChange)="list.page.set($event)"
+              (pageSizeChange)="list.setPageSize($event)"
+            />
+          }
+        }
+      }
+    </section>
+  } @else {
+    <div class="stack stack--lg" role="tabpanel" id="users-panel-roles" aria-labelledby="users-view-roles">
+      <app-permissions-matrix />
+    </div>
+  }
+</div>
+
+<app-modal variant="drawer" [open]="inviteOpen()" [title]="'users.invite' | t" [description]="'users.inviteDescription' | t" (closed)="inviteOpen.set(false)">
+  @if (inviteOpen()) {
+    <app-user-invite-form (saved)="onInvited($event)" (cancelled)="inviteOpen.set(false)" />
+  }
+</app-modal>
+
+<app-user-role-dialog [user]="roleTarget()" (closed)="roleTarget.set(null)" />

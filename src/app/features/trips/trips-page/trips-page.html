@@ -1,0 +1,262 @@
+<div class="page">
+  <app-page-header [title]="'trips.title' | t" [subtitle]="subtitle()">
+    <ng-container actions>
+      <button type="button" class="btn btn--secondary" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+      <a class="btn btn--primary" routerLink="/trips/new">
+        <app-icon name="plus" [size]="16" />
+        {{ 'trips.new' | t }}
+      </a>
+    </ng-container>
+  </app-page-header>
+
+  <section class="card">
+    <div class="tabs quick-tabs" role="tablist" [attr.aria-label]="'common.labels.status' | t">
+      @for (filter of quickFilters; track filter; let i = $index) {
+        <button
+          type="button"
+          class="tab"
+          role="tab"
+          [id]="'trip-quick-' + filter"
+          aria-controls="trips-results"
+          [attr.aria-selected]="quickFilter() === filter"
+          [tabindex]="quickFilter() === filter || (!quickFilter() && i === 0) ? 0 : -1"
+          (click)="setQuickFilter(filter)"
+          (keydown)="onQuickFilterKeydown($event, i)"
+        >
+          {{ 'trips.quickFilters.' + filter | t }}
+          <span class="tab__count">{{ quickCounts().get(filter) ?? 0 }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar__search input-group">
+        <app-icon class="input-group__icon" name="search" [size]="16" />
+        <input
+          type="search"
+          class="input"
+          [placeholder]="'trips.searchPlaceholder' | t"
+          [attr.aria-label]="'common.actions.search' | t"
+          [value]="list.searchInput()"
+          (input)="list.setSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="toolbar__filters">
+        <app-trip-status-filter [statuses]="statusFilter()" (statusesChange)="setStatuses($event)" />
+        <select class="select" [attr.aria-label]="'trips.fields.customer' | t" (change)="setEntityFilter('customer', $event)">
+          <option value="" [selected]="!customerFilter()">{{ 'trips.filters.allCustomers' | t }}</option>
+          @for (option of customerOptions(); track option.id) {
+            <option [value]="option.id" [selected]="customerFilter() === option.id">{{ option.label }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'trips.fields.vehicle' | t" (change)="setEntityFilter('vehicle', $event)">
+          <option value="" [selected]="!vehicleFilter()">{{ 'trips.filters.allVehicles' | t }}</option>
+          @for (option of vehicleOptions(); track option.id) {
+            <option [value]="option.id" [selected]="vehicleFilter() === option.id">{{ option.label }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'trips.fields.driver' | t" (change)="setEntityFilter('driver', $event)">
+          <option value="" [selected]="!driverFilter()">{{ 'trips.filters.allDrivers' | t }}</option>
+          @for (option of driverOptions(); track option.id) {
+            <option [value]="option.id" [selected]="driverFilter() === option.id">{{ option.label }}</option>
+          }
+        </select>
+        <app-period-filter [period]="period()" (periodChange)="setPeriod($event)" />
+        @if (hasFilters()) {
+          <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+            <app-icon name="x" [size]="16" />
+            {{ 'common.actions.clearFilters' | t }}
+          </button>
+        }
+      </div>
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: query.value()?.total ?? 0 } }}</span>
+    </div>
+
+    <div id="trips-results">
+      @if (query.initialLoading()) {
+        <app-table-skeleton [columns]="8" />
+      } @else if (query.error()) {
+        <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+          <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+        </app-empty-state>
+      } @else {
+        @let result = query.value();
+        @if (!result?.items?.length) {
+          @if (hasFilters()) {
+            <app-empty-state icon="search" [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+              <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+            </app-empty-state>
+          } @else {
+            <app-empty-state icon="route" [title]="'common.states.emptyTitle' | t" [description]="'trips.empty' | t">
+              <a class="btn btn--primary" routerLink="/trips/new">{{ 'trips.new' | t }}</a>
+            </app-empty-state>
+          }
+        } @else {
+          <div class="table-wrap" [class.is-refreshing]="query.loading()">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th scope="col" [attr.aria-sort]="list.ariaSort('reference')">
+                    <button type="button" class="sort-button" [attr.data-active]="list.isSorted('reference')" (click)="list.toggleSort('reference')">
+                      {{ 'trips.columns.trip' | t }}
+                      <app-icon [name]="list.sortIcon('reference')" [size]="14" />
+                    </button>
+                  </th>
+                  <th scope="col">{{ 'trips.columns.route' | t }}</th>
+                  <th scope="col">{{ 'trips.columns.customer' | t }}</th>
+                  <th scope="col">{{ 'trips.columns.assignment' | t }}</th>
+                  <th scope="col" [attr.aria-sort]="list.ariaSort('plannedDeparture')">
+                    <button
+                      type="button"
+                      class="sort-button"
+                      [attr.data-active]="list.isSorted('plannedDeparture')"
+                      (click)="list.toggleSort('plannedDeparture')"
+                    >
+                      {{ 'trips.columns.departure' | t }}
+                      <app-icon [name]="list.sortIcon('plannedDeparture')" [size]="14" />
+                    </button>
+                  </th>
+                  <th scope="col" [attr.aria-sort]="list.ariaSort('status')">
+                    <button type="button" class="sort-button" [attr.data-active]="list.isSorted('status')" (click)="list.toggleSort('status')">
+                      {{ 'trips.columns.status' | t }}
+                      <app-icon [name]="list.sortIcon('status')" [size]="14" />
+                    </button>
+                  </th>
+                  <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('revenue.amount')">
+                    <button
+                      type="button"
+                      class="sort-button"
+                      [attr.data-active]="list.isSorted('revenue.amount')"
+                      (click)="list.toggleSort('revenue.amount')"
+                    >
+                      {{ 'trips.columns.revenue' | t }}
+                      <app-icon [name]="list.sortIcon('revenue.amount')" [size]="14" />
+                    </button>
+                  </th>
+                  <th scope="col" class="num">{{ 'trips.columns.margin' | t }}</th>
+                  <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (trip of result!.items; track trip.id) {
+                  @let delay = delayOf(trip);
+                  @let profit = profitability(trip);
+                  <tr>
+                    <td class="data-table__primary">
+                      <a class="cell-link mono" [routerLink]="['/trips', trip.id]">{{ trip.reference }}</a>
+                      @if (trip.customerReference) {
+                        <span class="cell-sub mono">{{ trip.customerReference }}</span>
+                      }
+                    </td>
+                    <td [attr.data-label]="'trips.columns.route' | t">
+                      <span class="route-cell">
+                        {{ trip.origin.city }}
+                        <app-icon name="arrow-right" [size]="12" class="subtle" />
+                        {{ trip.destination.city }}
+                        @if (trip.origin.country !== trip.destination.country) {
+                          <app-icon
+                            name="globe"
+                            [size]="12"
+                            class="subtle"
+                            tabindex="0"
+                            [attr.aria-label]="'trips.fields.crossBorder' | t"
+                            [appTooltip]="'trips.fields.crossBorder' | t"
+                          />
+                        }
+                      </span>
+                      <span class="cell-sub">{{ trip.plannedDistanceKm | distance }} · {{ 'trips.cargoTypes.' + trip.cargo.type | t }}</span>
+                    </td>
+                    <td [attr.data-label]="'trips.columns.customer' | t">
+                      <a class="cell-link" [routerLink]="['/customers', trip.customerId]">{{ directory.customerName(trip.customerId) }}</a>
+                    </td>
+                    <td [attr.data-label]="'trips.columns.assignment' | t">
+                      <a class="cell-link mono" [routerLink]="['/vehicles', trip.vehicleId]">{{ directory.plate(trip.vehicleId) }}</a>
+                      <span class="cell-sub">{{ directory.driverName(trip.driverId) }}</span>
+                    </td>
+                    <td class="nowrap" [attr.data-label]="'trips.columns.departure' | t">
+                      {{ trip.plannedDeparture | fmtDate: 'datetime' }}
+                      <span class="cell-sub">{{ 'trips.fields.eta' | t }}: {{ trip.plannedArrival | fmtDate: 'datetime' }}</span>
+                    </td>
+                    <td [attr.data-label]="'trips.columns.status' | t">
+                      <app-status-badge kind="trip" [value]="trip.status" />
+                      @if (delay >= 1) {
+                        <span class="cell-sub text-warning delay-flag">
+                          <app-icon name="timer" [size]="12" />
+                          {{ 'trips.detail.delay' | t }}: {{ 'trips.detail.delayValue' | t: { hours: (delay | num) } }}
+                        </span>
+                      }
+                    </td>
+                    <td class="num" [attr.data-label]="'trips.columns.revenue' | t"><app-money [value]="trip.revenue" /></td>
+                    <td class="num" [attr.data-label]="'trips.columns.margin' | t">
+                      @if (profit && profit.marginRatio !== null) {
+                        <span [class.text-danger]="profit.marginRatio < 0">{{ profit.marginRatio | pct }}</span>
+                        @if (profit.provisional) {
+                          <span class="cell-sub provisional" tabindex="0" [appTooltip]="'profitability.labels.provisionalHint' | t">
+                            {{ 'trips.provisional' | t }}
+                            <span class="visually-hidden">— {{ 'profitability.labels.provisionalHint' | t }}</span>
+                          </span>
+                        }
+                      } @else {
+                        <span class="subtle">—</span>
+                      }
+                    </td>
+                    <td class="data-table__actions">
+                      <app-dropdown align="end">
+                        <button
+                          dropdownTrigger
+                          type="button"
+                          class="btn btn--ghost btn--icon btn--sm"
+                          [attr.aria-label]="('common.actions.more' | t) + ' — ' + trip.reference"
+                        >
+                          <app-icon name="ellipsis" [size]="16" />
+                        </button>
+                        <div dropdownMenu>
+                          <a class="menu__item" role="menuitem" [routerLink]="['/trips', trip.id]">
+                            <app-icon name="eye" [size]="16" /> {{ 'common.actions.viewDetails' | t }}
+                          </a>
+                          @if (canEdit(trip)) {
+                            <a class="menu__item" role="menuitem" [routerLink]="['/trips', trip.id, 'edit']">
+                              <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                            </a>
+                          }
+                          @if (canChangeStatus(trip)) {
+                            <button type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(trip)">
+                              <app-icon name="refresh" [size]="16" /> {{ 'common.actions.changeStatus' | t }}
+                            </button>
+                          }
+                          <a class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ duplicate: trip.id }">
+                            <app-icon name="copy" [size]="16" /> {{ 'trips.detail.duplicate' | t }}
+                          </a>
+                          <div class="menu__separator"></div>
+                          <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(trip)">
+                            <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                          </button>
+                        </div>
+                      </app-dropdown>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+        @if (result && result.total > 0) {
+          <app-pagination
+            [page]="result.page"
+            [pageSize]="list.pageSize()"
+            [total]="result.total"
+            (pageChange)="list.page.set($event)"
+            (pageSizeChange)="list.setPageSize($event)"
+          />
+        }
+      }
+    </div>
+  </section>
+</div>
+
+<app-trip-status-dialog [trip]="statusTarget()" (closed)="statusTarget.set(null)" />

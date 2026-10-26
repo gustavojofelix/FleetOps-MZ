@@ -1,0 +1,108 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  a {
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-xs);
+
+    &:hover {
+      color: var(--color-text);
+    }
+  }
+
+  span[aria-current] {
+    @include truncate;
+    max-width: 260px;
+    color: var(--color-text-muted);
+  }
+}
+
+.breadcrumbs__sep {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+.page-header__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  @include up(md) {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+.page-header__text {
+  min-width: 0;
+}
+
+.page-header__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.page-header__title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+
+  @include up(md) {
+    font-size: var(--text-2xl);
+  }
+}
+
+.page-header__subtitle {
+  margin-top: 4px;
+  max-width: 72ch;
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+}
+
+.page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+
+  &:empty {
+    display: none;
+  }
+
+  @include down(md) {
+    // Primary actions stay easy to reach on mobile.
+    ::ng-deep > .btn--primary {
+      flex: 1 1 auto;
+    }
+  }
+}

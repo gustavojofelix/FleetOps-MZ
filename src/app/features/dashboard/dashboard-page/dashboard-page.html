@@ -1,0 +1,359 @@
+<div class="page dashboard">
+  <app-page-header [title]="'dashboard.title' | t" [subtitle]="subtitle()">
+    <ng-container meta>
+      <app-simulated-notice [always]="metrics().mixedCurrencies" />
+    </ng-container>
+    <ng-container actions>
+      <div class="dashboard__period">
+        <app-period-filter [(period)]="period" />
+        <span class="dashboard__comparison text-xs subtle">{{ comparisonLabel() }}</span>
+      </div>
+    </ng-container>
+  </app-page-header>
+
+  <!-- KPI row -->
+  <section class="dashboard__kpis" [attr.aria-label]="'dashboard.periodLabel' | t" [attr.aria-busy]="loading()">
+    @if (loading()) {
+      @for (item of kpiSkeletons; track item) {
+        <app-kpi-card loading label="" value="" />
+      }
+    } @else {
+      @for (kpi of kpis(); track kpi.key) {
+        <app-kpi-card
+          [label]="kpi.label"
+          [value]="kpi.value"
+          [icon]="kpi.icon"
+          [hint]="kpi.hint"
+          [delta]="kpi.delta"
+          [deltaTone]="kpi.deltaTone"
+          [link]="kpi.link"
+          [queryParams]="kpi.queryParams"
+        />
+      }
+    }
+  </section>
+
+  <!-- Revenue trend + alerts -->
+  <div class="grid grid--main-side">
+    <section class="card" aria-labelledby="dash-revenue-title">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title" id="dash-revenue-title">{{ 'dashboard.charts.revenueTitle' | t }}</h2>
+          <p class="card__subtitle">{{ 'dashboard.charts.revenueSubtitle' | t: { month: chartEndLabel() } }}</p>
+        </div>
+        <div class="card__actions">
+          <a class="btn btn--ghost btn--sm" routerLink="/profitability">
+            {{ 'common.actions.viewDetails' | t }}
+            <app-icon name="arrow-right" [size]="14" />
+          </a>
+        </div>
+      </header>
+      <div class="card__body">
+        @if (loading()) {
+          <span class="skeleton dashboard__chart-skeleton dashboard__chart-skeleton--tall"></span>
+        } @else if (hasRevenueData()) {
+          <app-bar-chart
+            [categories]="chartCategories()"
+            [series]="revenueSeries()"
+            [height]="280"
+            [format]="moneyFormat"
+            [axisFormat]="moneyAxisFormat"
+            [ariaLabel]="'dashboard.charts.revenueAria' | t"
+          />
+        } @else {
+          <app-empty-state compact icon="chart-column" [title]="'dashboard.charts.emptyTitle' | t" [description]="'dashboard.charts.emptyDescription' | t" />
+        }
+      </div>
+    </section>
+
+    <app-dashboard-alerts [alerts]="alerts()" [loading]="loading()" />
+  </div>
+
+  <!-- Trips -->
+  <div class="grid grid--2">
+    <section class="card" aria-labelledby="dash-active-title">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title" id="dash-active-title">
+            {{ 'dashboard.panels.activeTitle' | t }}
+            @if (!loading()) {
+              <span class="tab__count">{{ activeTrips().length }}</span>
+            }
+          </h2>
+          <p class="card__subtitle">{{ 'dashboard.panels.activeSubtitle' | t }}</p>
+        </div>
+        <div class="card__actions">
+          <a class="btn btn--ghost btn--sm" routerLink="/trips" [queryParams]="activeTripsQuery">{{ 'common.actions.viewAll' | t }}</a>
+        </div>
+      </header>
+      @if (loading()) {
+        <ng-container *ngTemplateOutlet="listSkeleton" />
+      } @else if (!activeTrips().length) {
+        <app-empty-state compact icon="route" [title]="'dashboard.panels.activeEmpty' | t" />
+      } @else {
+        <ul class="list dashboard__list">
+          @for (trip of activeTrips().slice(0, limit); track trip.id) {
+            <li>
+              <a class="list-row" [routerLink]="['/trips', trip.id]">
+                <span class="list-row__main">
+                  <span class="list-row__title">{{ trip.reference }} · {{ directory.routeLabel(trip) }}</span>
+                  @if (trip.status === 'delayed') {
+                    <span class="dashboard__delay">
+                      <app-icon name="triangle-alert" [size]="12" />
+                      <span class="dashboard__delay-text">{{ trip.delayReason || ('dashboard.panels.noDelayReason' | t) }}</span>
+                    </span>
+                  } @else {
+                    <span class="list-row__meta">
+                      {{ 'dashboard.panels.arrival' | t: { date: (trip.plannedArrival | fmtDate: 'dayMonth') } }} · {{ directory.plate(trip.vehicleId) }} · {{ directory.driverName(trip.driverId) }}
+                    </span>
+                  }
+                </span>
+                <span class="list-row__aside"><app-status-badge kind="trip" [value]="trip.status" /></span>
+              </a>
+            </li>
+          }
+        </ul>
+        @if (activeTrips().length > limit) {
+          <footer class="card__footer">
+            <a class="link-button" routerLink="/trips" [queryParams]="activeTripsQuery">{{ 'dashboard.panels.moreItems' | t: { count: activeTrips().length - limit } }}</a>
+          </footer>
+        }
+      }
+    </section>
+
+    <section class="card" aria-labelledby="dash-recent-title">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title" id="dash-recent-title">{{ 'dashboard.panels.recentTitle' | t }}</h2>
+          <p class="card__subtitle">{{ 'dashboard.panels.recentSubtitle' | t }}</p>
+        </div>
+        <div class="card__actions">
+          <a class="btn btn--ghost btn--sm" routerLink="/trips">{{ 'common.actions.viewAll' | t }}</a>
+        </div>
+      </header>
+      @if (loading()) {
+        <ng-container *ngTemplateOutlet="listSkeleton" />
+      } @else if (!recentTrips().length) {
+        <app-empty-state compact icon="route" [title]="'dashboard.panels.recentEmpty' | t" />
+      } @else {
+        <ul class="list dashboard__list">
+          @for (trip of recentTrips(); track trip.id) {
+            <li>
+              <a class="list-row" [routerLink]="['/trips', trip.id]">
+                <span class="list-row__main">
+                  <span class="list-row__title">{{ trip.reference }} · {{ directory.routeLabel(trip) }}</span>
+                  <span class="list-row__meta">
+                    {{ directory.customerName(trip.customerId) }} · {{ directory.plate(trip.vehicleId) }} · {{ (trip.actualArrival ?? trip.plannedArrival) | fmtDate: 'dayMonth' }}
+                  </span>
+                </span>
+                <span class="list-row__aside"><app-status-badge kind="trip" [value]="trip.status" /></span>
+              </a>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+
+  <!-- Cost trends -->
+  <div class="dashboard__charts">
+    <section class="card" aria-labelledby="dash-fuel-title">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title" id="dash-fuel-title">{{ 'dashboard.charts.fuelTitle' | t }}</h2>
+          <p class="card__subtitle">{{ 'dashboard.charts.fuelSubtitle' | t: { month: chartEndLabel() } }}</p>
+        </div>
+        <div class="card__actions">
+          <a class="btn btn--ghost btn--sm btn--icon" routerLink="/fuel" [attr.aria-label]="('common.actions.viewDetails' | t) + ' — ' + ('dashboard.charts.fuelTitle' | t)">
+            <app-icon name="arrow-right" [size]="16" />
+          </a>
+        </div>
+      </header>
+      <div class="card__body">
+        @if (loading()) {
+          <span class="skeleton dashboard__chart-skeleton"></span>
+        } @else if (hasFuelData()) {
+          <app-bar-chart
+            [categories]="chartCategories()"
+            [series]="fuelSeries()"
+            [height]="220"
+            [format]="litresFormat"
+            [axisFormat]="compactFormat"
+            [ariaLabel]="'dashboard.charts.fuelAria' | t"
+          />
+          <p class="dashboard__chart-note text-sm muted">{{ fuelPeriodLabel() }}</p>
+        } @else {
+          <app-empty-state compact icon="fuel" [title]="'dashboard.charts.emptyTitle' | t" [description]="'dashboard.charts.emptyDescription' | t" />
+        }
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="dash-maintenance-chart-title">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title" id="dash-maintenance-chart-title">{{ 'dashboard.charts.maintenanceTitle' | t }}</h2>
+          <p class="card__subtitle">{{ 'dashboard.charts.maintenanceSubtitle' | t: { month: chartEndLabel() } }}</p>
+        </div>
+        <div class="card__actions">
+          <a
+            class="btn btn--ghost btn--sm btn--icon"
+            routerLink="/maintenance"
+            [queryParams]="{ status: 'completed' }"
+            [attr.aria-label]="('common.actions.viewDetails' | t) + ' — ' + ('dashboard.charts.maintenanceTitle' | t)"
+          >
+            <app-icon name="arrow-right" [size]="16" />
+          </a>
+        </div>
+      </header>
+      <div class="card__body">
+        @if (loading()) {
+          <span class="skeleton dashboard__chart-skeleton"></span>
+        } @else if (hasMaintenanceData()) {
+          <app-bar-chart
+            [categories]="chartCategories()"
+            [series]="maintenanceSeries()"
+            [height]="220"
+            [format]="moneyFormat"
+            [axisFormat]="moneyAxisFormat"
+            [ariaLabel]="'dashboard.charts.maintenanceAria' | t"
+          />
+          <p class="dashboard__chart-note text-sm muted">{{ maintenancePeriodLabel() }}</p>
+        } @else {
+          <app-empty-state compact icon="wrench" [title]="'dashboard.charts.emptyTitle' | t" [description]="'dashboard.charts.emptyDescription' | t" />
+        }
+      </div>
+    </section>
+
+    <section class="card dashboard__breakdown" aria-labelledby="dash-breakdown-title">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title" id="dash-breakdown-title">{{ 'dashboard.charts.breakdownTitle' | t }}</h2>
+          <p class="card__subtitle">{{ 'dashboard.charts.breakdownSubtitle' | t }}</p>
+        </div>
+      </header>
+      <div class="card__body">
+        @if (loading()) {
+          <span class="skeleton dashboard__donut-skeleton"></span>
+        } @else if (metrics().operatingExpenses > 0) {
+          <app-donut-chart
+            [slices]="costSlices()"
+            [format]="moneyFormat"
+            [percentFormat]="percentFormat"
+            [centerLabel]="'dashboard.charts.breakdownTotal' | t"
+            [centerValue]="metrics().operatingExpenses | reporting: { compact: true }"
+            [ariaLabel]="'dashboard.charts.breakdownAria' | t"
+          />
+        } @else {
+          <app-empty-state compact icon="chart-pie" [title]="'dashboard.charts.emptyTitle' | t" [description]="'dashboard.charts.emptyPeriod' | t" />
+        }
+      </div>
+    </section>
+  </div>
+
+  <!-- Compliance -->
+  <div class="grid grid--2">
+    <section class="card" aria-labelledby="dash-maintenance-title">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title" id="dash-maintenance-title">
+            {{ 'dashboard.panels.maintenanceTitle' | t }}
+            @if (!loading()) {
+              <span class="tab__count">{{ maintenanceQueue().length }}</span>
+            }
+          </h2>
+          <p class="card__subtitle">{{ 'dashboard.panels.maintenanceSubtitle' | t }}</p>
+        </div>
+        <div class="card__actions">
+          @if (overdueCount()) {
+            <a class="btn btn--ghost btn--sm" routerLink="/maintenance" [queryParams]="{ status: 'overdue' }">{{ 'dashboard.panels.viewOverdue' | t }}</a>
+          }
+          <a class="btn btn--ghost btn--sm" routerLink="/maintenance" [queryParams]="{ status: 'scheduled' }">{{ 'common.actions.viewAll' | t }}</a>
+        </div>
+      </header>
+      @if (loading()) {
+        <ng-container *ngTemplateOutlet="listSkeleton" />
+      } @else if (!maintenanceQueue().length) {
+        <app-empty-state compact icon="wrench" [title]="'dashboard.panels.maintenanceEmpty' | t" />
+      } @else {
+        <ul class="list dashboard__list">
+          @for (item of maintenanceQueue().slice(0, limit); track item.record.id) {
+            <li [class.is-overdue]="item.status === 'overdue'">
+              <a class="list-row" [routerLink]="['/vehicles', item.record.vehicleId]" [queryParams]="{ tab: 'maintenance' }">
+                <span class="list-row__main">
+                  <span class="list-row__title">{{ directory.plate(item.record.vehicleId) }} · {{ 'maintenance.types.' + item.record.type | t }}</span>
+                  <span class="list-row__meta">
+                    {{ item.record.workOrderNumber }} · {{ item.record.plannedDate | fmtDate: 'medium' }} · {{ item.record.workshop }}
+                  </span>
+                </span>
+                <span class="list-row__aside dashboard__aside-stack">
+                  <app-status-badge kind="maintenance" [value]="item.status" />
+                  <span class="text-xs" [class.text-danger]="item.status === 'overdue'" [class.subtle]="item.status !== 'overdue'">{{ dueLabel(item.days) }}</span>
+                </span>
+              </a>
+            </li>
+          }
+        </ul>
+        @if (maintenanceQueue().length > limit) {
+          <footer class="card__footer">
+            <a class="link-button" routerLink="/maintenance" [queryParams]="{ status: 'scheduled' }">{{ 'dashboard.panels.moreItems' | t: { count: maintenanceQueue().length - limit } }}</a>
+          </footer>
+        }
+      }
+    </section>
+
+    <section class="card" aria-labelledby="dash-documents-title">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title" id="dash-documents-title">
+            {{ 'dashboard.panels.documentsTitle' | t }}
+            @if (!loading()) {
+              <span class="tab__count">{{ expiringDocuments().length }}</span>
+            }
+          </h2>
+          <p class="card__subtitle">{{ 'dashboard.panels.documentsSubtitle' | t: { days: expiryWarningDays() } }}</p>
+        </div>
+        <div class="card__actions">
+          <a class="btn btn--ghost btn--sm" routerLink="/documents" [queryParams]="{ status: 'expiring' }">{{ 'common.actions.viewAll' | t }}</a>
+        </div>
+      </header>
+      @if (loading()) {
+        <ng-container *ngTemplateOutlet="listSkeleton" />
+      } @else if (!expiringDocuments().length) {
+        <app-empty-state compact icon="file-check" [title]="'dashboard.panels.documentsEmpty' | t" />
+      } @else {
+        <ul class="list dashboard__list">
+          @for (document of expiringDocuments().slice(0, limit); track document.id) {
+            <li>
+              <a class="list-row" [routerLink]="directory.entityLink(document.entityType, document.entityId)">
+                <span class="list-row__main">
+                  <span class="list-row__title">{{ 'documents.types.' + document.type | t }} · {{ directory.entityLabel(document.entityType, document.entityId) }}</span>
+                  <span class="list-row__meta">{{ document.reference }} · {{ document.expiryDate | fmtDate: 'medium' }}</span>
+                </span>
+                <span class="list-row__aside"><app-expiry-badge [date]="document.expiryDate" relative /></span>
+              </a>
+            </li>
+          }
+        </ul>
+        @if (expiringDocuments().length > limit) {
+          <footer class="card__footer">
+            <a class="link-button" routerLink="/documents" [queryParams]="{ status: 'expiring' }">{{ 'dashboard.panels.moreItems' | t: { count: expiringDocuments().length - limit } }}</a>
+          </footer>
+        }
+      }
+    </section>
+  </div>
+</div>
+
+<ng-template #listSkeleton>
+  <ul class="list dashboard__list" aria-hidden="true">
+    @for (row of skeletonRows; track row) {
+      <li class="list-row">
+        <span class="list-row__main">
+          <span class="skeleton skeleton--text dashboard__skeleton-title"></span>
+          <span class="skeleton skeleton--text dashboard__skeleton-meta"></span>
+        </span>
+        <span class="skeleton dashboard__skeleton-badge"></span>
+      </li>
+    }
+  </ul>
+</ng-template>

@@ -1,0 +1,156 @@
+<form class="stack stack--lg" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'customers.sections.identification' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="c-name">{{ 'customers.fields.name' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="c-name" class="input" formControlName="name" autocomplete="organization" />
+        <app-field-error [control]="form.controls.name" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-code">{{ 'customers.fields.code' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="c-code" class="input mono" formControlName="code" autocomplete="off" placeholder="CLI-025" aria-describedby="c-code-hint" />
+        <p class="field__hint" id="c-code-hint">
+          {{ 'customers.hints.code' | t }}
+          @if (!isEditing()) {
+            <button type="button" class="link-button" (click)="suggestCode()">{{ 'customers.hints.suggestCode' | t }}</button>
+          }
+        </p>
+        <app-field-error [control]="form.controls.code" />
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="c-legal">{{ 'customers.fields.legalName' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="c-legal" class="input" formControlName="legalName" />
+        <app-field-error [control]="form.controls.legalName" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-tax">{{ 'customers.fields.taxId' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="c-tax" class="input mono" formControlName="taxId" inputmode="numeric" autocomplete="off" placeholder="400 123 456" aria-describedby="c-tax-hint" />
+        <p class="field__hint" id="c-tax-hint">{{ 'customers.hints.taxId' | t }}</p>
+        <app-field-error [control]="form.controls.taxId" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-segment">{{ 'customers.fields.segment' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="c-segment" class="select" formControlName="segment">
+          @for (segment of segments; track segment) {
+            <option [value]="segment">{{ 'customers.segments.' + segment | t }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-status">{{ 'customers.fields.status' | t }}</label>
+        <select id="c-status" class="select" formControlName="status">
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ 'customers.status.' + status | t }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'customers.sections.contact' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="c-contact">{{ 'customers.fields.contactName' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="c-contact" class="input" formControlName="contactName" autocomplete="name" />
+        <app-field-error [control]="form.controls.contactName" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-role">{{ 'customers.fields.contactRole' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="c-role" class="input" formControlName="contactRole" autocomplete="organization-title" />
+        <app-field-error [control]="form.controls.contactRole" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-email">{{ 'customers.fields.email' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="c-email" class="input" type="email" formControlName="email" autocomplete="email" />
+        <app-field-error [control]="form.controls.email" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-phone">{{ 'customers.fields.phone' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="c-phone" class="input" type="tel" formControlName="phone" autocomplete="tel" placeholder="+258 84 123 4567" />
+        <app-field-error [control]="form.controls.phone" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-city">{{ 'customers.fields.city' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="c-city" class="input" formControlName="city" autocomplete="address-level2" />
+        <app-field-error [control]="form.controls.city" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-country">{{ 'customers.fields.country' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="c-country" class="select" formControlName="country">
+          @for (code of countries; track code) {
+            <option [value]="code">{{ 'countries.' + code | t }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'customers.sections.billing' | t }}</legend>
+    <div class="form-grid">
+      <div class="field field--full">
+        <label class="field__label" for="c-billing">{{ 'customers.fields.billingAddress' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="c-billing" class="input" formControlName="billingAddress" autocomplete="street-address" />
+        <app-field-error [control]="form.controls.billingAddress" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-billing-email">{{ 'customers.fields.billingEmail' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="c-billing-email" class="input" type="email" formControlName="billingEmail" autocomplete="email" />
+        <app-field-error [control]="form.controls.billingEmail" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-terms">{{ 'customers.fields.paymentTerms' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <div class="input-group">
+          <input id="c-terms" class="input" type="number" inputmode="numeric" min="0" max="180" formControlName="paymentTermsDays" aria-describedby="c-terms-hint" />
+          <span class="input-group__suffix">{{ 'common.labels.days' | t }}</span>
+        </div>
+        <p class="field__hint" id="c-terms-hint">{{ 'customers.hints.paymentTerms' | t }}</p>
+        <app-field-error [control]="form.controls.paymentTermsDays" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-currency">{{ 'customers.fields.preferredCurrency' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="c-currency" class="select" formControlName="preferredCurrency">
+          @for (code of currencies; track code) {
+            <option [value]="code">{{ code }} — {{ 'currencies.' + code | t }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="c-credit">{{ 'customers.fields.creditLimit' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <div class="input-group">
+          <input id="c-credit" class="input" type="number" inputmode="decimal" min="0" step="100" formControlName="creditLimit" aria-describedby="c-credit-hint" />
+          <span class="input-group__suffix mono">{{ currencyValue() }}</span>
+        </div>
+        <p class="field__hint" id="c-credit-hint">{{ 'customers.hints.creditLimit' | t }}</p>
+        <app-field-error [control]="form.controls.creditLimit" />
+      </div>
+      <div class="field field--full">
+        <span class="field__label">{{ 'customers.fields.outstandingBalance' | t }}</span>
+        <p class="alert alert--info">
+          <span>
+            @if (customer(); as existing) {
+              <span class="strong">{{ existing.outstandingBalance | money }}</span>
+            } @else {
+              <span class="strong">{{ 0 | amount: currencyValue() }}</span>
+            }
+            · {{ 'customers.demoFigure' | t }}. {{ 'customers.hints.outstandingBalance' | t }}
+          </span>
+        </p>
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="c-notes">{{ 'customers.fields.notes' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <textarea id="c-notes" class="textarea" formControlName="notes" rows="3"></textarea>
+        <app-field-error [control]="form.controls.notes" />
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="cancelled.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">
+      {{ (isEditing() ? 'common.actions.saveChanges' : 'customers.new') | t }}
+    </button>
+  </div>
+</form>

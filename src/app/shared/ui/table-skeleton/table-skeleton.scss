@@ -1,0 +1,31 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+}
+
+.table-skeleton__row {
+  display: grid;
+  grid-template-columns: 2fr repeat(auto-fit, minmax(60px, 1fr));
+  gap: var(--space-5);
+  align-items: center;
+  padding: 16px var(--space-5);
+  border-bottom: 1px solid var(--color-divider);
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  @include down(md) {
+    grid-template-columns: 1fr 1fr;
+    padding: var(--space-4);
+
+    .skeleton:nth-child(n + 3) {
+      display: none;
+    }
+  }
+}
+
+.table-skeleton__wide {
+  width: 75%;
+}

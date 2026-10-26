@@ -1,0 +1,100 @@
+@let t = trip();
+<div class="dc__head">
+  <a class="dc__ref mono" draggable="false" [routerLink]="['/trips', t.id]" [attr.aria-label]="'dispatch.card.openTrip' | t: { reference: t.reference }">
+    {{ t.reference }}
+  </a>
+  @if (crossBorder()) {
+    <span class="badge badge--outline dc__tag">
+      <app-icon name="globe" [size]="12" />
+      {{ 'dispatch.corridor.cross_border' | t }}
+    </span>
+  }
+  @if (t.status === 'completed') {
+    <app-status-badge kind="trip" [value]="t.status" />
+  }
+</div>
+
+<p class="dc__route">
+  <span class="truncate">{{ t.origin.city }}</span>
+  <app-icon name="arrow-right" [size]="14" class="dc__arrow" />
+  <span class="truncate">{{ t.destination.city }}</span>
+</p>
+<p class="dc__customer truncate">{{ directory.customerName(t.customerId) }}</p>
+
+<dl class="dc__facts">
+  <div>
+    <dt><app-icon name="truck" [size]="13" /><span class="visually-hidden">{{ 'common.labels.vehicle' | t }}</span></dt>
+    <dd>
+      <span class="mono">{{ vehicle()?.plateNumber ?? '—' }}</span>
+      <span class="subtle"> · {{ driver() ? directory.driverName(t.driverId) : ('dispatch.card.noDriver' | t) }}</span>
+    </dd>
+  </div>
+  <div>
+    <dt><app-icon name="calendar-clock" [size]="13" /><span class="visually-hidden">{{ 'dispatch.card.departure' | t }}</span></dt>
+    <dd>
+      <span>{{ (t.actualDeparture ?? t.plannedDeparture) | fmtDate: 'datetime' }}</span>
+      <span class="subtle" aria-hidden="true"> → </span>
+      <span class="visually-hidden">{{ 'dispatch.card.eta' | t }}</span>
+      <span>{{ (t.actualArrival ?? t.plannedArrival) | fmtDate: 'datetime' }}</span>
+    </dd>
+  </div>
+  <div>
+    <dt><app-icon name="package" [size]="13" /><span class="visually-hidden">{{ 'dispatch.card.cargo' | t }}</span></dt>
+    <dd>
+      {{ 'trips.cargoTypes.' + t.cargo.type | t }}
+      @if (t.cargo.containerRef) {
+        <span class="subtle"> · </span><span class="visually-hidden">{{ 'dispatch.card.container' | t }}</span><span class="mono">{{ t.cargo.containerRef }}</span>
+      }
+    </dd>
+  </div>
+</dl>
+
+@if (delay() !== null || (t.status === 'delayed' && t.delayReason)) {
+  <div class="dc__delay">
+    @if (delay(); as hours) {
+      <span class="badge badge--danger">
+        <app-icon name="clock" [size]="12" />
+        {{ 'dispatch.card.delayBadge' | t: { hours: (hours | num) } }}
+      </span>
+    }
+    @if (t.status === 'delayed' && t.delayReason) {
+      <p class="dc__reason">{{ t.delayReason }}</p>
+    }
+  </div>
+}
+
+<div class="dc__foot">
+  <span class="dc__timing">
+    <app-icon name="timer" [size]="13" />
+    {{ timing() }}
+  </span>
+  @if (moving()) {
+    <span class="dc__moving" role="status">{{ 'dispatch.card.moving' | t }}</span>
+  } @else if (transitions().length) {
+    <app-dropdown align="end" class="dc__menu" [direction]="menuUp() ? 'up' : 'down'">
+      <button
+        dropdownTrigger
+        type="button"
+        class="btn btn--ghost btn--sm"
+        [attr.aria-label]="'dispatch.card.moveToLabel' | t: { reference: t.reference }"
+      >
+        {{ 'dispatch.card.moveTo' | t }}
+        <app-icon name="chevron-down" [size]="14" />
+      </button>
+      <div dropdownMenu>
+        @for (status of transitions(); track status) {
+          <button
+            type="button"
+            class="menu__item"
+            role="menuitem"
+            [class.menu__item--danger]="status === 'cancelled'"
+            (click)="moveRequested.emit(status)"
+          >
+            <app-icon [name]="transitionIcon(status)" [size]="16" />
+            {{ 'trips.status.' + status | t }}
+          </button>
+        }
+      </div>
+    </app-dropdown>
+  }
+</div>

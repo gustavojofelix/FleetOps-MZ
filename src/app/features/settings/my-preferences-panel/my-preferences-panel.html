@@ -1,0 +1,138 @@
+<section class="card" aria-labelledby="prefs-panel-title">
+  <header class="card__header card__header--bordered panel-header">
+    <div>
+      <h2 class="card__title" id="prefs-panel-title">{{ 'settings.preferences.title' | t }}</h2>
+      <p class="card__subtitle">{{ 'settings.preferences.subtitle' | t }}</p>
+    </div>
+    <app-settings-scope scope="personal" />
+  </header>
+
+  <div class="card__body panel-body">
+    <fieldset class="form-reset form-section">
+      <legend class="form-section__title">{{ 'settings.preferences.theme' | t }}</legend>
+      <div class="theme-cards">
+        @for (option of themes; track option.value) {
+          <label class="theme-card" [class.is-selected]="theme.preference() === option.value">
+            <span class="theme-preview" [attr.data-preview]="option.value" aria-hidden="true">
+              <span class="theme-preview__pane theme-preview__pane--light">
+                <span class="theme-preview__sidebar"></span>
+                <span class="theme-preview__content">
+                  <span class="theme-preview__line theme-preview__line--accent"></span>
+                  <span class="theme-preview__line"></span>
+                  <span class="theme-preview__card"></span>
+                </span>
+              </span>
+              <span class="theme-preview__pane theme-preview__pane--dark">
+                <span class="theme-preview__sidebar"></span>
+                <span class="theme-preview__content">
+                  <span class="theme-preview__line theme-preview__line--accent"></span>
+                  <span class="theme-preview__line"></span>
+                  <span class="theme-preview__card"></span>
+                </span>
+              </span>
+            </span>
+            <span class="theme-card__label">
+              <input type="radio" name="theme" [value]="option.value" [checked]="theme.preference() === option.value" (change)="setTheme(option.value)" />
+              <app-icon [name]="option.icon" [size]="16" />
+              <span class="option-card__text">
+                <span class="option-card__title">{{ 'settings.preferences.themes.' + option.value | t }}</span>
+                <span class="option-card__hint">{{ 'settings.preferences.themeHints.' + option.value | t }}</span>
+              </span>
+            </span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="form-reset form-section">
+      <legend class="form-section__title">{{ 'settings.preferences.language' | t }}</legend>
+      <div class="option-cards">
+        <label class="option-card" [class.is-selected]="!preferences.language()">
+          <input type="radio" name="language" [checked]="!preferences.language()" (change)="setLanguage(null)" />
+          <span class="option-card__text">
+            <span class="option-card__title">{{ 'settings.preferences.companyDefaultLanguage' | t: { language: companyLanguageName() } }}</span>
+          </span>
+        </label>
+        @for (language of i18n.languages; track language.code) {
+          <label class="option-card" [class.is-selected]="preferences.language() === language.code">
+            <input type="radio" name="language" [value]="language.code" [checked]="preferences.language() === language.code" (change)="setLanguage(language.code)" />
+            <span class="option-card__text">
+              <span class="option-card__title" [attr.lang]="language.code">{{ language.nativeName }}</span>
+            </span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="form-reset form-section">
+      <legend class="form-section__title">{{ 'settings.preferences.displayCurrency' | t }}</legend>
+      <p class="form-section__description">{{ 'settings.preferences.displayCurrencyHint' | t: { reporting: currency.reporting() } }}</p>
+      <div class="option-cards">
+        @for (code of currency.activeCurrencies; track code) {
+          <label class="option-card" [class.is-selected]="currency.display() === code">
+            <input type="radio" name="display-currency" [value]="code" [checked]="currency.display() === code" (change)="setCurrency(code)" />
+            <span class="option-card__text">
+              <span class="option-card__title">
+                <span class="mono">{{ code }}</span>
+                @if (code === currency.reporting()) {
+                  <span class="badge badge--accent">{{ 'settings.preferences.reportingBadge' | t }}</span>
+                }
+              </span>
+              <span class="option-card__hint">{{ currencyMeta[code].nameKey | t }}</span>
+            </span>
+          </label>
+        }
+      </div>
+
+      <div class="rates">
+        <div class="rates__head">
+          <p class="strong">{{ 'settings.preferences.ratesTitle' | t }}</p>
+          <span class="sim-tag">
+            <app-icon name="info" [size]="12" />
+            {{ 'settings.preferences.ratesLabel' | t }}
+          </span>
+        </div>
+        <table class="rates__table">
+          <caption class="visually-hidden">{{ 'settings.preferences.ratesTitle' | t }} — {{ 'settings.preferences.ratesLabel' | t }}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{{ 'settings.preferences.rateCurrency' | t }}</th>
+              <th scope="col" class="num">{{ 'settings.preferences.rateValue' | t }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rates; track row.code) {
+              <tr>
+                <th scope="row">{{ 'settings.preferences.rateRow' | t: { code: row.code } }} <span class="muted">· {{ currencyMeta[row.code].nameKey | t }}</span></th>
+                <td class="num">{{ row.rate | amount: 'MZN' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <p class="text-xs muted">{{ 'settings.preferences.ratesEffective' | t: { date: (ratesEffectiveDate | fmtDate: 'medium') } }}</p>
+      </div>
+    </fieldset>
+
+    <fieldset class="form-reset form-section">
+      <legend class="form-section__title">{{ 'settings.preferences.layout' | t }}</legend>
+      <div class="switch-row">
+        <span class="switch-row__text">
+          <label class="switch-row__label" for="pref-sidebar">{{ 'settings.preferences.sidebarCollapsed' | t }}</label>
+          <span class="switch-row__hint" id="pref-sidebar-hint">{{ 'settings.preferences.sidebarCollapsedHint' | t }}</span>
+        </span>
+        <span class="switch">
+          <input
+            type="checkbox"
+            role="switch"
+            id="pref-sidebar"
+            aria-describedby="pref-sidebar-hint"
+            [checked]="preferences.sidebarCollapsed()"
+            (change)="setSidebarCollapsed($event)"
+          />
+        </span>
+      </div>
+    </fieldset>
+  </div>
+
+  <p class="visually-hidden" role="status" aria-live="polite">{{ status() }}</p>
+</section>

@@ -1,0 +1,234 @@
+<div class="page">
+  <app-page-header [title]="'customers.title' | t" [subtitle]="subtitle()">
+    <ng-container meta>
+      <app-simulated-notice always />
+    </ng-container>
+    <ng-container actions>
+      <button type="button" class="btn btn--secondary" [disabled]="!rows().length" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="plus" [size]="16" />
+        {{ 'customers.new' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  <section class="card">
+    <div class="tabs status-tabs" role="tablist" [attr.aria-label]="'common.labels.status' | t">
+      <button type="button" class="tab" role="tab" [attr.aria-selected]="!statusFilter()" (click)="setStatus(null)">
+        {{ 'customers.allStatuses' | t }}
+        <span class="tab__count">{{ counts().total }}</span>
+      </button>
+      @for (status of statuses; track status) {
+        <button type="button" class="tab" role="tab" [attr.aria-selected]="statusFilter() === status" (click)="setStatus(status)">
+          {{ 'customers.status.' + status | t }}
+          <span class="tab__count">{{ counts().byStatus.get(status) ?? 0 }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar__search input-group">
+        <app-icon class="input-group__icon" name="search" [size]="16" />
+        <input
+          type="search"
+          class="input"
+          [placeholder]="'customers.searchPlaceholder' | t"
+          [attr.aria-label]="'common.actions.search' | t"
+          [value]="list.searchInput()"
+          (input)="list.setSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="toolbar__filters">
+        <select class="select" [attr.aria-label]="'customers.fields.segment' | t" (change)="setSegment($event)">
+          <option value="" [selected]="!segmentFilter()">{{ 'customers.allSegments' | t }}</option>
+          @for (segment of segments; track segment) {
+            <option [value]="segment" [selected]="segmentFilter() === segment">{{ 'customers.segments.' + segment | t }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'customers.fields.country' | t" (change)="setCountry($event)">
+          <option value="" [selected]="!countryFilter()">{{ 'customers.allCountries' | t }}</option>
+          @for (code of countries; track code) {
+            <option [value]="code" [selected]="countryFilter() === code">{{ 'countries.' + code | t }}</option>
+          }
+        </select>
+        <app-period-filter [(period)]="period" />
+        @if (hasFilters()) {
+          <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+            <app-icon name="x" [size]="16" />
+            {{ 'common.actions.clearFilters' | t }}
+          </button>
+        }
+      </div>
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: page().total } }}</span>
+    </div>
+
+    @if (query.initialLoading()) {
+      <app-table-skeleton [columns]="8" />
+    } @else if (query.error()) {
+      <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+        <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+      </app-empty-state>
+    } @else {
+      @let result = page();
+      @if (!result.items.length) {
+        @if (hasFilters()) {
+          <app-empty-state icon="search" [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+            <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+          </app-empty-state>
+        } @else {
+          <app-empty-state icon="building" [title]="'common.states.emptyTitle' | t" [description]="'customers.empty' | t">
+            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'customers.new' | t }}</button>
+          </app-empty-state>
+        }
+      } @else {
+        <div class="table-wrap" [class.is-refreshing]="query.loading()">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('name')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('name')" (click)="list.toggleSort('name')">
+                    {{ 'customers.columns.customer' | t }}
+                    <app-icon [name]="list.sortIcon('name')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('segment')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('segment')" (click)="list.toggleSort('segment')">
+                    {{ 'customers.columns.segment' | t }}
+                    <app-icon [name]="list.sortIcon('segment')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('city')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('city')" (click)="list.toggleSort('city')">
+                    {{ 'customers.columns.location' | t }}
+                    <app-icon [name]="list.sortIcon('city')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'customers.columns.contact' | t }}</th>
+                <th scope="col">{{ 'customers.columns.currency' | t }}</th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('tripsInPeriod')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('tripsInPeriod')" (click)="list.toggleSort('tripsInPeriod')">
+                    {{ 'customers.columns.trips' | t }}
+                    <app-icon [name]="list.sortIcon('tripsInPeriod')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('revenueInPeriod')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('revenueInPeriod')" (click)="list.toggleSort('revenueInPeriod')">
+                    {{ 'customers.columns.revenue' | t }}
+                    <app-icon [name]="list.sortIcon('revenueInPeriod')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('outstanding')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('outstanding')" (click)="list.toggleSort('outstanding')">
+                    {{ 'customers.columns.outstanding' | t }}
+                    <app-icon [name]="list.sortIcon('outstanding')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('status')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('status')" (click)="list.toggleSort('status')">
+                    {{ 'customers.columns.status' | t }}
+                    <app-icon [name]="list.sortIcon('status')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of result.items; track row.customer.id) {
+                @let c = row.customer;
+                <tr>
+                  <td class="data-table__primary">
+                    <a class="cell-link" [routerLink]="['/customers', c.id]">{{ c.name }}</a>
+                    <span class="cell-sub"><span class="mono">{{ c.code }}</span> · {{ c.legalName }}</span>
+                  </td>
+                  <td [attr.data-label]="'customers.columns.segment' | t">{{ 'customers.segments.' + c.segment | t }}</td>
+                  <td [attr.data-label]="'customers.columns.location' | t">
+                    {{ c.city }}
+                    <span class="cell-sub">{{ countryLabel(c.country) }}</span>
+                  </td>
+                  <td [attr.data-label]="'customers.columns.contact' | t">
+                    <span class="cell-strong">{{ c.contactName }}</span>
+                    <span class="cell-sub">{{ c.contactRole }}</span>
+                    @if (c.email) {
+                      <a class="cell-sub contact-link" [href]="'mailto:' + c.email">{{ c.email }}</a>
+                    }
+                    @if (c.phone) {
+                      <a class="cell-sub contact-link nowrap" [href]="'tel:' + c.phone">{{ c.phone }}</a>
+                    }
+                  </td>
+                  <td class="mono" [attr.data-label]="'customers.columns.currency' | t">{{ c.preferredCurrency }}</td>
+                  <td class="num" [attr.data-label]="'customers.columns.trips' | t">
+                    <span class="cell-strong">{{ row.metrics.tripsInPeriod | num }}</span>
+                    <span class="cell-sub">{{ 'customers.metrics.allTime' | t }}: {{ row.metrics.tripsTotal | num }}</span>
+                  </td>
+                  <td class="num" [attr.data-label]="'customers.columns.revenue' | t">
+                    <span class="cell-strong nowrap">{{ row.metrics.revenueInPeriod | reporting: { wholeUnits: true } }}</span>
+                    <span class="cell-sub nowrap">{{ 'customers.metrics.allTime' | t }}: {{ row.metrics.revenueTotal | reporting: { wholeUnits: true } }}</span>
+                  </td>
+                  <td class="num" [attr.data-label]="'customers.columns.outstanding' | t">
+                    <span class="cell-strong nowrap">{{ c.outstandingBalance | money }}</span>
+                    <span class="cell-sub">
+                      <span class="demo-tag" tabindex="0" [appTooltip]="'customers.demoFigureHint' | t">{{ 'customers.demoFigure' | t }}</span>
+                    </span>
+                  </td>
+                  <td [attr.data-label]="'customers.columns.status' | t"><app-status-badge kind="customer" [value]="c.status" /></td>
+                  <td class="data-table__actions">
+                    <app-dropdown align="end">
+                      <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + c.name">
+                        <app-icon name="ellipsis" [size]="16" />
+                      </button>
+                      <div dropdownMenu>
+                        <a class="menu__item" role="menuitem" [routerLink]="['/customers', c.id]">
+                          <app-icon name="eye" [size]="16" /> {{ 'common.actions.viewDetails' | t }}
+                        </a>
+                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(c)">
+                          <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                        </button>
+                        <a class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">
+                          <app-icon name="route" [size]="16" /> {{ 'customers.newTrip' | t }}
+                        </a>
+                        <button type="button" class="menu__item" role="menuitem" (click)="toggleStatus(c)">
+                          <app-icon [name]="c.status === 'active' ? 'ban' : 'circle-check'" [size]="16" />
+                          {{ (c.status === 'active' ? 'customers.deactivate' : 'customers.activate') | t }}
+                        </button>
+                        <div class="menu__separator"></div>
+                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(c)">
+                          <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                        </button>
+                      </div>
+                    </app-dropdown>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (result.total > 0) {
+        <app-pagination
+          [page]="result.page"
+          [pageSize]="list.pageSize()"
+          [total]="result.total"
+          (pageChange)="list.page.set($event)"
+          (pageSizeChange)="list.setPageSize($event)"
+        />
+      }
+    }
+  </section>
+</div>
+
+<app-modal
+  variant="drawer"
+  [open]="formOpen()"
+  [title]="(editing() ? 'customers.edit' : 'customers.new') | t"
+  [description]="editing() ? ('customers.editDescription' | t: { name: editing()!.name }) : ('customers.newDescription' | t)"
+  (closed)="formOpen.set(false)"
+>
+  @if (formOpen()) {
+    <app-customer-form [customer]="editing()" (saved)="onSaved($event, !editing())" (cancelled)="formOpen.set(false)" />
+  }
+</app-modal>

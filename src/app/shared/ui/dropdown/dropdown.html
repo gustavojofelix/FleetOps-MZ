@@ -1,0 +1,13 @@
+<ng-content select="[dropdownTrigger]" />
+@if (isOpen()) {
+  <div
+    [class]="'menu dropdown__menu ' + menuClass()"
+    [class.dropdown__menu--end]="align() === 'end'"
+    [class.dropdown__menu--up]="direction() === 'up'"
+    [id]="menuId"
+    role="menu"
+    (click)="onMenuClick($event)"
+  >
+    <ng-content select="[dropdownMenu]" />
+  </div>
+}

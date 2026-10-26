@@ -1,0 +1,38 @@
+@use 'mixins' as *;
+
+.status-tabs {
+  padding: 0 var(--space-3);
+
+  @include up(md) {
+    padding: 0 var(--space-4);
+  }
+}
+
+.contact-link {
+  display: block;
+  color: var(--color-text-secondary);
+  @include truncate;
+  max-width: 220px;
+
+  &:hover {
+    color: var(--color-accent-text);
+  }
+}
+
+.demo-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  border: 1px dashed var(--color-border-strong);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  cursor: help;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}

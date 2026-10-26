@@ -1,0 +1,28 @@
+<a class="skip-link" href="#main-content">{{ 'shell.skipToContent' | t }}</a>
+
+<aside
+  id="app-sidebar"
+  class="shell__sidebar"
+  [attr.aria-hidden]="!layout.isDesktop() && !layout.mobileNavOpen() ? 'true' : null"
+  [attr.inert]="!layout.isDesktop() && !layout.mobileNavOpen() ? '' : null"
+  [attr.role]="!layout.isDesktop() ? 'dialog' : null"
+  [attr.aria-modal]="!layout.isDesktop() && layout.mobileNavOpen() ? 'true' : null"
+  [attr.aria-label]="'navigation.mainNavigation' | t"
+>
+  <app-sidebar />
+</aside>
+
+@if (!layout.isDesktop() && layout.mobileNavOpen()) {
+  <div class="shell__scrim" aria-hidden="true" (click)="layout.mobileNavOpen.set(false)"></div>
+}
+
+<div class="shell__main">
+  <app-topbar />
+  <main id="main-content" class="shell__content" tabindex="-1">
+    <router-outlet />
+  </main>
+</div>
+
+<app-global-search />
+<app-confirm-dialog-host />
+<app-toast-host />

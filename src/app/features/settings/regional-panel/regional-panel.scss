@@ -1,0 +1,13 @@
+@use '../settings-panel';
+
+.form-reset legend {
+  margin-bottom: var(--space-2);
+}
+
+.option-cards--stack {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.alert p + p {
+  margin-top: 2px;
+}

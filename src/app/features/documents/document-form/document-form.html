@@ -1,0 +1,134 @@
+<form class="stack stack--lg" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'documents.sections.document' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="d-reference">{{ 'documents.fields.reference' | t }}</label>
+        <input id="d-reference" class="input mono" [value]="reference()" readonly aria-describedby="d-reference-hint" />
+        <p class="field__hint" id="d-reference-hint">{{ 'documents.hints.reference' | t }}</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-type">{{ 'documents.fields.type' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="d-type" class="select" formControlName="type">
+          @for (type of types; track type) {
+            <option [value]="type">{{ 'documents.types.' + type | t }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'documents.sections.association' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="d-entity-type">{{ 'documents.fields.entityType' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="d-entity-type" class="select" formControlName="entityType">
+          @for (entityType of entityTypes; track entityType) {
+            <option [value]="entityType">{{ 'entities.' + entityType | t }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-entity">{{ 'documents.fields.entity' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="d-entity" class="select" formControlName="entityId">
+          <option value="" disabled>{{ 'documents.hints.selectEntity' | t }}</option>
+          @for (option of entityOptions(); track option.id) {
+            <option [value]="option.id">{{ option.label }}</option>
+          }
+        </select>
+        <app-field-error [control]="form.controls.entityId" />
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="d-title">{{ 'documents.fields.title' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-title" class="input" formControlName="title" maxlength="120" aria-describedby="d-title-hint" (input)="onTitleInput()" />
+        <p class="field__hint" id="d-title-hint">{{ 'documents.hints.title' | t }}</p>
+        @if (showSuggestion()) {
+          <button type="button" class="link-button suggestion" (click)="useSuggestion()">
+            <app-icon name="refresh" [size]="14" />
+            {{ 'documents.hints.useSuggestion' | t: { title: suggestion() } }}
+          </button>
+        }
+        <app-field-error [control]="form.controls.title" />
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'documents.sections.validity' | t }}</legend>
+    <div class="form-grid">
+      <div class="field field--full">
+        <label class="field__label" for="d-issuer">{{ 'documents.fields.issuer' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-issuer" class="input" formControlName="issuer" maxlength="120" />
+        <app-field-error [control]="form.controls.issuer" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-issue">{{ 'documents.fields.issueDate' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-issue" class="input" type="date" formControlName="issueDate" />
+        <app-field-error [control]="form.controls.issueDate" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-expiry">{{ 'documents.fields.expiryDate' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="d-expiry" class="input" type="date" formControlName="expiryDate" [min]="form.controls.issueDate.value" aria-describedby="d-expiry-hint" />
+        <p class="field__hint" id="d-expiry-hint">{{ 'documents.hints.expiryDate' | t }}</p>
+        <app-field-error [control]="form.controls.expiryDate" [group]="form" groupError="dateOrder" />
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'documents.sections.file' | t }}</legend>
+    @if (file(); as selected) {
+      <div class="file-card">
+        <span class="file-card__icon" aria-hidden="true"><app-icon name="file-text" [size]="20" /></span>
+        <div class="file-card__main">
+          <span class="file-card__name">{{ selected.name }}</span>
+          <span class="file-card__meta">{{ 'documents.file.attached' | t }} · {{ fileSize(selected.sizeKb) }}</span>
+        </div>
+        <label class="btn btn--ghost btn--sm file-card__replace">
+          <input type="file" class="visually-hidden" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/*" (change)="onFileInput($event)" />
+          {{ 'documents.file.replace' | t }}
+        </label>
+        <button type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="'documents.file.remove' | t" (click)="removeFile()">
+          <app-icon name="x" [size]="16" />
+        </button>
+      </div>
+    } @else {
+      <label
+        class="dropzone"
+        [class.dropzone--active]="dragging()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave()"
+        (drop)="onDrop($event)"
+      >
+        <input
+          type="file"
+          class="visually-hidden"
+          accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/*"
+          aria-describedby="d-file-demo"
+          (change)="onFileInput($event)"
+        />
+        <app-icon name="upload" [size]="24" />
+        <span class="strong">{{ 'documents.file.dropTitle' | t }}</span>
+        <span class="text-xs">{{ 'documents.file.dropHint' | t }}</span>
+      </label>
+    }
+    @if (fileError(); as error) {
+      <p class="field__error" role="alert"><app-icon name="circle-alert" [size]="14" /> {{ error }}</p>
+    }
+    <p class="alert alert--info" id="d-file-demo">
+      <app-icon name="info" [size]="16" />
+      <span>{{ 'documents.file.demoNotice' | t }}</span>
+    </p>
+    <div class="field">
+      <label class="field__label" for="d-notes">{{ 'documents.fields.notes' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+      <textarea id="d-notes" class="textarea" rows="3" formControlName="notes"></textarea>
+      <app-field-error [control]="form.controls.notes" />
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="cancelled.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">{{ submitLabel() | t }}</button>
+  </div>
+</form>

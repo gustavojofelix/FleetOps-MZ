@@ -1,0 +1,204 @@
+@use 'mixins' as *;
+
+// Page container used by every routed page.
+.page {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-4) var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+
+  @include up(md) {
+    padding: var(--space-6) var(--space-6) var(--space-12);
+  }
+
+  @include up(xl) {
+    padding: var(--space-6) var(--space-8) var(--space-12);
+  }
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  &--sm {
+    gap: var(--space-2);
+  }
+
+  &--lg {
+    gap: var(--space-6);
+  }
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+
+  @include up(md) {
+    gap: var(--space-5);
+  }
+}
+
+.grid--2 {
+  @include up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.grid--3 {
+  @include up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include up(xl) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.grid--4 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  @include up(xl) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/// Main content + side column (detail pages, dashboard).
+.grid--main-side {
+  @include up(lg) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+}
+
+// Grid/flex children must be allowed to shrink so wide tables scroll inside .table-wrap.
+.grid > *,
+.page > *,
+.stack > * {
+  min-width: 0;
+}
+
+.span-full {
+  grid-column: 1 / -1;
+}
+
+.muted {
+  color: var(--color-text-secondary);
+}
+
+.subtle {
+  color: var(--color-text-muted);
+}
+
+.text-xs {
+  font-size: var(--text-xs);
+}
+
+.text-sm {
+  font-size: var(--text-sm);
+}
+
+.strong {
+  font-weight: 600;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  letter-spacing: -0.01em;
+}
+
+.num,
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.truncate {
+  @include truncate;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.visually-hidden {
+  @include visually-hidden;
+}
+
+.text-success {
+  color: var(--color-success-text);
+}
+
+.text-warning {
+  color: var(--color-warning-text);
+}
+
+.text-danger {
+  color: var(--color-danger-text);
+}
+
+.link-button {
+  @include reset-button;
+  color: var(--color-accent-text);
+  font-weight: 500;
+  border-radius: var(--radius-xs);
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+/// Label marking a value as computed from simulated exchange rates.
+.sim-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-warning-text);
+  background: var(--color-warning-soft);
+  white-space: nowrap;
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-divider);
+  border: 0;
+  margin: 0;
+}
+
+/// Dims a list while it refetches after a filter change (the previous rows stay visible).
+.is-refreshing {
+  opacity: 0.6;
+  transition: opacity var(--duration-base) var(--ease-standard);
+}
+
+// Scroll containers must be positioned, otherwise absolutely positioned descendants
+// (e.g. .visually-hidden labels) escape the overflow clipping and widen the page.
+.table-wrap,
+.tabs,
+.segmented,
+.toolbar {
+  position: relative;
+}

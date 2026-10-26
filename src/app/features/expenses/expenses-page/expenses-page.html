@@ -1,0 +1,418 @@
+<div class="page">
+  <app-page-header [title]="'expenses.title' | t" [subtitle]="'expenses.subtitle' | t">
+    <ng-container actions>
+      <button type="button" class="btn btn--secondary" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="plus" [size]="16" />
+        {{ 'expenses.new' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  @if (tripFilter()) {
+    <div class="alert alert--info context-banner" role="status">
+      <app-icon name="route" [size]="16" />
+      <div class="context-banner__text">
+        <span class="alert__title">{{ 'expenses.tripContext.message' | t: { reference: contextTrip()?.reference ?? '—' } }}</span>
+        @if (contextTrip(); as trip) {
+          <span>{{ directory.routeLabel(trip) }} · {{ directory.plate(trip.vehicleId) }} · {{ 'expenses.tripContext.hint' | t }}</span>
+        }
+      </div>
+      <div class="context-banner__actions">
+        @if (contextTrip(); as trip) {
+          <a class="btn btn--secondary btn--sm" [routerLink]="['/trips', trip.id]">
+            <app-icon name="external-link" [size]="14" />
+            {{ 'expenses.tripContext.viewTrip' | t }}
+          </a>
+        }
+        <button type="button" class="btn btn--ghost btn--sm" (click)="clearTrip()">
+          <app-icon name="x" [size]="14" />
+          {{ 'expenses.tripContext.clear' | t }}
+        </button>
+      </div>
+    </div>
+  }
+
+  @let s = summary();
+  @let loadingSummary = directory.loading();
+  <section class="stack" [attr.aria-label]="'common.labels.period' | t">
+    <div class="summary-bar">
+      <p class="text-sm muted">{{ 'expenses.summaryScope' | t }}</p>
+      <app-period-filter [period]="period()" (periodChange)="setPeriod($event)" />
+    </div>
+
+    <div class="grid grid--4">
+      <app-kpi-card
+        icon="wallet"
+        [label]="'expenses.kpis.recorded' | t"
+        [value]="s.recordedTotal | reporting: { wholeUnits: true }"
+        [hint]="'expenses.kpis.recordedHint' | t: { count: s.recordedCount }"
+        [loading]="loadingSummary"
+      >
+        <app-simulated-notice [always]="s.mixedCurrencies" />
+      </app-kpi-card>
+      <app-kpi-card
+        icon="circle-check"
+        [label]="'expenses.kpis.approved' | t"
+        [value]="s.byApproval.approved.total | reporting: { wholeUnits: true }"
+        [hint]="'expenses.kpis.countHint' | t: { count: s.byApproval.approved.count }"
+        link="/expenses"
+        [queryParams]="kpiParams('approved')"
+        [loading]="loadingSummary"
+      />
+      <app-kpi-card
+        icon="hourglass"
+        [label]="'expenses.kpis.pending' | t"
+        [value]="s.byApproval.pending.total | reporting: { wholeUnits: true }"
+        [hint]="'expenses.kpis.countHint' | t: { count: s.byApproval.pending.count }"
+        link="/expenses"
+        [queryParams]="kpiParams('pending')"
+        [loading]="loadingSummary"
+      />
+      <app-kpi-card
+        icon="circle-x"
+        [label]="'expenses.kpis.rejected' | t"
+        [value]="s.byApproval.rejected.total | reporting: { wholeUnits: true }"
+        [hint]="'expenses.kpis.countHint' | t: { count: s.byApproval.rejected.count }"
+        link="/expenses"
+        [queryParams]="kpiParams('rejected')"
+        [loading]="loadingSummary"
+      />
+    </div>
+  </section>
+
+  <div class="grid grid--main-side">
+    <section class="card">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title">{{ 'expenses.breakdown.title' | t }}</h2>
+          <p class="card__subtitle">{{ 'expenses.breakdown.subtitle' | t: { currency: currency.display() } }}</p>
+        </div>
+        <div class="card__actions">
+          <app-simulated-notice [always]="s.mixedCurrencies" />
+        </div>
+      </header>
+      <div class="card__body">
+        @if (loadingSummary) {
+          <div class="skeleton chart-skeleton"></div>
+        } @else if (!donut().slices.length) {
+          <app-empty-state compact icon="chart-pie" [title]="'expenses.breakdown.empty' | t" />
+        } @else {
+          <app-donut-chart
+            [slices]="donut().slices"
+            [format]="formatDonutValue"
+            [percentFormat]="formatPercent"
+            [centerLabel]="'expenses.breakdown.total' | t"
+            [centerValue]="donut().total | reporting: { compact: true }"
+            [ariaLabel]="'expenses.breakdown.aria' | t"
+          />
+          @if (donut().othersHint; as hint) {
+            <p class="text-xs muted breakdown-hint">{{ hint }}</p>
+          }
+        }
+      </div>
+    </section>
+
+    <section class="card">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title">{{ 'expenses.byCurrency.title' | t }}</h2>
+          <p class="card__subtitle">{{ 'expenses.byCurrency.subtitle' | t }}</p>
+        </div>
+      </header>
+      <div class="card__body stack">
+        @if (loadingSummary) {
+          <span class="skeleton skeleton--text"></span>
+          <span class="skeleton skeleton--text"></span>
+        } @else if (s.byCurrency.length) {
+          <p class="currency-line">
+            @for (entry of s.byCurrency; track entry.currency; let last = $last) {
+              <span class="nowrap">{{ entry.amount | amount: entry.currency }}</span>
+              @if (!last) {
+                <span class="subtle" aria-hidden="true"> · </span>
+              }
+            }
+          </p>
+          <ul class="kv-list">
+            @for (entry of s.byCurrency; track entry.currency) {
+              <li>
+                <span class="kv-list__label">{{ entry.currency }} — {{ 'currencies.' + entry.currency | t }}</span>
+                <span class="kv-list__value">
+                  {{ entry.amount | amount: entry.currency }}
+                  <span class="cell-sub-inline">{{ 'expenses.byCurrency.count' | t: { count: entry.count } }}</span>
+                </span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <app-empty-state compact icon="coins" [title]="'expenses.byCurrency.empty' | t" />
+        }
+        <div class="alert alert--info">
+          <app-icon name="info" [size]="16" />
+          <span>{{ 'expenses.demoWorkflow' | t }}</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="tabs status-tabs" role="tablist" [attr.aria-label]="'expenses.fields.approvalStatus' | t">
+      <button type="button" class="tab" role="tab" [attr.aria-selected]="!approvalFilter()" (click)="setApprovalFilter(null)">
+        {{ 'expenses.allStatuses' | t }}
+        <span class="tab__count">{{ counts().all }}</span>
+      </button>
+      @for (status of approvalStatuses; track status) {
+        <button type="button" class="tab" role="tab" [attr.aria-selected]="approvalFilter() === status" (click)="setApprovalFilter(status)">
+          {{ 'expenses.kpis.' + status | t }}
+          <span class="tab__count">{{ counts()[status] }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar__search input-group">
+        <app-icon class="input-group__icon" name="search" [size]="16" />
+        <input
+          type="search"
+          class="input"
+          [placeholder]="'expenses.searchPlaceholder' | t"
+          [attr.aria-label]="'common.actions.search' | t"
+          [value]="list.searchInput()"
+          (input)="list.setSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="toolbar__filters">
+        <select class="select" [attr.aria-label]="'expenses.fields.category' | t" (change)="setCategory($event)">
+          <option value="" [selected]="!categoryFilter()">{{ 'expenses.allCategories' | t }}</option>
+          @for (category of categories; track category) {
+            <option [value]="category" [selected]="categoryFilter() === category">{{ 'expenses.categories.' + category | t }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'expenses.fields.currency' | t" (change)="setCurrency($event)">
+          <option value="" [selected]="!currencyFilter()">{{ 'expenses.allCurrencies' | t }}</option>
+          @for (code of currencies; track code) {
+            <option [value]="code" [selected]="currencyFilter() === code">{{ code }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'expenses.fields.vehicle' | t" (change)="setVehicle($event)">
+          <option value="" [selected]="!vehicleFilter()">{{ 'expenses.allVehicles' | t }}</option>
+          @for (vehicle of vehicleOptions(); track vehicle.id) {
+            <option [value]="vehicle.id" [selected]="vehicleFilter() === vehicle.id">{{ vehicle.plateNumber }} · {{ vehicle.fleetNumber }}</option>
+          }
+        </select>
+        @if (hasFilters()) {
+          <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+            <app-icon name="x" [size]="16" />
+            {{ 'common.actions.clearFilters' | t }}
+          </button>
+        }
+      </div>
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: query.value()?.total ?? 0 } }}</span>
+    </div>
+
+    @if (selectedIds().length) {
+      <div class="bulk-bar" role="region" [attr.aria-label]="'expenses.selection.approveSelected' | t">
+        <span class="strong" aria-live="polite">{{ 'expenses.selection.selected' | t: { count: selectedIds().length } }}</span>
+        <span class="sim-tag">{{ 'common.labels.demo' | t }}</span>
+        <span class="toolbar__spacer"></span>
+        <button type="button" class="btn btn--ghost btn--sm" [disabled]="busy()" (click)="clearSelection()">{{ 'expenses.selection.clear' | t }}</button>
+        <button type="button" class="btn btn--primary btn--sm" [class.btn--loading]="busy()" [disabled]="busy()" (click)="approveSelected()">
+          <app-icon name="check" [size]="14" />
+          {{ 'expenses.selection.approveSelected' | t }}
+        </button>
+      </div>
+    }
+
+    @if (query.initialLoading()) {
+      <app-table-skeleton [columns]="8" />
+    } @else if (query.error()) {
+      <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+        <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+      </app-empty-state>
+    } @else {
+      @let result = query.value();
+      @if (!result?.items?.length) {
+        @if (hasFilters()) {
+          <app-empty-state icon="search" [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+            <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+          </app-empty-state>
+        } @else {
+          <app-empty-state icon="receipt" [title]="'common.states.emptyTitle' | t" [description]="'expenses.empty' | t">
+            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'expenses.new' | t }}</button>
+          </app-empty-state>
+        }
+      } @else {
+        <div class="table-wrap" [class.is-refreshing]="query.loading()">
+          <table class="data-table expenses-table">
+            <thead>
+              <tr>
+                <th scope="col" class="select-cell">
+                  <input
+                    type="checkbox"
+                    class="select-checkbox"
+                    [checked]="allSelected()"
+                    [indeterminate]="someSelected()"
+                    [disabled]="!pendingOnPage().length"
+                    [attr.aria-label]="'expenses.selection.selectAll' | t"
+                    [appTooltip]="pendingOnPage().length ? null : ('expenses.selection.onlyPending' | t)"
+                    (change)="toggleAll()"
+                  />
+                </th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('date')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('date')" (click)="list.toggleSort('date')">
+                    {{ 'expenses.columns.date' | t }}
+                    <app-icon [name]="list.sortIcon('date')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'expenses.columns.category' | t }}</th>
+                <th scope="col">{{ 'expenses.columns.description' | t }}</th>
+                <th scope="col">{{ 'expenses.columns.vehicleTrip' | t }}</th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('amount.amount')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('amount.amount')" (click)="list.toggleSort('amount.amount')">
+                    {{ 'expenses.columns.amount' | t }}
+                    <app-icon [name]="list.sortIcon('amount.amount')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'expenses.columns.paymentMethod' | t }}</th>
+                <th scope="col">{{ 'expenses.columns.approval' | t }}</th>
+                <th scope="col">{{ 'expenses.columns.receipt' | t }}</th>
+                <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (expense of result!.items; track expense.id) {
+                @let pending = expense.approvalStatus === 'pending';
+                @let selected = selection().has(expense.id);
+                <tr [class.is-selected]="pending && selected">
+                  <td class="select-cell" [attr.data-label]="pending ? ('common.actions.select' | t) : null">
+                    @if (pending) {
+                      <input
+                        type="checkbox"
+                        class="select-checkbox"
+                        [checked]="selected"
+                        [attr.aria-label]="'expenses.selection.selectRow' | t: { reference: expense.reference }"
+                        (change)="toggleRow(expense.id)"
+                      />
+                    }
+                  </td>
+                  <td class="data-table__primary">
+                    <span class="nowrap">{{ expense.date | fmtDate: 'medium' }}</span>
+                    <span class="cell-sub mono">{{ expense.reference }}</span>
+                  </td>
+                  <td [attr.data-label]="'expenses.columns.category' | t">{{ 'expenses.categories.' + expense.category | t }}</td>
+                  <td class="data-table__wide description-cell" [attr.data-label]="'expenses.columns.description' | t">
+                    <span class="description-cell__text">{{ expense.description }}</span>
+                    <span class="cell-sub">{{ expense.vendor }}</span>
+                  </td>
+                  <td [attr.data-label]="'expenses.columns.vehicleTrip' | t">
+                    @if (expense.vehicleId) {
+                      <a class="cell-link" [routerLink]="['/vehicles', expense.vehicleId]">{{ directory.plate(expense.vehicleId) }}</a>
+                    } @else {
+                      <span class="subtle">{{ 'expenses.noVehicle' | t }}</span>
+                    }
+                    @if (expense.tripId) {
+                      <span class="cell-sub">
+                        <a class="cell-sub-link mono" [routerLink]="['/trips', expense.tripId]">{{ directory.tripReference(expense.tripId) }}</a>
+                      </span>
+                    }
+                  </td>
+                  <td class="num" [attr.data-label]="'expenses.columns.amount' | t"><app-money [value]="expense.amount" showConverted /></td>
+                  <td [attr.data-label]="'expenses.columns.paymentMethod' | t">{{ 'expenses.paymentMethods.' + expense.paymentMethod | t }}</td>
+                  <td [attr.data-label]="'expenses.columns.approval' | t">
+                    <app-status-badge kind="expense" [value]="expense.approvalStatus" />
+                  </td>
+                  <td [attr.data-label]="'expenses.columns.receipt' | t">
+                    @if (expense.receiptFileName) {
+                      <span class="receipt-indicator" tabindex="0" [appTooltip]="expense.receiptFileName">
+                        <app-icon name="paperclip" [size]="16" />
+                        <span class="visually-hidden">{{ 'expenses.receipt.attached' | t: { name: expense.receiptFileName } }}</span>
+                      </span>
+                    } @else {
+                      <span class="subtle" aria-hidden="true">—</span>
+                      <span class="visually-hidden">{{ 'expenses.receipt.none' | t }}</span>
+                    }
+                  </td>
+                  <td class="data-table__actions">
+                    <div class="row-actions">
+                      @if (pending) {
+                        <button
+                          type="button"
+                          class="btn btn--ghost btn--icon btn--sm row-actions__approve"
+                          [attr.aria-label]="'expenses.actions.approve' | t: { reference: expense.reference }"
+                          [appTooltip]="'common.actions.approve' | t"
+                          (click)="approve(expense)"
+                        >
+                          <app-icon name="check" [size]="16" />
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn--ghost btn--icon btn--sm row-actions__reject"
+                          [attr.aria-label]="'expenses.actions.reject' | t: { reference: expense.reference }"
+                          [appTooltip]="'common.actions.reject' | t"
+                          (click)="reject(expense)"
+                        >
+                          <app-icon name="ban" [size]="16" />
+                        </button>
+                      }
+                      <app-dropdown align="end">
+                        <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + expense.reference">
+                          <app-icon name="ellipsis" [size]="16" />
+                        </button>
+                        <div dropdownMenu>
+                          <button type="button" class="menu__item" role="menuitem" (click)="openEdit(expense)">
+                            <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                          </button>
+                          @if (!pending) {
+                            <button type="button" class="menu__item" role="menuitem" (click)="resetPending(expense)">
+                              <app-icon name="undo" [size]="16" /> {{ 'expenses.actions.resetPending' | t }}
+                            </button>
+                          }
+                          @if (expense.tripId) {
+                            <a class="menu__item" role="menuitem" [routerLink]="['/trips', expense.tripId]">
+                              <app-icon name="route" [size]="16" /> {{ 'expenses.tripContext.viewTrip' | t }}
+                            </a>
+                          }
+                          <div class="menu__separator"></div>
+                          <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(expense)">
+                            <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                          </button>
+                        </div>
+                      </app-dropdown>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (result && result.total > 0) {
+        <app-pagination
+          [page]="result.page"
+          [pageSize]="list.pageSize()"
+          [total]="result.total"
+          (pageChange)="list.page.set($event)"
+          (pageSizeChange)="list.setPageSize($event)"
+        />
+      }
+    }
+  </section>
+</div>
+
+<app-modal
+  variant="drawer"
+  size="lg"
+  [open]="formOpen()"
+  [title]="(editing() ? 'expenses.edit' : 'expenses.new') | t"
+  [description]="editing() ? ('expenses.editDescription' | t: { reference: editing()!.reference }) : ('expenses.newDescription' | t)"
+  (closed)="formOpen.set(false)"
+>
+  @if (formOpen()) {
+    <app-expense-form [expense]="editing()" [defaults]="formDefaults()" (saved)="onSaved($event)" (cancelled)="formOpen.set(false)" />
+  }
+</app-modal>

@@ -1,0 +1,45 @@
+<app-dropdown>
+  <button
+    dropdownTrigger
+    type="button"
+    class="select status-filter__trigger"
+    [class.is-active]="statuses().length > 0"
+  >
+    <app-icon name="filter" [size]="14" />
+    <span class="status-filter__label">
+      @if (single(); as status) {
+        {{ 'trips.status.' + status | t }}
+      } @else if (statuses().length) {
+        {{ 'trips.filters.statusCount' | t: { count: statuses().length } }}
+      } @else {
+        {{ 'trips.filters.allStatuses' | t }}
+      }
+    </span>
+  </button>
+  <div dropdownMenu>
+    <p class="menu__label">{{ 'trips.filters.status' | t }}</p>
+    @for (status of options; track status) {
+      <button
+        type="button"
+        class="menu__item status-filter__item"
+        role="menuitemcheckbox"
+        data-keep-open
+        [attr.aria-checked]="statuses().includes(status)"
+        (click)="toggle(status)"
+      >
+        <span class="status-filter__check" aria-hidden="true">
+          @if (statuses().includes(status)) {
+            <app-icon name="check" [size]="12" />
+          }
+        </span>
+        <app-status-badge kind="trip" [value]="status" />
+      </button>
+    }
+    @if (statuses().length) {
+      <div class="menu__separator"></div>
+      <button type="button" class="menu__item" role="menuitem" (click)="clear()">
+        <app-icon name="x" [size]="16" /> {{ 'trips.filters.clearStatuses' | t }}
+      </button>
+    }
+  </div>
+</app-dropdown>

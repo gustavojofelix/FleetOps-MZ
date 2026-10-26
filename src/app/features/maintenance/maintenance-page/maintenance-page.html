@@ -1,0 +1,438 @@
+<div class="page">
+  <app-page-header [title]="'maintenance.title' | t" [subtitle]="subtitle()">
+    <ng-container actions>
+      <button type="button" class="btn btn--secondary" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="plus" [size]="16" />
+        {{ 'maintenance.new' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  <div class="overview-bar">
+    <app-period-filter [period]="period()" (periodChange)="period.set($event)" [presets]="overviewPeriodPresets" />
+    <app-simulated-notice always />
+  </div>
+
+  @let k = kpis();
+  @let loading = directory.loading();
+  <div class="kpi-grid">
+    <app-kpi-card
+      icon="triangle-alert"
+      [label]="'maintenance.kpis.overdue' | t"
+      [value]="k.overdue | num"
+      [hint]="'maintenance.kpis.overdueHint' | t"
+      [delta]="k.overdue > 0 ? ('maintenance.status.overdue' | t) : null"
+      [deltaTone]="k.overdue > 0 ? 'negative' : 'neutral'"
+      link="/maintenance"
+      [queryParams]="{ status: 'overdue' }"
+      [loading]="loading"
+    />
+    <app-kpi-card
+      icon="calendar-clock"
+      [label]="'maintenance.kpis.upcoming' | t"
+      [value]="k.upcoming | num"
+      [hint]="'maintenance.kpis.upcomingHint' | t: { date: (k.horizon | fmtDate) }"
+      link="/maintenance"
+      [queryParams]="{ status: 'scheduled' }"
+      [loading]="loading"
+    />
+    <app-kpi-card
+      icon="wrench"
+      [label]="'maintenance.kpis.inWorkshop' | t"
+      [value]="k.vehiclesInWorkshop | num"
+      [hint]="'maintenance.kpis.inWorkshopHint' | t: { count: k.inProgress }"
+      link="/maintenance"
+      [queryParams]="{ status: 'in_progress' }"
+      [loading]="loading"
+    />
+    <app-kpi-card
+      icon="coins"
+      [label]="'maintenance.kpis.cost' | t"
+      [value]="k.cost | reporting: { wholeUnits: true }"
+      [hint]="'maintenance.kpis.costHint' | t: { count: k.completedCount }"
+      [loading]="loading"
+    />
+    <app-kpi-card
+      icon="timer"
+      [label]="'maintenance.kpis.downtime' | t"
+      [value]="'maintenance.kpis.downtimeValue' | t: { hours: (k.downtime | num: 1) }"
+      [hint]="'maintenance.kpis.downtimeHint' | t"
+      [loading]="loading"
+    />
+  </div>
+
+  <div class="overview-grid">
+    <section class="card">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title">{{ 'maintenance.charts.monthlyTitle' | t }}</h2>
+          <p class="card__subtitle">{{ 'maintenance.charts.monthlySubtitle' | t }}</p>
+        </div>
+      </header>
+      <div class="card__body">
+        @if (monthly().hasData) {
+          <app-bar-chart
+            [categories]="monthly().categories"
+            [series]="monthly().series"
+            [format]="formatReportingFull"
+            [axisFormat]="formatReporting"
+            [ariaLabel]="'maintenance.charts.monthlyAria' | t"
+            [height]="220"
+          />
+        } @else {
+          <app-empty-state compact icon="chart-column" [title]="'maintenance.charts.noData' | t" />
+        }
+      </div>
+    </section>
+
+    <section class="card">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title">{{ 'maintenance.charts.byTypeTitle' | t }}</h2>
+          <p class="card__subtitle">{{ 'maintenance.charts.byTypeSubtitle' | t }}</p>
+        </div>
+      </header>
+      <div class="card__body">
+        @if (byType().length) {
+          <app-donut-chart
+            [slices]="byType()"
+            [format]="formatReportingFull"
+            [centerLabel]="'maintenance.charts.byTypeCenter' | t"
+            [centerValue]="formatReporting(k.cost)"
+            [ariaLabel]="'maintenance.charts.byTypeAria' | t"
+          />
+        } @else {
+          <app-empty-state compact icon="chart-pie" [title]="'maintenance.charts.noData' | t" />
+        }
+      </div>
+    </section>
+
+    <section class="card upcoming-card" aria-labelledby="upcoming-title">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title" id="upcoming-title">{{ 'maintenance.upcoming.title' | t }}</h2>
+          <p class="card__subtitle">{{ 'maintenance.upcoming.subtitle' | t }}</p>
+        </div>
+      </header>
+      @if (upcoming().length) {
+        <ul class="list upcoming-list">
+          @for (item of upcoming(); track item.record.id) {
+            <li class="list-row">
+              <span class="upcoming-list__icon" [class.is-overdue]="item.status === 'overdue'" aria-hidden="true">
+                <app-icon [name]="item.status === 'overdue' ? 'triangle-alert' : 'calendar-days'" [size]="16" />
+              </span>
+              <div class="list-row__main">
+                <span class="list-row__title">
+                  <a class="cell-link" [routerLink]="['/vehicles', item.record.vehicleId]">{{ directory.plate(item.record.vehicleId) }}</a>
+                  · {{ 'maintenance.types.' + item.record.type | t }}
+                </span>
+                <span class="list-row__meta">
+                  <span class="mono">{{ item.record.workOrderNumber }}</span> · {{ item.record.plannedDate | fmtDate }} ·
+                  <span [class.text-danger]="item.status === 'overdue'">{{ upcomingLabel(item) }}</span>
+                </span>
+              </div>
+              <div class="list-row__aside upcoming-list__aside">
+                <app-status-badge kind="maintenance" [value]="item.status" />
+                <button
+                  type="button"
+                  class="btn btn--ghost btn--sm"
+                  [class.btn--loading]="busyId() === item.record.id"
+                  [disabled]="busyId() === item.record.id"
+                  [attr.aria-label]="('maintenance.actions.start' | t) + ' — ' + item.record.workOrderNumber"
+                  (click)="start(item.record)"
+                >
+                  <app-icon name="wrench" [size]="14" />
+                  <span class="upcoming-list__action-label">{{ 'maintenance.actions.start' | t }}</span>
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+        @if (upcomingTotal() > upcoming().length) {
+          <div class="card__footer">
+            <button type="button" class="link-button" (click)="setTab('open')">{{ 'maintenance.upcoming.viewAll' | t }}</button>
+          </div>
+        }
+      } @else {
+        <app-empty-state compact icon="circle-check" [title]="'maintenance.upcoming.empty' | t" />
+      }
+
+      @if (forecasts().length) {
+        <div class="forecast">
+          <h3 class="forecast__title">{{ 'maintenance.upcoming.forecastTitle' | t }}</h3>
+          <p class="forecast__subtitle">{{ 'maintenance.upcoming.forecastSubtitle' | t }}</p>
+        </div>
+        <ul class="list">
+          @for (forecast of forecasts(); track forecast.vehicleId) {
+            <li class="list-row">
+              <span class="upcoming-list__icon" aria-hidden="true"><app-icon name="gauge" [size]="16" /></span>
+              <div class="list-row__main">
+                <span class="list-row__title">
+                  <a class="cell-link" [routerLink]="['/vehicles', forecast.vehicleId]">{{ directory.plate(forecast.vehicleId) }}</a>
+                </span>
+                <span class="list-row__meta">{{ forecastLabel(forecast) }}</span>
+              </div>
+              <div class="list-row__aside">
+                <button
+                  type="button"
+                  class="btn btn--secondary btn--sm"
+                  [attr.aria-label]="('maintenance.upcoming.schedule' | t) + ' — ' + directory.plate(forecast.vehicleId)"
+                  (click)="scheduleForecast(forecast)"
+                >
+                  {{ 'maintenance.upcoming.schedule' | t }}
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  </div>
+
+  <section class="card" aria-labelledby="work-orders-title">
+    <h2 class="visually-hidden" id="work-orders-title">{{ 'maintenance.columns.workOrder' | t }}</h2>
+    <div class="tabs status-tabs" role="tablist" [attr.aria-label]="'common.labels.status' | t">
+      <button type="button" class="tab" role="tab" [attr.aria-selected]="tab() === 'open'" (click)="setTab('open')">
+        {{ 'maintenance.tabs.open' | t }}
+        <span class="tab__count">{{ counts().open }}</span>
+      </button>
+      @for (status of displayStatuses; track status) {
+        <button type="button" class="tab" role="tab" [attr.aria-selected]="tab() === status" (click)="setTab(status)">
+          {{ 'maintenance.status.' + status | t }}
+          <span class="tab__count">{{ counts().byStatus.get(status) ?? 0 }}</span>
+        </button>
+      }
+      <button type="button" class="tab" role="tab" [attr.aria-selected]="tab() === 'all'" (click)="setTab('all')">
+        {{ 'maintenance.tabs.all' | t }}
+        <span class="tab__count">{{ counts().total }}</span>
+      </button>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar__search input-group">
+        <app-icon class="input-group__icon" name="search" [size]="16" />
+        <input
+          type="search"
+          class="input"
+          [placeholder]="'maintenance.searchPlaceholder' | t"
+          [attr.aria-label]="'common.actions.search' | t"
+          [value]="list.searchInput()"
+          (input)="list.setSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="toolbar__filters">
+        <select class="select" [attr.aria-label]="'maintenance.fields.vehicle' | t" (change)="setVehicle($event)">
+          <option value="" [selected]="!vehicleFilter()">{{ 'maintenance.allVehicles' | t }}</option>
+          @for (vehicle of directory.vehicles(); track vehicle.id) {
+            <option [value]="vehicle.id" [selected]="vehicleFilter() === vehicle.id">{{ vehicle.plateNumber }} · {{ vehicle.fleetNumber }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'maintenance.fields.type' | t" (change)="setType($event)">
+          <option value="" [selected]="!typeFilter()">{{ 'maintenance.allTypes' | t }}</option>
+          @for (type of types; track type) {
+            <option [value]="type" [selected]="typeFilter() === type">{{ 'maintenance.types.' + type | t }}</option>
+          }
+        </select>
+        <app-period-filter
+          [period]="listPeriod()"
+          (periodChange)="setListPeriod($event)"
+          [presets]="listPeriodPresets"
+          [attr.title]="'maintenance.hints.dateRange' | t"
+        />
+        @if (hasFilters()) {
+          <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+            <app-icon name="x" [size]="16" />
+            {{ 'common.actions.clearFilters' | t }}
+          </button>
+        }
+      </div>
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: query.value()?.total ?? 0 } }}</span>
+    </div>
+
+    @if (query.initialLoading()) {
+      <app-table-skeleton [columns]="8" />
+    } @else if (query.error()) {
+      <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+        <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+      </app-empty-state>
+    } @else {
+      @let result = query.value();
+      @if (!rows().length) {
+        @if (hasFilters() || tab() !== 'all') {
+          <app-empty-state icon="search" [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+            @if (hasFilters()) {
+              <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+            }
+            @if (tab() !== 'all') {
+              <button type="button" class="btn btn--ghost" (click)="setTab('all')">{{ 'maintenance.tabs.all' | t }}</button>
+            }
+          </app-empty-state>
+        } @else {
+          <app-empty-state icon="wrench" [title]="'common.states.emptyTitle' | t" [description]="'maintenance.empty' | t">
+            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'maintenance.new' | t }}</button>
+          </app-empty-state>
+        }
+      } @else {
+        <div class="table-wrap" [class.is-refreshing]="query.loading()">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('workOrderNumber')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('workOrderNumber')" (click)="list.toggleSort('workOrderNumber')">
+                    {{ 'maintenance.columns.workOrder' | t }}
+                    <app-icon [name]="list.sortIcon('workOrderNumber')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'maintenance.columns.vehicle' | t }}</th>
+                <th scope="col">{{ 'maintenance.columns.type' | t }}</th>
+                <th scope="col">{{ 'maintenance.columns.workshop' | t }}</th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('plannedDate')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('plannedDate')" (click)="list.toggleSort('plannedDate')">
+                    {{ 'maintenance.columns.dates' | t }}
+                    <app-icon [name]="list.sortIcon('plannedDate')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('odometerKm')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('odometerKm')" (click)="list.toggleSort('odometerKm')">
+                    {{ 'maintenance.columns.odometer' | t }}
+                    <app-icon [name]="list.sortIcon('odometerKm')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('totalCost')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('totalCost')" (click)="list.toggleSort('totalCost')">
+                    {{ 'maintenance.columns.cost' | t }}
+                    <app-icon [name]="list.sortIcon('totalCost')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('downtimeHours')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('downtimeHours')" (click)="list.toggleSort('downtimeHours')">
+                    {{ 'maintenance.columns.downtime' | t }}
+                    <app-icon [name]="list.sortIcon('downtimeHours')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'maintenance.columns.nextService' | t }}</th>
+                <th scope="col">{{ 'maintenance.columns.status' | t }}</th>
+                <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of rows(); track row.record.id) {
+                @let m = row.record;
+                <tr>
+                  <td class="data-table__primary">
+                    <span class="cell-strong mono">{{ m.workOrderNumber }}</span>
+                    <span class="cell-sub">{{ m.description }}</span>
+                  </td>
+                  <td [attr.data-label]="'maintenance.columns.vehicle' | t">
+                    <a class="cell-link" [routerLink]="['/vehicles', m.vehicleId]">{{ directory.plate(m.vehicleId) }}</a>
+                  </td>
+                  <td [attr.data-label]="'maintenance.columns.type' | t">{{ 'maintenance.types.' + m.type | t }}</td>
+                  <td [attr.data-label]="'maintenance.columns.workshop' | t">{{ m.workshop }}</td>
+                  <td class="nowrap" [attr.data-label]="'maintenance.columns.dates' | t">
+                    {{ m.plannedDate | fmtDate }}
+                    @if (m.completedDate) {
+                      <span class="cell-sub">{{ 'maintenance.cells.completedOn' | t: { date: (m.completedDate | fmtDate) } }}</span>
+                    } @else if (m.startedDate) {
+                      <span class="cell-sub">{{ 'maintenance.cells.startedOn' | t: { date: (m.startedDate | fmtDate) } }}</span>
+                    }
+                  </td>
+                  <td class="num" [attr.data-label]="'maintenance.columns.odometer' | t">{{ m.odometerKm | distance }}</td>
+                  <td class="num" [attr.data-label]="'maintenance.columns.cost' | t">
+                    <span class="strong">{{ row.total | amount: m.currency }}</span>
+                    <span class="cell-sub">{{ 'maintenance.cells.breakdown' | t: { parts: (m.partsCost | amount: m.currency), labour: (m.labourCost | amount: m.currency) } }}</span>
+                  </td>
+                  <td class="num" [attr.data-label]="'maintenance.columns.downtime' | t">
+                    {{ m.downtimeHours ? ('maintenance.cells.hours' | t: { hours: (m.downtimeHours | num: 1) }) : '—' }}
+                  </td>
+                  <td [attr.data-label]="'maintenance.columns.nextService' | t">
+                    @if (m.nextServiceKm || m.nextServiceDate) {
+                      @if (m.nextServiceKm) {
+                        <span class="nowrap">{{ m.nextServiceKm | distance }}</span>
+                      }
+                      @if (m.nextServiceDate) {
+                        <span class="cell-sub">{{ m.nextServiceDate | fmtDate }}</span>
+                      }
+                    } @else {
+                      <span class="subtle">—</span>
+                    }
+                  </td>
+                  <td [attr.data-label]="'maintenance.columns.status' | t"><app-status-badge kind="maintenance" [value]="row.status" /></td>
+                  <td class="data-table__actions">
+                    <app-dropdown align="end">
+                      <button
+                        dropdownTrigger
+                        type="button"
+                        class="btn btn--ghost btn--icon btn--sm"
+                        [class.btn--loading]="busyId() === m.id"
+                        [attr.aria-label]="('common.actions.more' | t) + ' — ' + m.workOrderNumber"
+                      >
+                        <app-icon name="ellipsis" [size]="16" />
+                      </button>
+                      <div dropdownMenu>
+                        @if (canStart(row)) {
+                          <button type="button" class="menu__item" role="menuitem" (click)="start(m)">
+                            <app-icon name="wrench" [size]="16" /> {{ 'maintenance.actions.start' | t }}
+                          </button>
+                        }
+                        @if (m.status === 'in_progress' || m.status === 'scheduled') {
+                          <button type="button" class="menu__item" role="menuitem" (click)="completing.set(m)">
+                            <app-icon name="circle-check" [size]="16" /> {{ 'maintenance.actions.complete' | t }}
+                          </button>
+                        }
+                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(m)">
+                          <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                        </button>
+                        <a class="menu__item" role="menuitem" [routerLink]="['/vehicles', m.vehicleId]">
+                          <app-icon name="truck" [size]="16" /> {{ 'maintenance.actions.viewVehicle' | t }}
+                        </a>
+                        <div class="menu__separator"></div>
+                        @if (m.status === 'in_progress' || m.status === 'scheduled') {
+                          <button type="button" class="menu__item" role="menuitem" (click)="cancel(m)">
+                            <app-icon name="ban" [size]="16" /> {{ 'maintenance.actions.cancel' | t }}
+                          </button>
+                        }
+                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(m)">
+                          <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                        </button>
+                      </div>
+                    </app-dropdown>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (result && result.total > 0) {
+        <app-pagination
+          [page]="result.page"
+          [pageSize]="list.pageSize()"
+          [total]="result.total"
+          (pageChange)="list.page.set($event)"
+          (pageSizeChange)="list.setPageSize($event)"
+        />
+      }
+    }
+  </section>
+</div>
+
+<app-modal
+  variant="drawer"
+  size="lg"
+  [open]="formOpen()"
+  [title]="(editing() ? 'maintenance.edit' : 'maintenance.new') | t"
+  [description]="editing() ? ('maintenance.editDescription' | t: { number: editing()!.workOrderNumber }) : ('maintenance.newDescription' | t)"
+  (closed)="formOpen.set(false)"
+>
+  @if (formOpen()) {
+    <app-maintenance-form [record]="editing()" [preset]="preset()" (saved)="onSaved($event, !editing())" (cancelled)="formOpen.set(false)" />
+  }
+</app-modal>
+
+<app-maintenance-complete-dialog [record]="completing()" (closed)="completing.set(null)" (completed)="onCompleted($event)" />

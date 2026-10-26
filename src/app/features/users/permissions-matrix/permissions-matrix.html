@@ -1,0 +1,78 @@
+<section class="card" aria-labelledby="roles-title">
+  <header class="card__header">
+    <div>
+      <h2 class="card__title" id="roles-title">{{ 'users.matrix.rolesTitle' | t }}</h2>
+    </div>
+  </header>
+  <div class="card__body">
+    <ul class="role-cards">
+      @for (role of roles; track role) {
+        <li class="role-card">
+          <div class="role-card__head">
+            <span class="role-card__icon" aria-hidden="true">
+              <app-icon [name]="role === 'owner' ? 'key' : role === 'admin' ? 'shield-check' : 'user'" [size]="16" />
+            </span>
+            <p class="role-card__name">{{ 'users.roles.' + role | t }}</p>
+          </div>
+          <p class="role-card__description">{{ 'users.roleDescriptions.' + role | t }}</p>
+          <p class="role-card__meta">
+            <span>{{ 'users.matrix.permissionCount' | t: { count: permissionCount(role) } }}</span>
+            <span aria-hidden="true">·</span>
+            <span>{{ 'users.matrix.memberCount' | t: { count: memberCounts().get(role) ?? 0 } }}</span>
+          </p>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="matrix-title">
+  <header class="card__header">
+    <div>
+      <h2 class="card__title" id="matrix-title">{{ 'users.matrix.title' | t }}</h2>
+      <p class="card__subtitle">{{ 'users.matrix.subtitle' | t }}</p>
+    </div>
+    <span class="badge badge--outline">
+      <app-icon name="lock" [size]="12" />
+      {{ 'common.labels.demo' | t }}
+    </span>
+  </header>
+  <div class="table-wrap matrix-wrap">
+    <table class="data-table matrix">
+      <caption class="visually-hidden">{{ 'users.matrix.title' | t }}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{{ 'users.matrix.permission' | t }}</th>
+          @for (role of roles; track role) {
+            <th scope="col" class="matrix__role">{{ 'users.roles.' + role | t }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (permission of permissions; track permission) {
+          <tr>
+            <th scope="row" class="data-table__primary matrix__permission">
+              <span class="strong">{{ 'users.permissions.' + permission | t }}</span>
+              <span class="cell-sub">{{ 'users.permissionDescriptions.' + permission | t }}</span>
+            </th>
+            @for (role of roles; track role) {
+              <td class="matrix__cell" [attr.data-label]="'users.roles.' + role | t">
+                @if (allowed(role, permission)) {
+                  <span class="matrix__mark matrix__mark--yes">
+                    <app-icon name="check" [size]="16" />
+                    <span class="visually-hidden">{{ 'users.matrix.allowed' | t }}</span>
+                  </span>
+                } @else {
+                  <span class="matrix__mark matrix__mark--no">
+                    <app-icon name="x" [size]="16" />
+                    <span class="visually-hidden">{{ 'users.matrix.denied' | t }}</span>
+                  </span>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

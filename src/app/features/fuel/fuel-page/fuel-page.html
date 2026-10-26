@@ -1,0 +1,415 @@
+<div class="page">
+  <app-page-header [title]="'fuel.title' | t" [subtitle]="'fuel.subtitle' | t">
+    <ng-container actions>
+      <button type="button" class="btn btn--secondary" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="plus" [size]="16" />
+        {{ 'fuel.new' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  @if (tripFilter()) {
+    <div class="alert alert--info context-banner" role="status">
+      <app-icon name="route" [size]="16" />
+      <div class="context-banner__text">
+        <span class="alert__title">{{ 'fuel.tripContext.message' | t: { reference: contextTrip()?.reference ?? '—' } }}</span>
+        @if (contextTrip(); as trip) {
+          <span>{{ directory.routeLabel(trip) }} · {{ directory.plate(trip.vehicleId) }} · {{ 'fuel.tripContext.hint' | t }}</span>
+        }
+      </div>
+      <div class="context-banner__actions">
+        @if (contextTrip(); as trip) {
+          <a class="btn btn--secondary btn--sm" [routerLink]="['/trips', trip.id]">
+            <app-icon name="external-link" [size]="14" />
+            {{ 'fuel.tripContext.viewTrip' | t }}
+          </a>
+        }
+        <button type="button" class="btn btn--ghost btn--sm" (click)="clearTrip()">
+          <app-icon name="x" [size]="14" />
+          {{ 'fuel.tripContext.clear' | t }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <section class="stack" [attr.aria-label]="'common.labels.period' | t">
+    <div class="summary-bar">
+      <p class="text-sm muted">{{ 'fuel.summaryScope' | t }}</p>
+      <app-period-filter [period]="period()" (periodChange)="setPeriod($event)" />
+    </div>
+
+    @let s = summary();
+    @let loadingSummary = directory.loading();
+    <div class="kpi-grid">
+      <app-kpi-card
+        icon="droplets"
+        [label]="'fuel.kpis.litres' | t"
+        [value]="s.litres | volume: 0"
+        [hint]="'fuel.kpis.litresHint' | t: { count: s.recordCount }"
+        [loading]="loadingSummary"
+      />
+      <app-kpi-card
+        icon="wallet"
+        [label]="'fuel.kpis.cost' | t"
+        [value]="s.totalCost | reporting: { wholeUnits: true }"
+        [hint]="'fuel.kpis.costHint' | t: { currency: currency.display() }"
+        [loading]="loadingSummary"
+      >
+        <app-simulated-notice [always]="s.mixedCurrencies" />
+      </app-kpi-card>
+      <app-kpi-card
+        icon="gauge"
+        [label]="'fuel.kpis.consumption' | t"
+        [value]="consumptionText(s.averageConsumption)"
+        [hint]="'fuel.kpis.consumptionHint' | t"
+        [loading]="loadingSummary"
+      />
+      <app-kpi-card
+        icon="triangle-alert"
+        [label]="'fuel.kpis.warnings' | t"
+        [value]="s.warningCount | num"
+        [hint]="(warningsOnly() ? 'fuel.kpis.warningsActive' : 'fuel.kpis.warningsShow') | t"
+        link="/fuel"
+        [queryParams]="warningsLinkParams()"
+        [loading]="loadingSummary"
+      />
+      <app-kpi-card
+        icon="coins"
+        [label]="'fuel.kpis.price' | t"
+        [value]="s.averagePricePerLitreMzn | amount: 'MZN'"
+        [hint]="'fuel.kpis.priceHint' | t: { count: s.mznRecordCount }"
+        [loading]="loadingSummary"
+      />
+    </div>
+  </section>
+
+  <div class="grid grid--main-side">
+    <section class="card">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title">{{ 'fuel.chart.title' | t }}</h2>
+          <p class="card__subtitle">{{ 'fuel.chart.subtitle' | t }}</p>
+        </div>
+        <div class="card__actions">
+          @if (chartMetric() === 'cost') {
+            <app-simulated-notice [always]="s.mixedCurrencies" />
+          }
+          <div class="segmented" role="group" [attr.aria-label]="'fuel.chart.metric' | t">
+            <button type="button" [attr.aria-pressed]="chartMetric() === 'litres'" (click)="chartMetric.set('litres')">{{ 'fuel.chart.litres' | t }}</button>
+            <button type="button" [attr.aria-pressed]="chartMetric() === 'cost'" (click)="chartMetric.set('cost')">{{ 'fuel.chart.cost' | t }}</button>
+          </div>
+        </div>
+      </header>
+      <div class="card__body">
+        @if (loadingSummary) {
+          <div class="skeleton chart-skeleton"></div>
+        } @else if (chart().empty) {
+          <app-empty-state compact icon="chart-column" [title]="'fuel.chart.empty' | t" />
+        } @else {
+          <app-bar-chart
+            [categories]="chart().categories"
+            [series]="chart().series"
+            [format]="formatChartValue"
+            [axisFormat]="formatChartAxis"
+            [height]="240"
+            [ariaLabel]="(chartMetric() === 'litres' ? 'fuel.chart.ariaLitres' : 'fuel.chart.ariaCost') | t"
+          />
+        }
+      </div>
+    </section>
+
+    <section class="card">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title">{{ 'fuel.ranking.title' | t }}</h2>
+          <p class="card__subtitle">{{ 'fuel.ranking.subtitle' | t }}</p>
+        </div>
+      </header>
+      <div class="card__body">
+        @if (ranking().length) {
+          <ul class="legend ranking-legend" aria-hidden="true">
+            <li class="legend__item"><span class="legend__swatch ranking-legend__average"></span>{{ 'fuel.ranking.legendAverage' | t }}</li>
+            <li class="legend__item"><span class="ranking-legend__reference"></span>{{ 'fuel.ranking.legendReference' | t }}</li>
+          </ul>
+          <ol class="ranking">
+            @for (row of ranking(); track row.vehicleId) {
+              <li class="ranking__row">
+                <div class="ranking__head">
+                  <a class="ranking__plate" [routerLink]="['/vehicles', row.vehicleId]">{{ row.plate }}</a>
+                  <span class="ranking__value">{{ consumptionText(row.average) }}</span>
+                </div>
+                <div class="ranking__track">
+                  <div class="meter" [class.meter--warning]="row.tone === 'above'" [style.--value]="row.valuePct"></div>
+                  @if (row.expected > 0) {
+                    <span class="ranking__marker" [style.left.%]="row.referencePct" aria-hidden="true"></span>
+                  }
+                </div>
+                <div class="ranking__meta">
+                  <span>{{ 'fuel.ranking.reference' | t: { value: consumptionText(row.expected || null) } }}</span>
+                  <span [class.text-warning]="row.tone === 'above'">
+                    @switch (row.tone) {
+                      @case ('above') {
+                        <app-icon name="trending-up" [size]="12" />
+                        {{ 'fuel.ranking.above' | t: { pct: deviationText(row.deviation) } }}
+                      }
+                      @case ('below') {
+                        <app-icon name="trending-down" [size]="12" />
+                        {{ 'fuel.ranking.below' | t: { pct: deviationText(row.deviation) } }}
+                      }
+                      @default {
+                        {{ (row.deviation === null ? 'fuel.ranking.noReference' : 'fuel.ranking.normal') | t }}
+                      }
+                    }
+                  </span>
+                  <span>{{ 'fuel.ranking.samples' | t: { count: row.samples } }}</span>
+                </div>
+              </li>
+            }
+          </ol>
+        } @else if (loadingSummary) {
+          <div class="skeleton chart-skeleton"></div>
+        } @else {
+          <app-empty-state compact icon="gauge" [title]="'fuel.ranking.empty' | t" />
+        }
+      </div>
+    </section>
+  </div>
+
+  <section class="card">
+    <div class="toolbar">
+      <div class="toolbar__search input-group">
+        <app-icon class="input-group__icon" name="search" [size]="16" />
+        <input
+          type="search"
+          class="input"
+          [placeholder]="'fuel.searchPlaceholder' | t"
+          [attr.aria-label]="'common.actions.search' | t"
+          [value]="list.searchInput()"
+          (input)="list.setSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="toolbar__filters">
+        <select class="select" [attr.aria-label]="'fuel.fields.vehicle' | t" (change)="setVehicle($event)">
+          <option value="" [selected]="!vehicleFilter()">{{ 'fuel.allVehicles' | t }}</option>
+          @for (vehicle of vehicleOptions(); track vehicle.id) {
+            <option [value]="vehicle.id" [selected]="vehicleFilter() === vehicle.id">{{ vehicle.plateNumber }} · {{ vehicle.fleetNumber }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'fuel.fields.driver' | t" (change)="setDriver($event)">
+          <option value="" [selected]="!driverFilter()">{{ 'fuel.allDrivers' | t }}</option>
+          @for (driver of driverOptions(); track driver.id) {
+            <option [value]="driver.id" [selected]="driverFilter() === driver.id">{{ driver.label }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'fuel.fields.trip' | t" (change)="setTrip($event)">
+          <option value="" [selected]="!tripFilter()">{{ 'fuel.allTrips' | t }}</option>
+          @for (trip of tripOptions(); track trip.id) {
+            <option [value]="trip.id" [selected]="tripFilter() === trip.id">{{ trip.reference }} · {{ directory.routeLabel(trip) }}</option>
+          }
+        </select>
+        <label class="switch warnings-switch">
+          <input type="checkbox" role="switch" [checked]="warningsOnly()" (change)="setWarningsOnly($any($event.target).checked)" />
+          <span>{{ 'fuel.onlyWarnings' | t }}</span>
+        </label>
+        @if (hasFilters()) {
+          <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+            <app-icon name="x" [size]="16" />
+            {{ 'common.actions.clearFilters' | t }}
+          </button>
+        }
+      </div>
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: query.value()?.total ?? 0 } }}</span>
+    </div>
+
+    @if (query.initialLoading()) {
+      <app-table-skeleton [columns]="9" />
+    } @else if (query.error()) {
+      <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+        <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+      </app-empty-state>
+    } @else {
+      @let result = query.value();
+      @if (!result?.items?.length) {
+        @if (hasFilters()) {
+          <app-empty-state icon="search" [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+            <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+          </app-empty-state>
+        } @else {
+          <app-empty-state icon="fuel" [title]="'common.states.emptyTitle' | t" [description]="'fuel.empty' | t">
+            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'fuel.new' | t }}</button>
+          </app-empty-state>
+        }
+      } @else {
+        <div class="table-wrap" [class.is-refreshing]="query.loading()">
+          <table class="data-table fuel-table">
+            <thead>
+              <tr>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('timestamp')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('timestamp')" (click)="list.toggleSort('timestamp')">
+                    {{ 'fuel.columns.date' | t }}
+                    <app-icon [name]="list.sortIcon('timestamp')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'fuel.columns.vehicle' | t }}</th>
+                <th scope="col">{{ 'fuel.columns.trip' | t }}</th>
+                <th scope="col">{{ 'fuel.columns.station' | t }}</th>
+                <th scope="col" class="num">{{ 'fuel.columns.odometer' | t }}</th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('litres')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('litres')" (click)="list.toggleSort('litres')">
+                    {{ 'fuel.columns.litres' | t }}
+                    <app-icon [name]="list.sortIcon('litres')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="num">{{ 'fuel.columns.pricePerLitre' | t }}</th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('totalAmount.amount')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('totalAmount.amount')" (click)="list.toggleSort('totalAmount.amount')">
+                    {{ 'fuel.columns.total' | t }}
+                    <app-icon [name]="list.sortIcon('totalAmount.amount')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="num">{{ 'fuel.columns.consumption' | t }}</th>
+                <th scope="col">{{ 'fuel.columns.review' | t }}</th>
+                <th scope="col">{{ 'fuel.columns.receipt' | t }}</th>
+                <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (record of result!.items; track record.id) {
+                @let entry = analysis().get(record.id);
+                @let warningCount = entry?.warnings?.length ?? 0;
+                @let open = expanded().has(record.id);
+                <tr>
+                  <td class="data-table__primary">
+                    <span class="nowrap">{{ record.timestamp | fmtDate: 'datetime' }}</span>
+                    <span class="cell-sub mono">{{ record.reference }}</span>
+                  </td>
+                  <td [attr.data-label]="'fuel.columns.vehicle' | t">
+                    <a class="cell-link" [routerLink]="['/vehicles', record.vehicleId]">{{ directory.plate(record.vehicleId) }}</a>
+                    <span class="cell-sub">
+                      @if (record.driverId) {
+                        <a class="cell-sub-link" [routerLink]="['/drivers', record.driverId]">{{ directory.driverName(record.driverId) }}</a>
+                      } @else {
+                        {{ 'fuel.noDriver' | t }}
+                      }
+                    </span>
+                  </td>
+                  <td [attr.data-label]="'fuel.columns.trip' | t">
+                    @if (record.tripId) {
+                      <a class="cell-link mono" [routerLink]="['/trips', record.tripId]">{{ directory.tripReference(record.tripId) }}</a>
+                    } @else {
+                      <span class="subtle">—</span>
+                    }
+                  </td>
+                  <td [attr.data-label]="'fuel.columns.station' | t">
+                    {{ record.station }}
+                    <span class="cell-sub">{{ record.location }}</span>
+                  </td>
+                  <td class="num" [attr.data-label]="'fuel.columns.odometer' | t">{{ record.odometerKm | distance }}</td>
+                  <td class="num" [attr.data-label]="'fuel.columns.litres' | t">
+                    {{ record.litres | volume }}
+                    <span class="cell-sub">{{ (record.fullTank ? 'fuel.fullTank' : 'fuel.partialFill') | t }}</span>
+                  </td>
+                  <td class="num" [attr.data-label]="'fuel.columns.pricePerLitre' | t"><app-money [value]="record.pricePerLitre" /></td>
+                  <td class="num" [attr.data-label]="'fuel.columns.total' | t"><app-money [value]="record.totalAmount" showConverted /></td>
+                  <td class="num" [attr.data-label]="'fuel.columns.consumption' | t">{{ entry?.consumptionL100km | num: 1 }}</td>
+                  <td [attr.data-label]="'fuel.columns.review' | t" [class.data-table__wide]="open">
+                    @if (warningCount) {
+                      <button
+                        type="button"
+                        class="review-toggle badge badge--warning"
+                        [attr.aria-expanded]="open"
+                        [attr.aria-controls]="'review-' + record.id"
+                        [attr.aria-label]="(open ? 'fuel.review.hide' : 'fuel.review.show') | t: { reference: record.reference }"
+                        [appTooltip]="open ? null : warningSummary(record.id)"
+                        (click)="toggleExpanded(record.id)"
+                      >
+                        <app-icon name="triangle-alert" [size]="12" />
+                        {{ 'fuel.review.badge' | t }}
+                        @if (warningCount > 1) {
+                          <span class="review-toggle__count">{{ warningCount }}</span>
+                        }
+                        <app-icon [name]="open ? 'chevron-up' : 'chevron-down'" [size]="12" />
+                      </button>
+                      @if (open) {
+                        <div class="review-details" [id]="'review-' + record.id">
+                          <ul>
+                            @for (warning of entry!.warnings; track warning.code) {
+                              <li>{{ 'fuel.warnings.' + warning.code | t: warning.params }}</li>
+                            }
+                          </ul>
+                          <p>{{ 'fuel.reviewNotice' | t }}</p>
+                        </div>
+                      }
+                    } @else {
+                      <span class="subtle">—</span>
+                    }
+                  </td>
+                  <td [attr.data-label]="'fuel.columns.receipt' | t">
+                    @if (record.receiptFileName) {
+                      <span class="receipt-indicator" tabindex="0" [appTooltip]="record.receiptFileName">
+                        <app-icon name="paperclip" [size]="16" />
+                        <span class="visually-hidden">{{ 'fuel.receipt.attached' | t: { name: record.receiptFileName } }}</span>
+                      </span>
+                    } @else {
+                      <span class="subtle" aria-hidden="true">—</span>
+                      <span class="visually-hidden">{{ 'fuel.receipt.none' | t }}</span>
+                    }
+                  </td>
+                  <td class="data-table__actions">
+                    <app-dropdown align="end">
+                      <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + record.reference">
+                        <app-icon name="ellipsis" [size]="16" />
+                      </button>
+                      <div dropdownMenu>
+                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(record)">
+                          <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                        </button>
+                        @if (record.tripId) {
+                          <a class="menu__item" role="menuitem" [routerLink]="['/trips', record.tripId]">
+                            <app-icon name="route" [size]="16" /> {{ 'fuel.tripContext.viewTrip' | t }}
+                          </a>
+                        }
+                        <div class="menu__separator"></div>
+                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(record)">
+                          <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                        </button>
+                      </div>
+                    </app-dropdown>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (result && result.total > 0) {
+        <app-pagination
+          [page]="result.page"
+          [pageSize]="list.pageSize()"
+          [total]="result.total"
+          (pageChange)="list.page.set($event)"
+          (pageSizeChange)="list.setPageSize($event)"
+        />
+      }
+    }
+  </section>
+</div>
+
+<app-modal
+  variant="drawer"
+  size="lg"
+  [open]="formOpen()"
+  [title]="(editing() ? 'fuel.edit' : 'fuel.new') | t"
+  [description]="editing() ? ('fuel.editDescription' | t: { reference: editing()!.reference }) : ('fuel.newDescription' | t)"
+  (closed)="formOpen.set(false)"
+>
+  @if (formOpen()) {
+    <app-fuel-form [record]="editing()" [defaults]="formDefaults()" (saved)="onSaved($event)" (cancelled)="formOpen.set(false)" />
+  }
+</app-modal>

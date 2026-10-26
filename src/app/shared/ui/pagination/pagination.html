@@ -1,0 +1,36 @@
+<nav class="pagination" [attr.aria-label]="'common.pagination.navigation' | t">
+  <div class="cluster">
+    <span aria-live="polite">
+      {{ 'common.pagination.summary' | t: { from: (from() | num), to: (to() | num), total: (total() | num) } }}
+    </span>
+    <label class="cluster">
+      <span class="visually-hidden">{{ 'common.pagination.pageSize' | t }}</span>
+      <select class="select select--sm select--auto" [value]="pageSize()" (change)="changeSize($event)">
+        @for (option of pageSizeOptions(); track option) {
+          <option [value]="option" [selected]="option === pageSize()">{{ option }}</option>
+        }
+      </select>
+    </label>
+  </div>
+  <div class="cluster">
+    <span class="text-sm">{{ 'common.pagination.page' | t: { page: page(), pages: pages() } }}</span>
+    <button
+      type="button"
+      class="btn btn--secondary btn--icon btn--sm"
+      [disabled]="page() <= 1"
+      [attr.aria-label]="'common.pagination.previous' | t"
+      (click)="go(page() - 1)"
+    >
+      <app-icon name="chevron-left" [size]="16" />
+    </button>
+    <button
+      type="button"
+      class="btn btn--secondary btn--icon btn--sm"
+      [disabled]="page() >= pages()"
+      [attr.aria-label]="'common.pagination.next' | t"
+      (click)="go(page() + 1)"
+    >
+      <app-icon name="chevron-right" [size]="16" />
+    </button>
+  </div>
+</nav>

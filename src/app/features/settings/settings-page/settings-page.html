@@ -1,0 +1,66 @@
+<div class="page">
+  <app-page-header [title]="'settings.pageTitle' | t" [subtitle]="'settings.subtitle' | t" />
+
+  <div class="settings-layout">
+    <nav class="settings-nav" [attr.aria-label]="'settings.navLabel' | t">
+      @for (group of nav; track group.key) {
+        <div class="settings-nav__group">
+          <p class="settings-nav__heading" [id]="'settings-nav-' + group.key">{{ 'settings.groups.' + group.key | t }}</p>
+          <ul class="settings-nav__list" [attr.aria-labelledby]="'settings-nav-' + group.key">
+            @for (item of group.tabs; track item.tab) {
+              <li>
+                <button
+                  type="button"
+                  class="settings-nav__item"
+                  [attr.aria-current]="activeTab() === item.tab ? 'page' : null"
+                  (click)="select(item.tab)"
+                >
+                  <app-icon [name]="item.icon" [size]="16" />
+                  <span>{{ 'settings.tabs.' + item.tab | t }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </nav>
+
+    <div class="settings-content" id="settings-panel" tabindex="-1">
+      @if (query.initialLoading()) {
+        <div class="card">
+          <div class="card__body stack">
+            <span class="skeleton skeleton--title"></span>
+            <span class="skeleton skeleton--text"></span>
+            <span class="skeleton skeleton--text"></span>
+            <span class="skeleton skeleton--text"></span>
+          </div>
+        </div>
+      } @else if (query.error() || !settings.organization()) {
+        <div class="card">
+          <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+            <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+          </app-empty-state>
+        </div>
+      } @else {
+        @let organization = settings.organization()!;
+        @switch (activeTab()) {
+          @case ('company') {
+            <app-company-profile-panel [organization]="organization" />
+          }
+          @case ('regional') {
+            <app-regional-panel [organization]="organization" />
+          }
+          @case ('notifications') {
+            <app-notification-settings-panel [organization]="organization" />
+          }
+          @case ('preferences') {
+            <app-my-preferences-panel [organization]="organization" />
+          }
+          @case ('data') {
+            <app-demo-data-panel />
+          }
+        }
+      }
+    </div>
+  </div>
+</div>

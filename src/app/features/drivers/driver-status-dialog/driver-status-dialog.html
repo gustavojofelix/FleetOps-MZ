@@ -1,0 +1,54 @@
+@let target = driver();
+<app-modal
+  size="sm"
+  [open]="!!target"
+  [title]="'drivers.statusDialog.title' | t"
+  [description]="target ? ('drivers.statusDialog.description' | t: { name: name() }) : null"
+  [dismissible]="!saving()"
+  (closed)="closed.emit()"
+>
+  <div class="stack">
+    @if (activeTrip(); as trip) {
+      <p class="alert alert--warning">
+        <app-icon name="triangle-alert" [size]="16" />
+        <span>{{ 'drivers.statusDialog.activeTripWarning' | t: { trip: trip.reference } }}</span>
+      </p>
+    }
+    <fieldset class="form-reset" [disabled]="!!activeTrip()">
+      <legend class="field__label">{{ 'drivers.statusDialog.newStatus' | t }}</legend>
+      <div class="stack stack--sm">
+        @for (status of options; track status) {
+          <label class="radio">
+            <input
+              type="radio"
+              name="driver-status"
+              [value]="status"
+              [checked]="selected() === status"
+              [disabled]="status === target?.status"
+              (change)="selected.set(status)"
+            />
+            {{ 'drivers.status.' + status | t }}
+          </label>
+        }
+      </div>
+    </fieldset>
+    @if (releasedPlate(); as plate) {
+      <p class="alert alert--info">
+        <app-icon name="info" [size]="16" />
+        <span>{{ 'drivers.statusDialog.releaseVehicle' | t: { plate: plate } }}</span>
+      </p>
+    }
+  </div>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="closed.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button
+      type="button"
+      class="btn btn--primary"
+      [class.btn--loading]="saving()"
+      [disabled]="saving() || selected() === target?.status || !!activeTrip()"
+      (click)="confirm()"
+    >
+      {{ 'drivers.statusDialog.confirm' | t }}
+    </button>
+  </ng-container>
+</app-modal>

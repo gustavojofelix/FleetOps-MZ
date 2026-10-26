@@ -1,0 +1,152 @@
+<form class="stack stack--lg" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'drivers.sections.identification' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="d-first">{{ 'drivers.fields.firstName' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-first" class="input" formControlName="firstName" autocomplete="off" />
+        <app-field-error [control]="form.controls.firstName" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-last">{{ 'drivers.fields.lastName' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-last" class="input" formControlName="lastName" autocomplete="off" />
+        <app-field-error [control]="form.controls.lastName" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-emp">{{ 'drivers.fields.employeeNumber' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-emp" class="input mono" formControlName="employeeNumber" autocomplete="off" placeholder="MOT-0123" aria-describedby="d-emp-hint" />
+        <p class="field__hint" id="d-emp-hint">{{ 'drivers.hints.employeeNumber' | t }}</p>
+        <app-field-error [control]="form.controls.employeeNumber" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-nid">{{ 'drivers.fields.nationalId' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-nid" class="input mono" formControlName="nationalId" autocomplete="off" />
+        <app-field-error [control]="form.controls.nationalId" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-phone">{{ 'drivers.fields.phone' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-phone" class="input" type="tel" inputmode="tel" formControlName="phone" autocomplete="off" placeholder="+258 84 123 4567" />
+        <app-field-error [control]="form.controls.phone" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-email">{{ 'drivers.fields.email' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="d-email" class="input" type="email" inputmode="email" formControlName="email" autocomplete="off" />
+        <app-field-error [control]="form.controls.email" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-city">{{ 'drivers.fields.city' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-city" class="input" formControlName="city" list="driver-cities" />
+        <datalist id="driver-cities">
+          <option value="Beira"></option>
+          <option value="Dondo"></option>
+          <option value="Nhamatanda"></option>
+          <option value="Chimoio"></option>
+          <option value="Gondola"></option>
+          <option value="Manica"></option>
+          <option value="Tete"></option>
+          <option value="Maputo"></option>
+          <option value="Matola"></option>
+        </datalist>
+        <app-field-error [control]="form.controls.city" />
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'drivers.sections.licence' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="d-lic">{{ 'drivers.fields.licenceNumber' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-lic" class="input mono" formControlName="licenceNumber" autocomplete="off" />
+        <app-field-error [control]="form.controls.licenceNumber" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-cat">{{ 'drivers.fields.licenceCategory' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="d-cat" class="select" formControlName="licenceCategory">
+          @for (category of categories; track category) {
+            <option [value]="category">{{ 'drivers.licenceCategories.' + category | t }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-exp">{{ 'drivers.fields.licenceExpiry' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-exp" class="input" type="date" formControlName="licenceExpiry" [attr.aria-describedby]="licenceWarning() ? 'd-exp-hint' : null" />
+        @if (licenceWarning(); as warning) {
+          <p class="field__hint" id="d-exp-hint" [class.text-warning]="warning.tone === 'warning'" [class.text-danger]="warning.tone === 'danger'">
+            {{ warning.text }}
+          </p>
+        }
+        <app-field-error [control]="form.controls.licenceExpiry" />
+      </div>
+      <div class="field field--full">
+        <label class="switch">
+          <input type="checkbox" role="switch" formControlName="crossBorderAuthorized" aria-describedby="d-cb-hint" />
+          <span>{{ 'drivers.fields.crossBorderAuthorized' | t }}</span>
+        </label>
+        <p class="field__hint" id="d-cb-hint">{{ 'drivers.hints.crossBorder' | t }}</p>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'drivers.sections.employment' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="d-hire">{{ 'drivers.fields.hireDate' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="d-hire" class="input" type="date" formControlName="hireDate" [max]="today" />
+        <app-field-error [control]="form.controls.hireDate" />
+      </div>
+      @if (!isEditing()) {
+        <div class="field">
+          <label class="field__label" for="d-status">{{ 'drivers.fields.status' | t }}</label>
+          <select id="d-status" class="select" formControlName="status" aria-describedby="d-status-hint">
+            @for (status of statuses; track status) {
+              <option [value]="status">{{ 'drivers.status.' + status | t }}</option>
+            }
+          </select>
+          <p class="field__hint" id="d-status-hint">{{ 'drivers.hints.statusOnCreate' | t }}</p>
+        </div>
+      }
+      <div class="field" [class.field--full]="isEditing()">
+        <label class="field__label" for="d-vehicle">{{ 'drivers.fields.assignedVehicle' | t }}</label>
+        <select id="d-vehicle" class="select" formControlName="assignedVehicleId" aria-describedby="d-vehicle-hint">
+          <option value="">{{ 'drivers.noVehicle' | t }}</option>
+          @for (option of vehicleOptions(); track option.id) {
+            <option [value]="option.id">
+              {{ option.label }} {{ option.assignedTo ? ('drivers.hints.alreadyAssigned' | t: { name: option.assignedTo }) : '' }}
+            </option>
+          }
+        </select>
+        <p class="field__hint" id="d-vehicle-hint">{{ 'drivers.hints.assignedVehicle' | t }}</p>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'drivers.sections.emergency' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="d-ecn">{{ 'drivers.fields.emergencyContactName' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="d-ecn" class="input" formControlName="emergencyContactName" autocomplete="off" />
+        <app-field-error [control]="form.controls.emergencyContactName" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="d-ecp">{{ 'drivers.fields.emergencyContactPhone' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="d-ecp" class="input" type="tel" inputmode="tel" formControlName="emergencyContactPhone" autocomplete="off" placeholder="+258 84 123 4567" />
+        <app-field-error [control]="form.controls.emergencyContactPhone" />
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="d-notes">{{ 'drivers.fields.notes' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <textarea id="d-notes" class="textarea" formControlName="notes" rows="3"></textarea>
+        <app-field-error [control]="form.controls.notes" />
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="cancelled.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">
+      {{ (isEditing() ? 'common.actions.saveChanges' : 'drivers.new') | t }}
+    </button>
+  </div>
+</form>

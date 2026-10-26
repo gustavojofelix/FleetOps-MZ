@@ -1,0 +1,80 @@
+@let target = record();
+<app-modal
+  [open]="!!target"
+  [title]="'maintenance.completeDialog.title' | t"
+  [description]="target ? ('maintenance.completeDialog.description' | t: { number: target.workOrderNumber, plate: directory.plate(target.vehicleId) }) : null"
+  [dismissible]="!saving()"
+  (closed)="closed.emit()"
+>
+  @if (target) {
+    <form class="stack" [formGroup]="form" (ngSubmit)="confirm()" novalidate id="maintenance-complete-form">
+      <fieldset class="form-reset stack" [disabled]="saving()">
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="mc-date">{{ 'maintenance.fields.completedDate' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+            <input id="mc-date" class="input" type="date" formControlName="completedDate" [min]="target.startedDate ?? ''" />
+            <app-field-error [control]="form.controls.completedDate" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="mc-downtime">{{ 'maintenance.fields.downtimeHours' | t }}</label>
+            <div class="input-group">
+              <input id="mc-downtime" class="input" type="number" inputmode="decimal" min="0" step="0.5" formControlName="downtimeHours" />
+              <span class="input-group__suffix">h</span>
+            </div>
+            <app-field-error [control]="form.controls.downtimeHours" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="mc-parts">{{ 'maintenance.fields.partsCost' | t }}</label>
+            <div class="input-group">
+              <input id="mc-parts" class="input" type="number" inputmode="decimal" min="0" step="0.01" formControlName="partsCost" />
+              <span class="input-group__suffix">{{ target.currency }}</span>
+            </div>
+            <app-field-error [control]="form.controls.partsCost" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="mc-labour">{{ 'maintenance.fields.labourCost' | t }}</label>
+            <div class="input-group">
+              <input id="mc-labour" class="input" type="number" inputmode="decimal" min="0" step="0.01" formControlName="labourCost" />
+              <span class="input-group__suffix">{{ target.currency }}</span>
+            </div>
+            <app-field-error [control]="form.controls.labourCost" />
+          </div>
+          <div class="field field--full">
+            <dl class="kv-list">
+              <div class="kv-list__total">
+                <dt class="kv-list__label">{{ 'maintenance.fields.totalCost' | t }}</dt>
+                <dd class="kv-list__value" aria-live="polite">{{ total() | amount: target.currency }}</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="field">
+            <label class="field__label" for="mc-next-km">{{ 'maintenance.fields.nextServiceKm' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+            <div class="input-group">
+              <input id="mc-next-km" class="input" type="number" inputmode="numeric" min="0" formControlName="nextServiceKm" />
+              <span class="input-group__suffix">km</span>
+            </div>
+            <app-field-error [control]="form.controls.nextServiceKm" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="mc-next-date">{{ 'maintenance.fields.nextServiceDate' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+            <input id="mc-next-date" class="input" type="date" formControlName="nextServiceDate" />
+            <app-field-error [control]="form.controls.nextServiceDate" />
+          </div>
+        </div>
+      </fieldset>
+      @if (target.status === 'in_progress') {
+        <p class="alert alert--info">
+          <app-icon name="info" [size]="16" />
+          <span>{{ 'maintenance.completeDialog.releaseHint' | t }}</span>
+        </p>
+      }
+    </form>
+  }
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="closed.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" form="maintenance-complete-form" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">
+      <app-icon name="circle-check" [size]="16" />
+      {{ 'maintenance.completeDialog.confirm' | t }}
+    </button>
+  </ng-container>
+</app-modal>

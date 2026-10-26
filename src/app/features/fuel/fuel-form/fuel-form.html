@@ -1,0 +1,210 @@
+<form class="stack stack--lg" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'fuel.sections.assignment' | t }}</legend>
+    <div class="form-grid">
+      <div class="field field--full">
+        <label class="field__label" for="f-vehicle">{{ 'fuel.fields.vehicle' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="f-vehicle" class="select" formControlName="vehicleId" (change)="onVehicleChange()">
+          <option value="" disabled>{{ 'fuel.selectVehicle' | t }}</option>
+          @for (option of vehicleOptions(); track option.id) {
+            <option [value]="option.id">{{ option.label }}</option>
+          }
+        </select>
+        <app-field-error [control]="form.controls.vehicleId" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-driver">{{ 'fuel.fields.driver' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <select id="f-driver" class="select" formControlName="driverId" aria-describedby="f-driver-hint">
+          <option value="">{{ 'fuel.noDriver' | t }}</option>
+          @for (option of driverOptions(); track option.id) {
+            <option [value]="option.id">{{ option.label }}</option>
+          }
+        </select>
+        <p class="field__hint" id="f-driver-hint">{{ 'fuel.hints.driver' | t }}</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-trip">{{ 'fuel.fields.trip' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <select id="f-trip" class="select" formControlName="tripId" aria-describedby="f-trip-hint" (change)="onTripChange()">
+          <option value="">{{ 'fuel.noTrip' | t }}</option>
+          @for (option of tripOptions(); track option.id) {
+            <option [value]="option.id">{{ option.reference }} · {{ option.route }} · {{ option.departure | fmtDate: 'short' }}</option>
+          }
+        </select>
+        <p class="field__hint" id="f-trip-hint">{{ (value().vehicleId ? 'fuel.hints.trip' : 'fuel.hints.tripNeedsVehicle') | t }}</p>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'fuel.sections.fill' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="f-timestamp">{{ 'fuel.fields.timestamp' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="f-timestamp" class="input" type="datetime-local" formControlName="timestamp" />
+        <app-field-error [control]="form.controls.timestamp" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-odometer">{{ 'fuel.fields.odometer' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <div class="input-group">
+          <input id="f-odometer" class="input" type="number" inputmode="numeric" min="0" formControlName="odometerKm" aria-describedby="f-odometer-hint" />
+          <span class="input-group__suffix">km</span>
+        </div>
+        <p class="field__hint" id="f-odometer-hint" [class.text-warning]="odometerLower()" aria-live="polite">
+          @if (odometerLower()) {
+            <app-icon name="triangle-alert" [size]="12" />
+            {{ 'fuel.hints.odometerLower' | t: { km: (lastReading()!.km | distance) } }}
+          } @else if (lastReading(); as last) {
+            @if (last.source === 'record') {
+              {{ 'fuel.hints.lastReading' | t: { km: (last.km | distance), date: (last.date | fmtDate: 'datetime') } }}
+            } @else {
+              {{ 'fuel.hints.vehicleOdometer' | t: { km: (last.km | distance) } }}
+            }
+          } @else if (vehicle()) {
+            {{ 'fuel.hints.noReading' | t }}
+          }
+        </p>
+        <app-field-error [control]="form.controls.odometerKm" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-litres">{{ 'fuel.fields.litres' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <div class="input-group">
+          <input id="f-litres" class="input" type="number" inputmode="decimal" step="0.1" min="0" formControlName="litres" aria-describedby="f-litres-hint" />
+          <span class="input-group__suffix">l</span>
+        </div>
+        @if (vehicle(); as v) {
+          <p class="field__hint" id="f-litres-hint" [class.text-warning]="exceedsTank()" aria-live="polite">
+            @if (exceedsTank()) {
+              <app-icon name="triangle-alert" [size]="12" />
+              {{ 'fuel.hints.exceedsTank' | t: { capacity: (v.tankCapacityL | volume: 0) } }}
+            } @else {
+              {{ 'fuel.hints.tankCapacity' | t: { capacity: (v.tankCapacityL | volume: 0) } }}
+            }
+          </p>
+        }
+        <app-field-error [control]="form.controls.litres" />
+      </div>
+      <div class="field">
+        <span class="field__label">{{ 'fuel.fields.fullTank' | t }}</span>
+        <label class="switch fuel-form__switch">
+          <input type="checkbox" role="switch" formControlName="fullTank" aria-describedby="f-full-hint" />
+          <span>{{ (value().fullTank ? 'fuel.fullTank' : 'fuel.partialFill') | t }}</span>
+        </label>
+        <p class="field__hint" id="f-full-hint">{{ 'fuel.hints.fullTank' | t }}</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-price">{{ 'fuel.fields.pricePerLitre' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="f-price" class="input" type="number" inputmode="decimal" step="0.01" min="0" formControlName="pricePerLitre" />
+        <app-field-error [control]="form.controls.pricePerLitre" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-currency">{{ 'fuel.fields.currency' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="f-currency" class="select" formControlName="currency" aria-describedby="f-currency-hint">
+          @for (code of currencies; track code) {
+            <option [value]="code">{{ code }} — {{ 'currencies.' + code | t }}</option>
+          }
+        </select>
+        <p class="field__hint" id="f-currency-hint">{{ 'fuel.hints.currency' | t }}</p>
+      </div>
+      <div class="field field--full">
+        <span class="field__label" id="f-total-label">{{ 'fuel.fields.total' | t }}</span>
+        <output class="fuel-form__total" aria-labelledby="f-total-label" aria-live="polite">
+          <span class="fuel-form__total-value">{{ total() | amount: value().currency }}</span>
+          <span class="fuel-form__total-formula">
+            {{ (value().litres | num: 1) }} l × {{ value().pricePerLitre | amount: value().currency }}
+          </span>
+        </output>
+        <p class="field__hint">{{ 'fuel.hints.total' | t }}</p>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'fuel.sections.place' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="f-station">{{ 'fuel.fields.station' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="f-station" class="input" formControlName="station" list="fuel-stations" autocomplete="off" />
+        <datalist id="fuel-stations">
+          <option value="Posto Inhamízua"></option>
+          <option value="Posto Moatize"></option>
+          <option value="Posto Dondo"></option>
+          <option value="Posto Chimoio"></option>
+          <option value="Posto Machipanda"></option>
+        </datalist>
+        <app-field-error [control]="form.controls.station" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="f-location">{{ 'fuel.fields.location' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="f-location" class="input" formControlName="location" list="fuel-locations" autocomplete="off" />
+        <datalist id="fuel-locations">
+          <option value="Beira"></option>
+          <option value="Dondo"></option>
+          <option value="Chimoio"></option>
+          <option value="Tete"></option>
+          <option value="Maputo"></option>
+          <option value="Mutare"></option>
+          <option value="Harare"></option>
+          <option value="Blantyre"></option>
+          <option value="Lusaka"></option>
+        </datalist>
+        <app-field-error [control]="form.controls.location" />
+      </div>
+      <div class="field field--full">
+        <span class="field__label">{{ 'fuel.fields.receipt' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></span>
+        @if (value().receiptFileName; as name) {
+          <div class="fuel-form__receipt">
+            <app-icon name="paperclip" [size]="16" />
+            <span class="truncate">{{ 'fuel.receipt.attached' | t: { name } }}</span>
+            <button type="button" class="btn btn--ghost btn--sm" (click)="clearReceipt()">
+              <app-icon name="x" [size]="14" />
+              {{ 'fuel.receipt.remove' | t }}
+            </button>
+          </div>
+        } @else {
+          <label class="dropzone">
+            <app-icon name="file-up" [size]="20" />
+            <span class="strong">{{ 'fuel.receipt.choose' | t }}</span>
+            <span class="text-xs">{{ 'fuel.receipt.formats' | t }}</span>
+            <input class="visually-hidden" type="file" accept="image/*,application/pdf" (change)="onReceiptSelected($event)" />
+          </label>
+        }
+        <p class="field__hint"><span class="sim-tag">{{ 'common.labels.demo' | t }}</span> {{ 'fuel.receipt.demo' | t }}</p>
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="f-notes">{{ 'fuel.fields.notes' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <textarea id="f-notes" class="textarea" formControlName="notes" rows="3"></textarea>
+        <app-field-error [control]="form.controls.notes" />
+      </div>
+    </div>
+  </fieldset>
+
+  @if (analysis(); as result) {
+    @if (result.warnings.length) {
+      <div class="alert alert--warning" role="status">
+        <app-icon name="triangle-alert" [size]="16" />
+        <div class="stack stack--sm">
+          <span class="alert__title">{{ 'fuel.review.liveTitle' | t }} · {{ 'fuel.review.count' | t: { count: result.warnings.length } }}</span>
+          <ul class="fuel-form__warnings">
+            @for (warning of result.warnings; track warning.code) {
+              <li>{{ 'fuel.warnings.' + warning.code | t: warning.params }}</li>
+            }
+          </ul>
+          <span>{{ 'fuel.review.liveHint' | t }}</span>
+          <span class="text-xs">{{ 'fuel.reviewNotice' | t }}</span>
+        </div>
+      </div>
+    } @else {
+      <p class="fuel-form__clean text-sm" role="status">
+        <app-icon name="circle-check" [size]="14" />
+        {{ 'fuel.review.clean' | t }}
+      </p>
+    }
+  }
+
+  <div class="form-actions">
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="cancelled.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">
+      {{ (isEditing() ? 'common.actions.saveChanges' : 'fuel.new') | t }}
+    </button>
+  </div>
+</form>

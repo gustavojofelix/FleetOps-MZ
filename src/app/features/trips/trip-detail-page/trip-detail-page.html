@@ -1,0 +1,530 @@
+<div class="page">
+  @if (trip(); as t) {
+    <app-page-header
+      [title]="t.reference"
+      [subtitle]="directory.routeLabel(t) + ' · ' + directory.customerName(t.customerId)"
+      [breadcrumbs]="breadcrumbs()"
+    >
+      <ng-container meta>
+        <app-status-badge kind="trip" [value]="t.status" />
+        @if (crossBorder()) {
+          <span class="badge badge--outline"><app-icon name="globe" [size]="12" /> {{ 'trips.fields.crossBorder' | t }}</span>
+        }
+      </ng-container>
+      <ng-container actions>
+        @if (transitions().length) {
+          <button type="button" class="btn btn--secondary" (click)="statusTarget.set(t)">
+            <app-icon name="refresh" [size]="16" />
+            {{ 'common.actions.changeStatus' | t }}
+          </button>
+        }
+        @if (canEdit()) {
+          <a class="btn btn--secondary" [routerLink]="['/trips', t.id, 'edit']">
+            <app-icon name="pencil" [size]="16" />
+            {{ 'common.actions.edit' | t }}
+          </a>
+        }
+        <app-dropdown align="end">
+          <button dropdownTrigger type="button" class="btn btn--secondary btn--icon" [attr.aria-label]="'common.actions.more' | t">
+            <app-icon name="ellipsis" [size]="16" />
+          </button>
+          <div dropdownMenu>
+            <button type="button" class="menu__item" role="menuitem" (click)="noteTarget.set(t)">
+              <app-icon name="file-text" [size]="16" /> {{ 'trips.detail.addNote' | t }}
+            </button>
+            <a class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ duplicate: t.id }">
+              <app-icon name="copy" [size]="16" /> {{ 'trips.detail.duplicate' | t }}
+            </a>
+            @if (!canEdit()) {
+              <button type="button" class="menu__item" role="menuitem" (click)="openEdit(t)">
+                <app-icon name="lock" [size]="16" /> {{ 'common.actions.edit' | t }}
+              </button>
+            }
+            <div class="menu__separator"></div>
+            <a class="menu__item" role="menuitem" routerLink="/fuel" [queryParams]="{ tripId: t.id }">
+              <app-icon name="fuel" [size]="16" /> {{ 'trips.detail.addFuel' | t }}
+            </a>
+            <a class="menu__item" role="menuitem" routerLink="/expenses" [queryParams]="{ tripId: t.id }">
+              <app-icon name="receipt" [size]="16" /> {{ 'trips.detail.addExpense' | t }}
+            </a>
+            <div class="menu__separator"></div>
+            <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(t)">
+              <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+            </button>
+          </div>
+        </app-dropdown>
+      </ng-container>
+    </app-page-header>
+
+    @if (t.status === 'delayed' && t.delayReason) {
+      <p class="alert alert--warning" role="status">
+        <app-icon name="triangle-alert" [size]="16" />
+        <span><strong>{{ 'trips.fields.delayReason' | t }}:</strong> {{ t.delayReason }}</span>
+      </p>
+    }
+
+    <!-- Progress strip -->
+    <section class="card" [attr.aria-label]="'trips.detail.summary' | t">
+      <div class="card__body">
+        <div class="stat-row progress-strip">
+          <div class="stat">
+            <span class="stat__label">{{ 'trips.fields.plannedDeparture' | t }}</span>
+            <span class="stat__value">{{ t.plannedDeparture | fmtDate: 'datetime' }}</span>
+            <span class="stat__hint">
+              {{ 'trips.fields.actualDeparture' | t }}: {{ t.actualDeparture ? (t.actualDeparture | fmtDate: 'datetime') : ('trips.detail.notStarted' | t) }}
+            </span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">{{ 'trips.fields.plannedArrival' | t }}</span>
+            <span class="stat__value">{{ t.plannedArrival | fmtDate: 'datetime' }}</span>
+            <span class="stat__hint">
+              {{ 'trips.fields.actualArrival' | t }}: {{ t.actualArrival ? (t.actualArrival | fmtDate: 'datetime') : ('trips.detail.pending' | t) }}
+            </span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">{{ 'trips.detail.delay' | t }}</span>
+            @if (delay() >= 1) {
+              <span class="stat__value text-warning delay-value">
+                <app-icon name="timer" [size]="16" />
+                {{ 'trips.detail.delayValue' | t: { hours: (delay() | num) } }}
+              </span>
+            } @else {
+              <span class="stat__value text-success delay-value">
+                <app-icon name="circle-check" [size]="16" />
+                {{ 'trips.detail.onTime' | t }}
+              </span>
+            }
+            <span class="stat__hint">{{ timeline().at(-1)?.event?.location ?? '—' }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat__label">{{ 'trips.fields.plannedDistance' | t }}</span>
+            <span class="stat__value">{{ t.plannedDistanceKm | distance }}</span>
+            <span class="stat__hint">{{ 'trips.fields.actualDistance' | t }}: {{ t.actualDistanceKm !== null ? (t.actualDistanceKm | distance) : '—' }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid grid--main-side">
+      <div class="stack">
+        <!-- Route & schedule -->
+        <section class="card">
+          <header class="card__header"><h2 class="card__title">{{ 'trips.detail.routeSchedule' | t }}</h2></header>
+          <div class="card__body">
+            <ol class="route-line">
+              <li class="route-line__stop">
+                <span class="route-line__marker"><app-icon name="map-pin" [size]="14" /></span>
+                <div>
+                  <p class="strong">{{ t.origin.city }} <span class="muted">· {{ 'countries.' + t.origin.country | t }}</span></p>
+                  <p class="text-sm muted">{{ t.origin.site || '—' }}</p>
+                </div>
+              </li>
+              @if (route()?.borderPost; as border) {
+                <li class="route-line__stop route-line__stop--border">
+                  <span class="route-line__marker"><app-icon name="flag" [size]="14" /></span>
+                  <div>
+                    <p class="text-sm"><span class="muted">{{ 'trips.fields.borderPost' | t }}:</span> {{ border }}</p>
+                  </div>
+                </li>
+              }
+              <li class="route-line__stop">
+                <span class="route-line__marker route-line__marker--end"><app-icon name="flag" [size]="14" /></span>
+                <div>
+                  <p class="strong">{{ t.destination.city }} <span class="muted">· {{ 'countries.' + t.destination.country | t }}</span></p>
+                  <p class="text-sm muted">{{ t.destination.site || '—' }}</p>
+                </div>
+              </li>
+            </ol>
+            <dl class="dl dl--3 route-dl">
+              <div><dt>{{ 'trips.fields.plannedDeparture' | t }}</dt><dd>{{ t.plannedDeparture | fmtDate: 'datetime' }}</dd></div>
+              <div><dt>{{ 'trips.fields.plannedArrival' | t }}</dt><dd>{{ t.plannedArrival | fmtDate: 'datetime' }}</dd></div>
+              <div><dt>{{ 'trips.fields.plannedDistance' | t }}</dt><dd>{{ t.plannedDistanceKm | distance }}</dd></div>
+              <div><dt>{{ 'trips.fields.actualDeparture' | t }}</dt><dd>{{ t.actualDeparture ? (t.actualDeparture | fmtDate: 'datetime') : '—' }}</dd></div>
+              <div><dt>{{ 'trips.fields.actualArrival' | t }}</dt><dd>{{ t.actualArrival ? (t.actualArrival | fmtDate: 'datetime') : '—' }}</dd></div>
+              <div><dt>{{ 'trips.fields.actualDistance' | t }}</dt><dd>{{ t.actualDistanceKm !== null ? (t.actualDistanceKm | distance) : '—' }}</dd></div>
+              @if (t.notes) {
+                <div class="span-full"><dt>{{ 'trips.fields.notes' | t }}</dt><dd>{{ t.notes }}</dd></div>
+              }
+            </dl>
+          </div>
+        </section>
+
+        <!-- Cargo -->
+        <section class="card">
+          <header class="card__header"><h2 class="card__title">{{ 'trips.detail.cargo' | t }}</h2></header>
+          <div class="card__body">
+            <dl class="dl dl--3">
+              <div><dt>{{ 'trips.fields.cargoType' | t }}</dt><dd>{{ 'trips.cargoTypes.' + t.cargo.type | t }}</dd></div>
+              <div><dt>{{ 'trips.fields.weight' | t }}</dt><dd>{{ t.cargo.weightTonnes | num: 1 }} {{ 'common.units.tonnes' | t }}</dd></div>
+              <div><dt>{{ 'trips.fields.customerReference' | t }}</dt><dd class="mono">{{ t.customerReference || '—' }}</dd></div>
+              <div class="span-full"><dt>{{ 'trips.fields.cargoDescription' | t }}</dt><dd>{{ t.cargo.description || '—' }}</dd></div>
+              @if (t.cargo.type === 'container' || t.cargo.containerRef) {
+                <div><dt>{{ 'trips.fields.containerRef' | t }}</dt><dd class="mono">{{ t.cargo.containerRef || '—' }}</dd></div>
+                <div><dt>{{ 'trips.fields.sealNumber' | t }}</dt><dd class="mono">{{ t.cargo.sealNumber || '—' }}</dd></div>
+              }
+            </dl>
+          </div>
+        </section>
+
+        <!-- Timeline -->
+        <section class="card">
+          <header class="card__header">
+            <h2 class="card__title">{{ 'trips.detail.timeline' | t }}</h2>
+            <div class="card__actions">
+              <button type="button" class="btn btn--ghost btn--sm" (click)="noteTarget.set(t)">
+                <app-icon name="plus" [size]="14" /> {{ 'trips.detail.addNote' | t }}
+              </button>
+            </div>
+          </header>
+          <div class="card__body">
+            @if (timeline().length) {
+              <ol class="timeline">
+                @for (entry of timeline(); track entry.event.id) {
+                  <li class="timeline__item" [class.timeline__item--highlight]="entry.highlight" [class.timeline__item--warning]="entry.tone === 'warning'">
+                    <span
+                      class="timeline__marker"
+                      [class.timeline__marker--accent]="entry.tone === 'accent'"
+                      [class.timeline__marker--warning]="entry.tone === 'warning'"
+                      [class.timeline__marker--danger]="entry.tone === 'danger'"
+                      [class.timeline__marker--success]="entry.tone === 'success'"
+                    >
+                      <app-icon [name]="entry.icon" [size]="10" />
+                    </span>
+                    <div class="timeline__content">
+                      <p class="timeline__title">
+                        @if (entry.event.type === 'status_change' && entry.event.status) {
+                          {{ 'trips.eventTypes.status_change' | t }}:
+                          <app-status-badge kind="trip" [value]="entry.event.status" />
+                        } @else {
+                          {{ 'trips.eventTypes.' + entry.event.type | t }}
+                          @if (entry.highlight) {
+                            <span class="badge badge--accent">{{ 'trips.detail.border' | t }}</span>
+                          }
+                        }
+                      </p>
+                      <p class="timeline__meta">
+                        {{ entry.event.timestamp | fmtDate: 'datetime' }}
+                        @if (entry.event.location) {
+                          · {{ entry.event.location }}
+                        }
+                      </p>
+                      @if (entry.event.note) {
+                        <p class="timeline__note">{{ entry.event.note }}</p>
+                      }
+                    </div>
+                  </li>
+                }
+              </ol>
+            } @else {
+              <p class="muted text-sm">{{ 'trips.detail.noTimeline' | t }}</p>
+            }
+          </div>
+        </section>
+
+        <!-- Costs -->
+        <section class="card">
+          <header class="card__header">
+            <div>
+              <h2 class="card__title">{{ 'trips.detail.costs' | t }}</h2>
+              <p class="card__subtitle">{{ 'trips.detail.costsDescription' | t }}</p>
+            </div>
+            <div class="card__actions cost-actions">
+              <a class="btn btn--secondary btn--sm" routerLink="/fuel" [queryParams]="{ tripId: t.id }">
+                <app-icon name="fuel" [size]="14" /> {{ 'trips.detail.addFuel' | t }}
+              </a>
+              <a class="btn btn--secondary btn--sm" routerLink="/expenses" [queryParams]="{ tripId: t.id }">
+                <app-icon name="receipt" [size]="14" /> {{ 'trips.detail.addExpense' | t }}
+              </a>
+            </div>
+          </header>
+          @if (fuelRecords().length || expenses().length) {
+            <div class="card__body stack">
+              @if (fuelRecords().length) {
+                <div>
+                  <h3 class="cost-heading">{{ 'trips.detail.fuelRecords' | t }} <span class="tab__count">{{ fuelRecords().length }}</span></h3>
+                  <div class="table-wrap">
+                    <table class="data-table data-table--compact data-table--plain">
+                      <thead>
+                        <tr>
+                          <th scope="col">{{ 'common.labels.date' | t }}</th>
+                          <th scope="col">{{ 'common.labels.location' | t }}</th>
+                          <th scope="col" class="num">{{ 'common.units.litres' | t }}</th>
+                          <th scope="col" class="num">{{ 'common.labels.total' | t }}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (record of fuelRecords(); track record.id) {
+                          <tr>
+                            <td class="data-table__primary">
+                              {{ record.timestamp | fmtDate: 'datetime' }}
+                              <span class="cell-sub mono">{{ record.reference }}</span>
+                            </td>
+                            <td [attr.data-label]="'common.labels.location' | t">{{ record.station }}<span class="cell-sub">{{ record.location }}</span></td>
+                            <td class="num" [attr.data-label]="'common.units.litres' | t">{{ record.litres | volume }}</td>
+                            <td class="num" [attr.data-label]="'common.labels.total' | t"><app-money [value]="record.totalAmount" showConverted /></td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              }
+              @if (expenses().length) {
+                <div>
+                  <h3 class="cost-heading">{{ 'trips.detail.expenses' | t }} <span class="tab__count">{{ expenses().length }}</span></h3>
+                  <div class="table-wrap">
+                    <table class="data-table data-table--compact data-table--plain">
+                      <thead>
+                        <tr>
+                          <th scope="col">{{ 'common.labels.date' | t }}</th>
+                          <th scope="col">{{ 'common.labels.type' | t }}</th>
+                          <th scope="col">{{ 'common.labels.status' | t }}</th>
+                          <th scope="col" class="num">{{ 'common.labels.amount' | t }}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (expense of expenses(); track expense.id) {
+                          <tr [class.is-excluded]="expense.approvalStatus === 'rejected'">
+                            <td class="data-table__primary">
+                              {{ expense.date | fmtDate }}
+                              <span class="cell-sub mono">{{ expense.reference }}</span>
+                            </td>
+                            <td [attr.data-label]="'common.labels.type' | t">
+                              {{ 'expenses.categories.' + expense.category | t }}
+                              <span class="cell-sub">{{ expense.vendor }}</span>
+                            </td>
+                            <td [attr.data-label]="'common.labels.status' | t"><app-status-badge kind="expense" [value]="expense.approvalStatus" /></td>
+                            <td class="num" [attr.data-label]="'common.labels.amount' | t"><app-money [value]="expense.amount" showConverted /></td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              }
+              <ul class="kv-list cost-totals">
+                <li>
+                  <span class="kv-list__label">{{ 'trips.detail.fuelTotal' | t }}</span>
+                  <span class="kv-list__value">{{ costTotals().fuel | reporting }}</span>
+                </li>
+                <li>
+                  <span class="kv-list__label">{{ 'trips.detail.expensesTotal' | t }}</span>
+                  <span class="kv-list__value">{{ costTotals().expenses | reporting }}</span>
+                </li>
+                <li class="kv-list__total">
+                  <span class="kv-list__label">{{ 'trips.detail.costsTotal' | t }}</span>
+                  <span class="kv-list__value">{{ costTotals().total | reporting }}</span>
+                </li>
+              </ul>
+              <div class="cluster cost-notes">
+                @if (costTotals().hasRejected) {
+                  <span class="text-xs muted">{{ 'trips.detail.rejectedExcluded' | t }}</span>
+                }
+                <app-simulated-notice [always]="costTotals().mixed" />
+              </div>
+            </div>
+          } @else {
+            <app-empty-state icon="receipt" compact [title]="'trips.detail.noCosts' | t">
+              <a class="btn btn--secondary btn--sm" routerLink="/fuel" [queryParams]="{ tripId: t.id }">{{ 'trips.detail.addFuel' | t }}</a>
+              <a class="btn btn--secondary btn--sm" routerLink="/expenses" [queryParams]="{ tripId: t.id }">{{ 'trips.detail.addExpense' | t }}</a>
+            </app-empty-state>
+          }
+        </section>
+      </div>
+
+      <div class="stack">
+        <!-- Profitability -->
+        <section class="card">
+          <header class="card__header">
+            <h2 class="card__title">{{ 'trips.detail.profitability' | t }}</h2>
+            @if (profit()?.provisional) {
+              <span class="badge badge--warning" tabindex="0" [appTooltip]="'profitability.labels.provisionalHint' | t">
+                <app-icon name="hourglass" [size]="12" />
+                {{ 'profitability.labels.provisional' | t }}
+                <span class="visually-hidden">— {{ 'profitability.labels.provisionalHint' | t }}</span>
+              </span>
+            }
+          </header>
+          @if (profit(); as p) {
+            <div class="card__body stack">
+              <ul class="kv-list">
+                <li>
+                  <span class="kv-list__label">{{ 'profitability.metrics.revenue' | t }}</span>
+                  <span class="kv-list__value">
+                    {{ p.revenue | reporting }}
+                    @if (p.revenueOriginal.currency !== p.currency) {
+                      <span class="cell-sub muted text-xs">{{ p.revenueOriginal | money }}</span>
+                    }
+                  </span>
+                </li>
+                @for (bucket of buckets; track bucket) {
+                  <li>
+                    <span class="kv-list__label">{{ 'profitability.buckets.' + bucket | t }}</span>
+                    <span class="kv-list__value">{{ p.costs[bucket] | reporting }}</span>
+                  </li>
+                }
+                <li>
+                  <span class="kv-list__label">{{ 'profitability.metrics.directCosts' | t }}</span>
+                  <span class="kv-list__value">{{ p.totalDirectCosts | reporting }}</span>
+                </li>
+                <li class="kv-list__total">
+                  <span class="kv-list__label">{{ 'profitability.metrics.contributionMargin' | t }}</span>
+                  <span class="kv-list__value" [class.text-danger]="p.contributionMargin < 0">{{ p.contributionMargin | reporting }}</span>
+                </li>
+                <li>
+                  <span class="kv-list__label">{{ 'profitability.metrics.grossMargin' | t }}</span>
+                  <span class="kv-list__value" [class.text-danger]="(p.marginRatio ?? 0) < 0">{{ p.marginRatio | pct }}</span>
+                </li>
+                <li>
+                  <span class="kv-list__label">{{ 'profitability.metrics.costPerKm' | t }}</span>
+                  <span class="kv-list__value">{{ p.costPerKm | reporting }}</span>
+                </li>
+                <li>
+                  <span class="kv-list__label">{{ 'profitability.metrics.revenuePerKm' | t }}</span>
+                  <span class="kv-list__value">{{ p.revenuePerKm | reporting }}</span>
+                </li>
+              </ul>
+              <div class="allocation">
+                <div class="split">
+                  <span class="text-sm">
+                    {{ 'profitability.metrics.maintenanceAllocation' | t }}
+                    <span class="badge badge--outline">{{ 'profitability.labels.estimated' | t }}</span>
+                  </span>
+                  <span class="strong num">{{ p.maintenanceAllocation | reporting }}</span>
+                </div>
+                <p class="text-xs muted">{{ 'trips.detail.allocationHint' | t }}</p>
+              </div>
+              <p class="text-xs muted">{{ 'profitability.disclaimer' | t }}</p>
+              <app-simulated-notice [always]="p.usesSimulatedConversion" />
+            </div>
+          }
+        </section>
+
+        <!-- Assignment -->
+        <section class="card">
+          <header class="card__header"><h2 class="card__title">{{ 'trips.detail.assignment' | t }}</h2></header>
+          <ul class="list assignment-list">
+            <li>
+              @if (vehicle(); as veh) {
+                <a class="list-row" [routerLink]="['/vehicles', veh.id]">
+                  <span class="avatar"><app-icon name="truck" [size]="16" /></span>
+                  <span class="list-row__main">
+                    <span class="list-row__title mono">{{ veh.plateNumber }}</span>
+                    <span class="list-row__meta">{{ veh.fleetNumber }} · {{ veh.make }} {{ veh.model }}</span>
+                  </span>
+                  <app-status-badge kind="vehicle" [value]="veh.status" />
+                </a>
+              } @else {
+                <div class="list-row"><span class="list-row__meta">—</span></div>
+              }
+            </li>
+            <li>
+              @if (driver(); as d) {
+                <a class="list-row" [routerLink]="['/drivers', d.id]">
+                  <span class="avatar">{{ d.firstName[0] }}{{ d.lastName[0] }}</span>
+                  <span class="list-row__main">
+                    <span class="list-row__title">{{ d.firstName }} {{ d.lastName }}</span>
+                    <span class="list-row__meta">{{ d.phone }} · {{ 'trips.fields.driver' | t }}</span>
+                  </span>
+                  <app-status-badge kind="driver" [value]="d.status" />
+                </a>
+              } @else {
+                <div class="list-row"><span class="list-row__meta">—</span></div>
+              }
+            </li>
+            @if (t.trailerId || vehicle()?.type === 'truck_tractor') {
+              <li>
+                @if (trailer(); as tr) {
+                  <a class="list-row" [routerLink]="['/trailers', tr.id]">
+                    <span class="avatar"><app-icon name="container" [size]="16" /></span>
+                    <span class="list-row__main">
+                      <span class="list-row__title mono">{{ tr.plateNumber }}</span>
+                      <span class="list-row__meta">{{ 'trailers.types.' + tr.type | t }} · {{ tr.capacityTonnes | num }} {{ 'common.units.tonnes' | t }}</span>
+                    </span>
+                    <app-status-badge kind="trailer" [value]="tr.status" />
+                  </a>
+                } @else {
+                  <div class="list-row">
+                    <span class="avatar"><app-icon name="container" [size]="16" /></span>
+                    <span class="list-row__main"><span class="list-row__meta">{{ 'trips.detail.noTrailer' | t }}</span></span>
+                  </div>
+                }
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- Customer -->
+        <section class="card">
+          <header class="card__header"><h2 class="card__title">{{ 'trips.detail.customer' | t }}</h2></header>
+          @if (customer(); as c) {
+            <div class="card__body">
+              <dl class="dl dl--1">
+                <div>
+                  <dt>{{ 'common.labels.name' | t }}</dt>
+                  <dd><a class="link-button" [routerLink]="['/customers', c.id]">{{ c.name }}</a></dd>
+                </div>
+                <div>
+                  <dt>{{ 'trips.detail.contact' | t }}</dt>
+                  <dd>
+                    {{ c.contactName }}
+                    <span class="cell-sub muted">{{ c.phone }} · <a [href]="'mailto:' + c.email">{{ c.email }}</a></span>
+                  </dd>
+                </div>
+                <div>
+                  <dt>{{ 'trips.detail.paymentTerms' | t }}</dt>
+                  <dd>{{ 'trips.detail.paymentTermsValue' | t: { days: c.paymentTermsDays } }} · {{ c.preferredCurrency }}</dd>
+                </div>
+              </dl>
+            </div>
+          } @else {
+            <div class="card__body"><p class="muted text-sm">—</p></div>
+          }
+        </section>
+
+        <!-- Documents -->
+        <section class="card">
+          <header class="card__header">
+            <h2 class="card__title">{{ 'trips.detail.documents' | t }}</h2>
+            <a class="link-button text-sm" routerLink="/documents" [queryParams]="{ entityType: 'trip', q: t.reference }">{{ 'common.actions.viewAll' | t }}</a>
+          </header>
+          @if (documents().length) {
+            <ul class="list">
+              @for (doc of documents(); track doc.id) {
+                <li class="list-row">
+                  <span class="avatar"><app-icon name="file-text" [size]="16" /></span>
+                  <span class="list-row__main">
+                    <span class="list-row__title">{{ 'documents.types.' + doc.type | t }}</span>
+                    <span class="list-row__meta mono">{{ doc.reference }}</span>
+                  </span>
+                  <app-expiry-badge [date]="doc.expiryDate" relative />
+                </li>
+              }
+            </ul>
+          } @else {
+            <div class="card__body"><p class="muted text-sm">{{ 'trips.detail.noDocuments' | t }}</p></div>
+          }
+        </section>
+      </div>
+    </div>
+
+    <app-trip-status-dialog [trip]="statusTarget()" (closed)="statusTarget.set(null)" />
+    <app-trip-note-dialog [trip]="noteTarget()" (closed)="noteTarget.set(null)" />
+  } @else if (directory.loading()) {
+    <div class="stack" role="status" [attr.aria-label]="'common.states.loading' | t">
+      <span class="skeleton skeleton--title"></span>
+      <section class="card">
+        <div class="card__body stack">
+          <span class="skeleton skeleton--text"></span>
+          <span class="skeleton skeleton--text"></span>
+        </div>
+      </section>
+    </div>
+  } @else {
+    <section class="card">
+      <app-empty-state icon="route" [title]="'common.states.notFoundTitle' | t" [description]="'common.states.notFoundDescription' | t">
+        <a class="btn btn--secondary" routerLink="/trips">{{ 'trips.detail.backToList' | t }}</a>
+      </app-empty-state>
+    </section>
+  }
+</div>

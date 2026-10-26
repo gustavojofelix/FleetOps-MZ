@@ -1,0 +1,60 @@
+@let target = vehicle();
+<app-modal
+  size="sm"
+  [open]="!!target"
+  [title]="'vehicles.statusDialog.title' | t"
+  [description]="target ? ('vehicles.statusDialog.description' | t: { plate: target.plateNumber }) : null"
+  [dismissible]="!saving()"
+  (closed)="closed.emit()"
+>
+  <div class="stack">
+    @if (activeTrip(); as trip) {
+      <p class="alert alert--warning">
+        <app-icon name="triangle-alert" [size]="16" />
+        <span>{{ 'vehicles.statusDialog.activeTripWarning' | t: { trip: trip.reference } }}</span>
+      </p>
+    }
+    <fieldset class="form-reset">
+      <legend class="field__label">{{ 'vehicles.statusDialog.newStatus' | t }}</legend>
+      <div class="stack stack--sm">
+        @for (status of options; track status) {
+          <label class="radio">
+            <input
+              type="radio"
+              name="vehicle-status"
+              [value]="status"
+              [checked]="selected() === status"
+              [disabled]="status === target?.status"
+              (change)="selected.set(status)"
+            />
+            {{ 'vehicles.status.' + status | t }}
+          </label>
+        }
+      </div>
+    </fieldset>
+    <div class="field">
+      <label class="field__label" for="vehicle-status-reason">{{ 'vehicles.statusDialog.reason' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+      <textarea
+        id="vehicle-status-reason"
+        class="textarea"
+        rows="2"
+        maxlength="200"
+        [placeholder]="'vehicles.statusDialog.reasonPlaceholder' | t"
+        [value]="reason()"
+        (input)="reason.set($any($event.target).value)"
+      ></textarea>
+    </div>
+  </div>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="closed.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button
+      type="button"
+      class="btn btn--primary"
+      [class.btn--loading]="saving()"
+      [disabled]="saving() || selected() === target?.status || !!activeTrip()"
+      (click)="confirm()"
+    >
+      {{ 'vehicles.statusDialog.confirm' | t }}
+    </button>
+  </ng-container>
+</app-modal>

@@ -1,0 +1,33 @@
+<header class="page-header">
+  @if (breadcrumbs().length) {
+    <nav class="breadcrumbs" [attr.aria-label]="'navigation.breadcrumb' | t">
+      <ol>
+        @for (crumb of breadcrumbs(); track $index; let last = $last) {
+          <li>
+            @if (crumb.link && !last) {
+              <a [routerLink]="crumb.link">{{ crumb.translate ? (crumb.label | t) : crumb.label }}</a>
+              <app-icon name="chevron-right" [size]="14" class="breadcrumbs__sep" />
+            } @else {
+              <span [attr.aria-current]="last ? 'page' : null">{{ crumb.translate ? (crumb.label | t) : crumb.label }}</span>
+            }
+          </li>
+        }
+      </ol>
+    </nav>
+  }
+
+  <div class="page-header__row">
+    <div class="page-header__text">
+      <div class="page-header__title-row">
+        <h1 class="page-header__title">{{ title() }}</h1>
+        <ng-content select="[meta]" />
+      </div>
+      @if (subtitle()) {
+        <p class="page-header__subtitle">{{ subtitle() }}</p>
+      }
+    </div>
+    <div class="page-header__actions">
+      <ng-content select="[actions]" />
+    </div>
+  </div>
+</header>

@@ -1,0 +1,43 @@
+@let target = trip();
+<app-modal
+  size="sm"
+  [open]="!!target"
+  [title]="'dispatch.delayDialog.title' | t"
+  [description]="target ? ('dispatch.delayDialog.description' | t: { reference: target.reference }) : null"
+  [dismissible]="!saving()"
+  (closed)="closed.emit()"
+>
+  <form id="delay-reason-form" class="stack" novalidate (submit)="$event.preventDefault(); submit()">
+    <div class="field">
+      <label class="field__label" for="delay-reason">
+        {{ 'dispatch.delayDialog.reason' | t }}<span class="field__required" aria-hidden="true">*</span>
+      </label>
+      <textarea
+        id="delay-reason"
+        class="textarea"
+        rows="3"
+        required
+        [attr.maxlength]="maxLength"
+        [attr.aria-invalid]="showError()"
+        [attr.aria-describedby]="showError() ? 'delay-reason-error' : null"
+        [placeholder]="'dispatch.delayDialog.reasonPlaceholder' | t"
+        [value]="reason()"
+        [disabled]="saving()"
+        (input)="reason.set($any($event.target).value)"
+        (blur)="touched.set(true)"
+      ></textarea>
+      @if (showError()) {
+        <p class="field__error" id="delay-reason-error" role="alert">
+          <app-icon name="circle-alert" [size]="14" />
+          <span>{{ 'dispatch.delayDialog.reasonRequired' | t }}</span>
+        </p>
+      }
+    </div>
+  </form>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="closed.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" form="delay-reason-form" class="btn btn--danger" [class.btn--loading]="saving()" [disabled]="saving()">
+      {{ 'dispatch.delayDialog.confirm' | t }}
+    </button>
+  </ng-container>
+</app-modal>

@@ -1,0 +1,399 @@
+<div class="page">
+  @if (vehicle(); as v) {
+    <app-page-header [title]="v.plateNumber" [subtitle]="v.fleetNumber + ' · ' + v.make + ' ' + v.model + ' · ' + v.year" [breadcrumbs]="breadcrumbs()">
+      <ng-container meta>
+        <app-status-badge kind="vehicle" [value]="v.status" />
+      </ng-container>
+      <ng-container actions>
+        <button type="button" class="btn btn--secondary" (click)="statusTarget.set(v)">
+          <app-icon name="refresh" [size]="16" />
+          {{ 'common.actions.changeStatus' | t }}
+        </button>
+        <button type="button" class="btn btn--secondary" (click)="editOpen.set(true)">
+          <app-icon name="pencil" [size]="16" />
+          {{ 'common.actions.edit' | t }}
+        </button>
+        <a class="btn btn--primary" routerLink="/trips/new" [queryParams]="{ vehicleId: v.id }">
+          <app-icon name="plus" [size]="16" />
+          {{ 'vehicles.newTrip' | t }}
+        </a>
+      </ng-container>
+    </app-page-header>
+
+    <div class="grid grid--4">
+      <app-kpi-card icon="gauge" [label]="'vehicles.detail.kpis.odometer' | t" [value]="v.odometerKm | distance" />
+      <app-kpi-card
+        icon="route"
+        [label]="'vehicles.detail.kpis.trips' | t"
+        [value]="kpis().finished | num"
+        [hint]="'vehicles.detail.kpis.tripsHint' | t: { active: kpis().active }"
+      />
+      <app-kpi-card
+        icon="fuel"
+        [label]="'vehicles.detail.kpis.consumption' | t"
+        [value]="consumptionText(kpis().consumption)"
+        [hint]="'vehicles.detail.kpis.consumptionHint' | t: { expected: (v.expectedConsumptionL100km | num: 1) }"
+      />
+      <app-kpi-card
+        icon="wrench"
+        [label]="'vehicles.detail.kpis.maintenanceCost' | t"
+        [value]="kpis().maintenanceCost | reporting: { wholeUnits: true }"
+        [hint]="'vehicles.detail.kpis.maintenanceHint' | t: { count: kpis().maintenanceCount }"
+      />
+    </div>
+
+    <div class="tabs detail-tabs" role="tablist" [attr.aria-label]="v.plateNumber">
+      @for (tab of tabs; track tab; let i = $index) {
+        <button
+          type="button"
+          class="tab"
+          role="tab"
+          [id]="'vehicle-tab-' + tab"
+          [attr.aria-selected]="activeTab() === tab"
+          [attr.aria-controls]="'vehicle-panel-' + tab"
+          [tabindex]="activeTab() === tab ? 0 : -1"
+          (click)="selectTab(tab)"
+          (keydown)="onTabKeydown($event, i)"
+        >
+          {{ 'vehicles.detail.tabs.' + tab | t }}
+          @switch (tab) {
+            @case ('trips') { <span class="tab__count">{{ trips().length }}</span> }
+            @case ('fuel') { <span class="tab__count">{{ fuelRecords().length }}</span> }
+            @case ('maintenance') { <span class="tab__count">{{ maintenance().length }}</span> }
+            @case ('documents') { <span class="tab__count">{{ documents().length }}</span> }
+          }
+        </button>
+      }
+    </div>
+
+    <section role="tabpanel" [id]="'vehicle-panel-' + activeTab()" [attr.aria-labelledby]="'vehicle-tab-' + activeTab()">
+      @switch (activeTab()) {
+        @case ('overview') {
+          <div class="grid grid--main-side">
+            <div class="stack">
+              <section class="card">
+                <header class="card__header"><h2 class="card__title">{{ 'vehicles.detail.details' | t }}</h2></header>
+                <div class="card__body">
+                  <dl class="dl dl--3">
+                    <div><dt>{{ 'vehicles.fields.type' | t }}</dt><dd>{{ 'vehicles.types.' + v.type | t }}</dd></div>
+                    <div><dt>{{ 'vehicles.fields.makeModel' | t }}</dt><dd>{{ v.make }} {{ v.model }}</dd></div>
+                    <div><dt>{{ 'vehicles.fields.year' | t }}</dt><dd>{{ v.year }}</dd></div>
+                    <div><dt>{{ 'vehicles.fields.fuelType' | t }}</dt><dd>{{ 'vehicles.fuelTypes.' + v.fuelType | t }}</dd></div>
+                    <div><dt>{{ 'vehicles.fields.tankCapacity' | t }}</dt><dd>{{ v.tankCapacityL | volume: 0 }}</dd></div>
+                    <div><dt>{{ 'vehicles.fields.expectedConsumption' | t }}</dt><dd>{{ v.expectedConsumptionL100km | num: 1 }} {{ 'common.units.l100km' | t }}</dd></div>
+                    <div><dt>{{ 'vehicles.fields.payload' | t }}</dt><dd>{{ v.payloadTonnes | num: 1 }} {{ 'common.units.tonnes' | t }}</dd></div>
+                    <div><dt>{{ 'vehicles.fields.vin' | t }}</dt><dd class="mono">{{ v.vin || '—' }}</dd></div>
+                    <div><dt>{{ 'vehicles.fields.acquisitionDate' | t }}</dt><dd>{{ v.acquisitionDate | fmtDate: 'medium' }}</dd></div>
+                    @if (nextService(); as service) {
+                      <div class="span-full">
+                        <dt>{{ 'vehicles.detail.nextService' | t }}</dt>
+                        <dd>{{ 'vehicles.detail.nextServiceValue' | t: { km: (service.nextServiceKm | distance), date: (service.nextServiceDate | fmtDate: 'medium') } }}</dd>
+                      </div>
+                    }
+                    @if (v.notes) {
+                      <div class="span-full"><dt>{{ 'vehicles.fields.notes' | t }}</dt><dd>{{ v.notes }}</dd></div>
+                    }
+                  </dl>
+                </div>
+              </section>
+
+              <section class="card">
+                <header class="card__header"><h2 class="card__title">{{ 'vehicles.detail.statusHistory' | t }}</h2></header>
+                <div class="card__body">
+                  @if (v.statusHistory.length) {
+                    <ol class="timeline">
+                      @for (change of v.statusHistory.slice().reverse(); track $index) {
+                        <li class="timeline__item">
+                          <span class="timeline__marker timeline__marker--accent"><app-icon name="circle-dot" [size]="10" /></span>
+                          <div>
+                            <p class="timeline__title">
+                              {{ 'vehicles.detail.statusChange' | t: { from: ('vehicles.status.' + change.from | t), to: ('vehicles.status.' + change.to | t) } }}
+                            </p>
+                            <p class="timeline__meta">{{ change.date | fmtDate: 'medium' }}</p>
+                            @if (change.reason) {
+                              <p class="timeline__note">{{ change.reason }}</p>
+                            }
+                          </div>
+                        </li>
+                      }
+                    </ol>
+                  } @else {
+                    <p class="muted text-sm">{{ 'vehicles.detail.noHistory' | t }}</p>
+                  }
+                </div>
+              </section>
+            </div>
+
+            <div class="stack">
+              <section class="card">
+                <header class="card__header"><h2 class="card__title">{{ 'vehicles.detail.assignment' | t }}</h2></header>
+                <ul class="list assignment-list">
+                  <li>
+                    @if (driver(); as d) {
+                      <a class="list-row" [routerLink]="['/drivers', d.id]">
+                        <span class="avatar">{{ d.firstName[0] }}{{ d.lastName[0] }}</span>
+                        <span class="list-row__main">
+                          <span class="list-row__title">{{ d.firstName }} {{ d.lastName }}</span>
+                          <span class="list-row__meta">{{ 'vehicles.fields.assignedDriver' | t }} · {{ d.phone }}</span>
+                        </span>
+                        <app-status-badge kind="driver" [value]="d.status" />
+                      </a>
+                    } @else {
+                      <div class="list-row">
+                        <span class="avatar"><app-icon name="user" [size]="16" /></span>
+                        <span class="list-row__main"><span class="list-row__meta">{{ 'vehicles.noAssignedDriver' | t }}</span></span>
+                      </div>
+                    }
+                  </li>
+                  @if (v.type === 'truck_tractor') {
+                    <li>
+                      @if (trailer(); as t) {
+                        <a class="list-row" [routerLink]="['/trailers', t.id]">
+                          <span class="avatar"><app-icon name="container" [size]="16" /></span>
+                          <span class="list-row__main">
+                            <span class="list-row__title">{{ t.plateNumber }}</span>
+                            <span class="list-row__meta">{{ 'trailers.types.' + t.type | t }} · {{ t.capacityTonnes | num }} {{ 'common.units.tonnes' | t }}</span>
+                          </span>
+                          <app-status-badge kind="trailer" [value]="t.status" />
+                        </a>
+                      } @else {
+                        <div class="list-row">
+                          <span class="avatar"><app-icon name="container" [size]="16" /></span>
+                          <span class="list-row__main"><span class="list-row__meta">{{ 'vehicles.noTrailer' | t }}</span></span>
+                        </div>
+                      }
+                    </li>
+                  }
+                  @if (currentTrip(); as trip) {
+                    <li>
+                      <a class="list-row" [routerLink]="['/trips', trip.id]">
+                        <span class="avatar"><app-icon name="route" [size]="16" /></span>
+                        <span class="list-row__main">
+                          <span class="list-row__title">{{ trip.reference }}</span>
+                          <span class="list-row__meta">{{ 'vehicles.detail.currentTrip' | t }} · {{ directory.routeLabel(trip) }}</span>
+                        </span>
+                        <app-status-badge kind="trip" [value]="trip.status" />
+                      </a>
+                    </li>
+                  }
+                </ul>
+              </section>
+
+              <section class="card">
+                <header class="card__header">
+                  <h2 class="card__title">{{ 'vehicles.detail.documentsSummary' | t }}</h2>
+                  <button type="button" class="link-button text-sm" (click)="selectTab('documents')">{{ 'common.actions.viewAll' | t }}</button>
+                </header>
+                @if (documents().length) {
+                  <ul class="list">
+                    @for (doc of documents().slice(0, 4); track doc.id) {
+                      <li class="list-row">
+                        <span class="list-row__main">
+                          <span class="list-row__title">{{ 'documents.types.' + doc.type | t }}</span>
+                          <span class="list-row__meta">{{ doc.expiryDate ? (doc.expiryDate | fmtDate) : ('documents.status.no_expiry' | t) }}</span>
+                        </span>
+                        <app-expiry-badge [date]="doc.expiryDate" relative />
+                      </li>
+                    }
+                  </ul>
+                } @else {
+                  <div class="card__body"><p class="muted text-sm">{{ 'vehicles.detail.noDocuments' | t }}</p></div>
+                }
+              </section>
+            </div>
+          </div>
+        }
+
+        @case ('trips') {
+          <section class="card">
+            @if (trips().length) {
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">{{ 'common.labels.trip' | t }}</th>
+                      <th scope="col">{{ 'common.labels.route' | t }}</th>
+                      <th scope="col">{{ 'common.labels.customer' | t }}</th>
+                      <th scope="col">{{ 'common.labels.driver' | t }}</th>
+                      <th scope="col">{{ 'common.labels.date' | t }}</th>
+                      <th scope="col">{{ 'common.labels.status' | t }}</th>
+                      <th scope="col" class="num">{{ 'profitability.metrics.revenue' | t }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (trip of trips(); track trip.id) {
+                      <tr>
+                        <td class="data-table__primary"><a class="cell-link mono" [routerLink]="['/trips', trip.id]">{{ trip.reference }}</a></td>
+                        <td [attr.data-label]="'common.labels.route' | t">{{ directory.routeLabel(trip) }}</td>
+                        <td [attr.data-label]="'common.labels.customer' | t">{{ directory.customerName(trip.customerId) }}</td>
+                        <td [attr.data-label]="'common.labels.driver' | t">{{ directory.driverName(trip.driverId) }}</td>
+                        <td [attr.data-label]="'common.labels.date' | t">{{ trip.plannedDeparture | fmtDate }}</td>
+                        <td [attr.data-label]="'common.labels.status' | t"><app-status-badge kind="trip" [value]="trip.status" /></td>
+                        <td class="num" [attr.data-label]="'profitability.metrics.revenue' | t"><app-money [value]="trip.revenue" /></td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <app-empty-state icon="route" compact [title]="'vehicles.detail.noTrips' | t">
+                <a class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ vehicleId: v.id }">{{ 'vehicles.newTrip' | t }}</a>
+              </app-empty-state>
+            }
+          </section>
+        }
+
+        @case ('fuel') {
+          <section class="card">
+            @if (fuelRecords().length) {
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">{{ 'common.labels.date' | t }}</th>
+                      <th scope="col">{{ 'common.labels.location' | t }}</th>
+                      <th scope="col" class="num">{{ 'vehicles.fields.odometer' | t }}</th>
+                      <th scope="col" class="num">{{ 'common.units.litres' | t }}</th>
+                      <th scope="col" class="num">{{ 'common.units.l100km' | t }}</th>
+                      <th scope="col" class="num">{{ 'common.labels.total' | t }}</th>
+                      <th scope="col">{{ 'common.labels.trip' | t }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (entry of fuelRecords(); track entry.record.id) {
+                      <tr>
+                        <td class="data-table__primary">
+                          {{ entry.record.timestamp | fmtDate: 'datetime' }}
+                          @if (entry.analysis?.warnings?.length) {
+                            <span class="cell-sub text-warning">
+                              <app-icon name="triangle-alert" [size]="12" />
+                              {{ 'fuel.warnings.' + entry.analysis!.warnings[0].code | t: entry.analysis!.warnings[0].params }}
+                            </span>
+                          }
+                        </td>
+                        <td [attr.data-label]="'common.labels.location' | t">{{ entry.record.station }}<span class="cell-sub">{{ entry.record.location }}</span></td>
+                        <td class="num" [attr.data-label]="'vehicles.fields.odometer' | t">{{ entry.record.odometerKm | distance }}</td>
+                        <td class="num" [attr.data-label]="'common.units.litres' | t">{{ entry.record.litres | volume }}</td>
+                        <td class="num" [attr.data-label]="'common.units.l100km' | t">{{ entry.analysis?.consumptionL100km | num: 1 }}</td>
+                        <td class="num" [attr.data-label]="'common.labels.total' | t"><app-money [value]="entry.record.totalAmount" /></td>
+                        <td [attr.data-label]="'common.labels.trip' | t">
+                          @if (entry.record.tripId) {
+                            <a class="cell-link mono" [routerLink]="['/trips', entry.record.tripId]">{{ directory.tripReference(entry.record.tripId) }}</a>
+                          } @else {
+                            <span class="subtle">—</span>
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <app-empty-state icon="fuel" compact [title]="'vehicles.detail.noFuel' | t" />
+            }
+          </section>
+        }
+
+        @case ('maintenance') {
+          <section class="card">
+            @if (maintenance().length) {
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">{{ 'maintenance.singular' | t }}</th>
+                      <th scope="col">{{ 'common.labels.type' | t }}</th>
+                      <th scope="col">{{ 'common.labels.date' | t }}</th>
+                      <th scope="col">{{ 'common.labels.status' | t }}</th>
+                      <th scope="col" class="num">{{ 'common.labels.total' | t }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (entry of maintenance(); track entry.record.id) {
+                      <tr>
+                        <td class="data-table__primary">
+                          <span class="cell-strong mono">{{ entry.record.workOrderNumber }}</span>
+                          <span class="cell-sub">{{ entry.record.description }}</span>
+                        </td>
+                        <td [attr.data-label]="'common.labels.type' | t">{{ 'maintenance.types.' + entry.record.type | t }}</td>
+                        <td [attr.data-label]="'common.labels.date' | t">{{ (entry.record.completedDate ?? entry.record.plannedDate) | fmtDate }}</td>
+                        <td [attr.data-label]="'common.labels.status' | t"><app-status-badge kind="maintenance" [value]="entry.status" /></td>
+                        <td class="num" [attr.data-label]="'common.labels.total' | t">{{ entry.total | amount: entry.record.currency }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <app-empty-state icon="wrench" compact [title]="'vehicles.detail.noMaintenance' | t" />
+            }
+          </section>
+        }
+
+        @case ('documents') {
+          <section class="card">
+            @if (documents().length) {
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">{{ 'documents.singular' | t }}</th>
+                      <th scope="col">{{ 'common.labels.reference' | t }}</th>
+                      <th scope="col">{{ 'common.labels.date' | t }}</th>
+                      <th scope="col">{{ 'common.labels.status' | t }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (doc of documents(); track doc.id) {
+                      <tr>
+                        <td class="data-table__primary">
+                          <span class="cell-strong">{{ 'documents.types.' + doc.type | t }}</span>
+                          <span class="cell-sub">{{ doc.issuer }}</span>
+                        </td>
+                        <td class="mono" [attr.data-label]="'common.labels.reference' | t">{{ doc.reference }}</td>
+                        <td [attr.data-label]="'common.labels.date' | t">{{ doc.expiryDate ? (doc.expiryDate | fmtDate) : '—' }}</td>
+                        <td [attr.data-label]="'common.labels.status' | t"><app-expiry-badge [date]="doc.expiryDate" relative /></td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <app-empty-state icon="file-text" compact [title]="'vehicles.detail.noDocuments' | t">
+                <a class="btn btn--secondary btn--sm" routerLink="/documents">{{ 'documents.title' | t }}</a>
+              </app-empty-state>
+            }
+          </section>
+        }
+      }
+    </section>
+
+    <app-modal
+      variant="drawer"
+      [open]="editOpen()"
+      [title]="'vehicles.edit' | t"
+      [description]="'vehicles.editDescription' | t: { plate: v.plateNumber }"
+      (closed)="editOpen.set(false)"
+    >
+      @if (editOpen()) {
+        <app-vehicle-form [vehicle]="v" (saved)="onSaved($event)" (cancelled)="editOpen.set(false)" />
+      }
+    </app-modal>
+    <app-vehicle-status-dialog [vehicle]="statusTarget()" (closed)="statusTarget.set(null)" />
+  } @else if (directory.loading()) {
+    <div class="stack" role="status" [attr.aria-label]="'common.states.loading' | t">
+      <span class="skeleton skeleton--title"></span>
+      <div class="grid grid--4">
+        @for (i of [1, 2, 3, 4]; track i) {
+          <app-kpi-card label="…" value="" [loading]="true" />
+        }
+      </div>
+    </div>
+  } @else {
+    <section class="card">
+      <app-empty-state icon="truck" [title]="'common.states.notFoundTitle' | t" [description]="'common.states.notFoundDescription' | t">
+        <a class="btn btn--secondary" routerLink="/vehicles">{{ 'vehicles.detail.backToList' | t }}</a>
+      </app-empty-state>
+    </section>
+  }
+</div>

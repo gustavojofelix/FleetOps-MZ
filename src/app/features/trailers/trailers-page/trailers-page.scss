@@ -1,0 +1,9 @@
+@use 'mixins' as *;
+
+.status-tabs {
+  padding: 0 var(--space-3);
+
+  @include up(md) {
+    padding: 0 var(--space-4);
+  }
+}

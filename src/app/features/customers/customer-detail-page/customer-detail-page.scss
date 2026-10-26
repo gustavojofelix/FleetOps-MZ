@@ -1,0 +1,117 @@
+@use 'mixins' as *;
+
+.detail-tabs {
+  margin-bottom: calc(-1 * var(--space-1));
+}
+
+.contact-list {
+  margin-top: var(--space-2);
+}
+
+// Outstanding balance tile: same visual language as app-kpi-card, plus a credit meter.
+.credit-kpi {
+  @include surface-card;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  padding: var(--space-4);
+
+  @include up(md) {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .meter {
+    margin-top: 2px;
+  }
+}
+
+.credit-kpi__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.credit-kpi__label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  @include truncate;
+}
+
+.credit-kpi__value {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+
+  @include up(md) {
+    font-size: var(--text-2xl);
+  }
+}
+
+.credit-kpi__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.demo-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  border: 1px dashed var(--color-border-strong);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  cursor: help;
+  vertical-align: middle;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.route-list {
+  margin: 0;
+  padding: var(--space-2) 0;
+  list-style: none;
+}
+
+.route-list__item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-3) var(--space-4);
+
+  @include up(md) {
+    padding: var(--space-3) var(--space-5);
+  }
+
+  & + & {
+    border-top: 1px solid var(--color-divider);
+  }
+}
+
+.route-list__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.route-list__label {
+  min-width: 0;
+  font-weight: 500;
+  @include truncate;
+}

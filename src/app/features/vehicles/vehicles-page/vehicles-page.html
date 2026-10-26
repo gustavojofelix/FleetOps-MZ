@@ -1,0 +1,233 @@
+<div class="page">
+  <app-page-header [title]="'vehicles.title' | t" [subtitle]="subtitle()">
+    <ng-container actions>
+      <button type="button" class="btn btn--secondary" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="plus" [size]="16" />
+        {{ 'vehicles.new' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  <section class="card">
+    <div class="tabs status-tabs" role="tablist" [attr.aria-label]="'common.labels.status' | t">
+      <button type="button" class="tab" role="tab" [attr.aria-selected]="!statusFilter()" (click)="setStatus(null)">
+        {{ 'vehicles.allStatuses' | t }}
+        <span class="tab__count">{{ counts().total }}</span>
+      </button>
+      @for (status of statuses; track status) {
+        <button type="button" class="tab" role="tab" [attr.aria-selected]="statusFilter() === status" (click)="setStatus(status)">
+          {{ 'vehicles.status.' + status | t }}
+          <span class="tab__count">{{ counts().byStatus.get(status) ?? 0 }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar__search input-group">
+        <app-icon class="input-group__icon" name="search" [size]="16" />
+        <input
+          type="search"
+          class="input"
+          [placeholder]="'vehicles.searchPlaceholder' | t"
+          [attr.aria-label]="'common.actions.search' | t"
+          [value]="list.searchInput()"
+          (input)="list.setSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="toolbar__filters">
+        <select class="select" [attr.aria-label]="'vehicles.fields.type' | t" (change)="setType($event)">
+          <option value="" [selected]="!typeFilter()">{{ 'vehicles.allTypes' | t }}</option>
+          @for (type of types; track type) {
+            <option [value]="type" [selected]="typeFilter() === type">{{ 'vehicles.types.' + type | t }}</option>
+          }
+        </select>
+        @if (hasFilters()) {
+          <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+            <app-icon name="x" [size]="16" />
+            {{ 'common.actions.clearFilters' | t }}
+          </button>
+        }
+      </div>
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: query.value()?.total ?? 0 } }}</span>
+      <div class="segmented view-toggle" role="group" [attr.aria-label]="'vehicles.viewList' | t">
+        <button type="button" [attr.aria-pressed]="view() === 'list'" [attr.aria-label]="'vehicles.viewList' | t" (click)="view.set('list')">
+          <app-icon name="list" [size]="16" />
+        </button>
+        <button type="button" [attr.aria-pressed]="view() === 'grid'" [attr.aria-label]="'vehicles.viewGrid' | t" (click)="view.set('grid')">
+          <app-icon name="grid" [size]="16" />
+        </button>
+      </div>
+    </div>
+
+    @if (query.initialLoading()) {
+      <app-table-skeleton [columns]="7" />
+    } @else if (query.error()) {
+      <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+        <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+      </app-empty-state>
+    } @else {
+      @let result = query.value();
+      @if (!result?.items?.length) {
+        @if (hasFilters()) {
+          <app-empty-state icon="search" [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+            <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+          </app-empty-state>
+        } @else {
+          <app-empty-state icon="truck" [title]="'common.states.emptyTitle' | t" [description]="'vehicles.empty' | t">
+            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'vehicles.new' | t }}</button>
+          </app-empty-state>
+        }
+      } @else if (view() === 'list') {
+        <div class="table-wrap" [class.is-refreshing]="query.loading()">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('plateNumber')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('plateNumber')" (click)="list.toggleSort('plateNumber')">
+                    {{ 'vehicles.columns.vehicle' | t }}
+                    <app-icon [name]="list.sortIcon('plateNumber')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'vehicles.columns.type' | t }}</th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('status')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('status')" (click)="list.toggleSort('status')">
+                    {{ 'vehicles.columns.status' | t }}
+                    <app-icon [name]="list.sortIcon('status')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'vehicles.columns.driver' | t }}</th>
+                <th scope="col">{{ 'vehicles.columns.trailer' | t }}</th>
+                <th scope="col" class="num" [attr.aria-sort]="list.ariaSort('odometerKm')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('odometerKm')" (click)="list.toggleSort('odometerKm')">
+                    {{ 'vehicles.columns.odometer' | t }}
+                    <app-icon [name]="list.sortIcon('odometerKm')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'vehicles.columns.documents' | t }}</th>
+                <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (vehicle of result!.items; track vehicle.id) {
+                <tr>
+                  <td class="data-table__primary">
+                    <a class="cell-link" [routerLink]="['/vehicles', vehicle.id]">{{ vehicle.plateNumber }}</a>
+                    <span class="cell-sub">{{ vehicle.fleetNumber }} · {{ vehicle.make }} {{ vehicle.model }}</span>
+                  </td>
+                  <td [attr.data-label]="'vehicles.columns.type' | t">{{ 'vehicles.types.' + vehicle.type | t }}</td>
+                  <td [attr.data-label]="'vehicles.columns.status' | t"><app-status-badge kind="vehicle" [value]="vehicle.status" /></td>
+                  <td [attr.data-label]="'vehicles.columns.driver' | t">
+                    @if (vehicle.assignedDriverId) {
+                      <a class="cell-link" [routerLink]="['/drivers', vehicle.assignedDriverId]">{{ directory.driverName(vehicle.assignedDriverId) }}</a>
+                    } @else {
+                      <span class="subtle">{{ 'common.labels.unassigned' | t }}</span>
+                    }
+                  </td>
+                  <td [attr.data-label]="'vehicles.columns.trailer' | t">
+                    @if (directory.trailer(vehicle.linkedTrailerId); as trailer) {
+                      <a class="cell-link" [routerLink]="['/trailers', trailer.id]">{{ trailer.plateNumber }}</a>
+                    } @else {
+                      <span class="subtle">—</span>
+                    }
+                  </td>
+                  <td class="num" [attr.data-label]="'vehicles.columns.odometer' | t">{{ vehicle.odometerKm | distance }}</td>
+                  <td [attr.data-label]="'vehicles.columns.documents' | t">
+                    @if (documentStatus().get(vehicle.id); as status) {
+                      <app-status-badge kind="document" [value]="status" />
+                    } @else {
+                      <span class="subtle">—</span>
+                    }
+                  </td>
+                  <td class="data-table__actions">
+                    <app-dropdown align="end">
+                      <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + vehicle.plateNumber">
+                        <app-icon name="ellipsis" [size]="16" />
+                      </button>
+                      <div dropdownMenu>
+                        <a class="menu__item" role="menuitem" [routerLink]="['/vehicles', vehicle.id]">
+                          <app-icon name="eye" [size]="16" /> {{ 'common.actions.viewDetails' | t }}
+                        </a>
+                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(vehicle)">
+                          <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                        </button>
+                        <button type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(vehicle)">
+                          <app-icon name="refresh" [size]="16" /> {{ 'common.actions.changeStatus' | t }}
+                        </button>
+                        <a class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ vehicleId: vehicle.id }">
+                          <app-icon name="route" [size]="16" /> {{ 'vehicles.newTrip' | t }}
+                        </a>
+                        <div class="menu__separator"></div>
+                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(vehicle)">
+                          <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                        </button>
+                      </div>
+                    </app-dropdown>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <ul class="vehicle-grid" [class.is-refreshing]="query.loading()">
+          @for (vehicle of result!.items; track vehicle.id) {
+            <li class="vehicle-card">
+              <div class="vehicle-card__head">
+                <span class="vehicle-card__icon"><app-icon name="truck" [size]="20" /></span>
+                <div class="vehicle-card__title">
+                  <a class="cell-link" [routerLink]="['/vehicles', vehicle.id]">{{ vehicle.plateNumber }}</a>
+                  <span class="subtle text-sm">{{ vehicle.fleetNumber }}</span>
+                </div>
+                <app-status-badge kind="vehicle" [value]="vehicle.status" />
+              </div>
+              <p class="vehicle-card__model">{{ vehicle.make }} {{ vehicle.model }} · {{ vehicle.year }}</p>
+              <dl class="vehicle-card__facts">
+                <div>
+                  <dt>{{ 'vehicles.columns.driver' | t }}</dt>
+                  <dd>{{ vehicle.assignedDriverId ? directory.driverName(vehicle.assignedDriverId) : ('common.labels.unassigned' | t) }}</dd>
+                </div>
+                <div>
+                  <dt>{{ 'vehicles.columns.odometer' | t }}</dt>
+                  <dd class="num">{{ vehicle.odometerKm | distance }}</dd>
+                </div>
+              </dl>
+              <div class="vehicle-card__actions">
+                <a class="btn btn--secondary btn--sm" [routerLink]="['/vehicles', vehicle.id]">{{ 'common.actions.viewDetails' | t }}</a>
+                <button type="button" class="btn btn--ghost btn--sm" (click)="openEdit(vehicle)">{{ 'common.actions.edit' | t }}</button>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+
+      @if (result && result.total > 0) {
+        <app-pagination
+          [page]="result.page"
+          [pageSize]="list.pageSize()"
+          [total]="result.total"
+          (pageChange)="list.page.set($event)"
+          (pageSizeChange)="list.setPageSize($event)"
+        />
+      }
+    }
+  </section>
+</div>
+
+<app-modal
+  variant="drawer"
+  [open]="formOpen()"
+  [title]="(editing() ? 'vehicles.edit' : 'vehicles.new') | t"
+  [description]="editing() ? ('vehicles.editDescription' | t: { plate: editing()!.plateNumber }) : ('vehicles.newDescription' | t)"
+  (closed)="formOpen.set(false)"
+>
+  @if (formOpen()) {
+    <app-vehicle-form [vehicle]="editing()" (saved)="onSaved($event, !editing())" (cancelled)="formOpen.set(false)" />
+  }
+</app-modal>
+
+<app-vehicle-status-dialog [vehicle]="statusTarget()" (closed)="statusTarget.set(null)" />

@@ -1,0 +1,31 @@
+@use 'mixins' as *;
+
+.quick-tabs {
+  padding: 0 var(--space-3);
+
+  @include up(md) {
+    padding: 0 var(--space-4);
+  }
+}
+
+.route-cell {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.delay-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.provisional {
+  border-radius: var(--radius-xs);
+  font-size: var(--text-xs);
+  color: var(--color-warning-text);
+  cursor: help;
+}

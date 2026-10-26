@@ -1,0 +1,319 @@
+@use 'mixins' as *;
+
+.card {
+  @include surface-card;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  &--flush > .card__body {
+    padding: 0;
+  }
+
+  &--interactive {
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      box-shadow var(--duration-fast) var(--ease-standard);
+
+    &:hover {
+      border-color: var(--color-border-strong);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+}
+
+.card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4) 0;
+
+  @include up(md) {
+    padding: var(--space-5) var(--space-5) 0;
+  }
+
+  &--bordered {
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-divider);
+  }
+}
+
+.card__title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.card__subtitle {
+  margin-top: 2px;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+.card__body {
+  padding: var(--space-4);
+  flex: 1;
+  min-width: 0;
+
+  @include up(md) {
+    padding: var(--space-5);
+  }
+}
+
+.card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-divider);
+  font-size: var(--text-sm);
+
+  @include up(md) {
+    padding: var(--space-3) var(--space-5);
+  }
+}
+
+/// Description list for detail pages: <dl class="dl"><div><dt/><dd/></div></dl>
+.dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4) var(--space-6);
+  margin: 0;
+
+  @include up(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  &--3 {
+    @include up(lg) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  &--1 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  > div {
+    min-width: 0;
+  }
+
+  dt {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  dd {
+    margin: 4px 0 0;
+    font-size: var(--text-base);
+    color: var(--color-text);
+    overflow-wrap: anywhere;
+  }
+}
+
+/// Inline key/value rows (cost summaries).
+.kv-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li,
+  > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-divider);
+    font-size: var(--text-base);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  .kv-list__label {
+    color: var(--color-text-secondary);
+  }
+
+  .kv-list__value {
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    text-align: right;
+  }
+
+  .kv-list__total {
+    font-weight: 600;
+    border-top: 1px solid var(--color-border-strong);
+  }
+}
+
+/// Simple list of rows inside a card (recent trips, upcoming maintenance).
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  > li {
+    border-bottom: 1px solid var(--color-divider);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+
+  @include up(md) {
+    padding: var(--space-3) var(--space-5);
+  }
+
+  &:is(a, button) {
+    // Keep the row padding: reset only the native button chrome.
+    appearance: none;
+    background: none;
+    border: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    color: inherit;
+    transition: background-color var(--duration-fast) var(--ease-standard);
+
+    &:hover {
+      background: var(--color-surface-hover);
+      text-decoration: none;
+    }
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    display: block;
+    font-weight: 500;
+    @include truncate;
+  }
+
+  &__meta {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    @include truncate;
+  }
+
+  &__aside {
+    flex-shrink: 0;
+    text-align: right;
+    font-size: var(--text-sm);
+  }
+}
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+
+  &__title {
+    font-weight: 600;
+  }
+
+  &--info {
+    background: var(--color-info-soft);
+    border-color: transparent;
+    color: var(--color-info-text);
+  }
+
+  &--warning {
+    background: var(--color-warning-soft);
+    border-color: transparent;
+    color: var(--color-warning-text);
+  }
+
+  &--danger {
+    background: var(--color-danger-soft);
+    border-color: transparent;
+    color: var(--color-danger-text);
+  }
+
+  &--success {
+    background: var(--color-success-soft);
+    border-color: transparent;
+    color: var(--color-success-text);
+  }
+
+  > app-icon {
+    margin-top: 1px;
+    flex-shrink: 0;
+  }
+}
+
+/// Horizontal meter. Set --value (0–100) inline via [style.--value].
+.meter {
+  position: relative;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft-strong);
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: calc(var(--value, 0) * 1%);
+    border-radius: inherit;
+    background: var(--color-accent);
+  }
+
+  &--warning {
+    background: var(--color-warning-soft);
+
+    &::after {
+      background: var(--color-warning);
+    }
+  }
+
+  &--danger {
+    background: var(--color-danger-soft);
+
+    &::after {
+      background: var(--color-danger);
+    }
+  }
+}

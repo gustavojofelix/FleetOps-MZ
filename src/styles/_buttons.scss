@@ -1,0 +1,184 @@
+@use 'mixins' as *;
+
+.btn {
+  --btn-bg: var(--color-surface);
+  --btn-bg-hover: var(--color-surface-hover);
+  --btn-fg: var(--color-text);
+  --btn-border: var(--color-border-strong);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--control-height);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--btn-border);
+  border-radius: var(--radius-md);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: var(--text-base);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  box-shadow: var(--shadow-xs);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+
+  &:hover:not(:disabled, [aria-disabled='true']) {
+    background: var(--btn-bg-hover);
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  lucide-icon,
+  app-icon {
+    flex-shrink: 0;
+  }
+
+  &--primary {
+    --btn-bg: var(--color-accent);
+    --btn-bg-hover: var(--color-accent-hover);
+    --btn-fg: var(--color-on-accent);
+    --btn-border: var(--color-accent);
+  }
+
+  &--secondary {
+    --btn-bg: var(--color-surface);
+  }
+
+  &--ghost {
+    --btn-bg: transparent;
+    --btn-bg-hover: var(--color-surface-hover);
+    --btn-border: transparent;
+    box-shadow: none;
+  }
+
+  &--danger {
+    --btn-bg: var(--color-danger);
+    --btn-bg-hover: var(--color-danger-hover);
+    --btn-fg: var(--color-on-danger);
+    --btn-border: var(--color-danger);
+  }
+
+  &--danger-ghost {
+    --btn-bg: transparent;
+    --btn-bg-hover: var(--color-danger-soft);
+    --btn-fg: var(--color-danger-text);
+    --btn-border: transparent;
+    box-shadow: none;
+  }
+
+  &--sm {
+    height: var(--control-height-sm);
+    padding: 0 var(--space-2);
+    font-size: var(--text-sm);
+    border-radius: var(--radius-sm);
+  }
+
+  &--lg {
+    height: var(--control-height-lg);
+    padding: 0 var(--space-5);
+    font-size: var(--text-md);
+  }
+
+  &--icon {
+    width: var(--control-height);
+    padding: 0;
+
+    &.btn--sm {
+      width: var(--control-height-sm);
+    }
+  }
+
+  &--block {
+    width: 100%;
+  }
+
+  &--loading {
+    color: transparent !important;
+    pointer-events: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--btn-fg);
+      border-right-color: transparent;
+      animation: btn-spin 0.7s linear infinite;
+    }
+  }
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/// Segmented control (list/grid toggle, period presets).
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+
+  button {
+    @include reset-button;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--color-text);
+    }
+
+    &[aria-pressed='true'],
+    &[aria-selected='true'] {
+      background: var(--color-surface);
+      color: var(--color-text);
+      box-shadow: var(--shadow-sm);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+  }
+}

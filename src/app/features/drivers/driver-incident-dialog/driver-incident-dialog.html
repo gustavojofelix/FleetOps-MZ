@@ -1,0 +1,65 @@
+<app-modal
+  [open]="true"
+  [title]="'drivers.incidentForm.title' | t"
+  [description]="'drivers.incidentForm.description' | t: { name: name() }"
+  [dismissible]="!saving()"
+  (closed)="closed.emit()"
+>
+  <form id="driver-incident-form" class="stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <fieldset class="form-reset" [disabled]="saving()">
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="inc-date">{{ 'drivers.incidentForm.date' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="inc-date" class="input" type="date" formControlName="date" [max]="today" />
+          <app-field-error [control]="form.controls.date" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="inc-type">{{ 'drivers.incidentForm.type' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <select id="inc-type" class="select" formControlName="type">
+            @for (type of types; track type) {
+              <option [value]="type">{{ 'drivers.incidentTypes.' + type | t }}</option>
+            }
+          </select>
+        </div>
+        <div class="field field--full">
+          <span class="field__label" id="inc-severity-label">{{ 'drivers.incidentForm.severity' | t }}</span>
+          <div class="cluster" role="radiogroup" aria-labelledby="inc-severity-label">
+            @for (severity of severities; track severity) {
+              <label class="radio">
+                <input type="radio" formControlName="severity" [value]="severity" />
+                {{ 'drivers.severity.' + severity | t }}
+              </label>
+            }
+          </div>
+        </div>
+        <div class="field field--full">
+          <label class="field__label" for="inc-trip">{{ 'drivers.incidentForm.trip' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+          <select id="inc-trip" class="select" formControlName="tripId">
+            <option value="">{{ 'drivers.incidentForm.noTrip' | t }}</option>
+            @for (option of tripOptions(); track option.id) {
+              <option [value]="option.id">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+        <div class="field field--full">
+          <label class="field__label" for="inc-desc">{{ 'drivers.incidentForm.details' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <textarea
+            id="inc-desc"
+            class="textarea"
+            rows="3"
+            maxlength="300"
+            formControlName="description"
+            [placeholder]="'drivers.incidentForm.descriptionPlaceholder' | t"
+          ></textarea>
+          <app-field-error [control]="form.controls.description" />
+        </div>
+      </div>
+    </fieldset>
+  </form>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="closed.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" form="driver-incident-form" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">
+      {{ 'drivers.incidentForm.submit' | t }}
+    </button>
+  </ng-container>
+</app-modal>

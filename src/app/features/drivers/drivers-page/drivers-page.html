@@ -1,0 +1,194 @@
+<div class="page">
+  <app-page-header [title]="'drivers.title' | t" [subtitle]="subtitle()">
+    <ng-container actions>
+      <button type="button" class="btn btn--secondary" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="user-plus" [size]="16" />
+        {{ 'drivers.new' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  <section class="card">
+    <div class="tabs status-tabs" role="tablist" [attr.aria-label]="'common.labels.status' | t">
+      <button type="button" class="tab" role="tab" [attr.aria-selected]="!statusFilter()" (click)="setStatus(null)">
+        {{ 'drivers.allStatuses' | t }}
+        <span class="tab__count">{{ counts().total }}</span>
+      </button>
+      @for (status of statuses; track status) {
+        <button type="button" class="tab" role="tab" [attr.aria-selected]="statusFilter() === status" (click)="setStatus(status)">
+          {{ 'drivers.status.' + status | t }}
+          <span class="tab__count">{{ counts().byStatus.get(status) ?? 0 }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbar__search input-group">
+        <app-icon class="input-group__icon" name="search" [size]="16" />
+        <input
+          type="search"
+          class="input"
+          [placeholder]="'drivers.searchPlaceholder' | t"
+          [attr.aria-label]="'common.actions.search' | t"
+          [value]="list.searchInput()"
+          (input)="list.setSearch($any($event.target).value)"
+        />
+      </div>
+      @if (hasFilters()) {
+        <div class="toolbar__filters">
+          <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+            <app-icon name="x" [size]="16" />
+            {{ 'common.actions.clearFilters' | t }}
+          </button>
+        </div>
+      }
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: query.value()?.total ?? 0 } }}</span>
+    </div>
+
+    @if (query.initialLoading()) {
+      <app-table-skeleton [columns]="6" />
+    } @else if (query.error()) {
+      <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+        <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+      </app-empty-state>
+    } @else {
+      @let result = query.value();
+      @if (!result?.items?.length) {
+        @if (hasFilters()) {
+          <app-empty-state icon="search" [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+            <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+          </app-empty-state>
+        } @else {
+          <app-empty-state icon="users" [title]="'common.states.emptyTitle' | t" [description]="'drivers.empty' | t">
+            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'drivers.new' | t }}</button>
+          </app-empty-state>
+        }
+      } @else {
+        <div class="table-wrap" [class.is-refreshing]="query.loading()">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('name')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('name')" (click)="list.toggleSort('name')">
+                    {{ 'drivers.columns.driver' | t }}
+                    <app-icon [name]="list.sortIcon('name')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'drivers.columns.contact' | t }}</th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('licenceExpiry')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('licenceExpiry')" (click)="list.toggleSort('licenceExpiry')">
+                    {{ 'drivers.columns.licence' | t }}
+                    <app-icon [name]="list.sortIcon('licenceExpiry')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'drivers.columns.vehicle' | t }}</th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('status')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('status')" (click)="list.toggleSort('status')">
+                    {{ 'drivers.columns.status' | t }}
+                    <app-icon [name]="list.sortIcon('status')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (driver of result!.items; track driver.id) {
+                <tr>
+                  <td class="data-table__primary">
+                    <div class="driver-cell">
+                      <span class="avatar" aria-hidden="true">{{ initials(driver) }}</span>
+                      <span class="driver-cell__text">
+                        <a class="cell-link" [routerLink]="['/drivers', driver.id]">{{ name(driver) }}</a>
+                        <span class="cell-sub mono">{{ driver.employeeNumber }}</span>
+                      </span>
+                    </div>
+                  </td>
+                  <td [attr.data-label]="'drivers.columns.contact' | t">
+                    <div class="contact-cell">
+                      <a class="cell-link nowrap" [href]="'tel:' + driver.phone">{{ driver.phone }}</a>
+                      <a class="cell-sub" [href]="'mailto:' + driver.email">{{ driver.email }}</a>
+                    </div>
+                  </td>
+                  <td [attr.data-label]="'drivers.columns.licence' | t">
+                    <div class="licence-cell">
+                      <span class="text-sm">
+                        <span class="strong">{{ driver.licenceCategory }}</span>
+                        @if (driver.crossBorderAuthorized) {
+                          <span class="subtle"> · {{ 'drivers.fields.crossBorder' | t }}</span>
+                        }
+                      </span>
+                      <app-expiry-badge [date]="driver.licenceExpiry" relative />
+                    </div>
+                  </td>
+                  <td [attr.data-label]="'drivers.columns.vehicle' | t">
+                    @if (directory.vehicle(driver.assignedVehicleId); as vehicle) {
+                      <a class="cell-link mono" [routerLink]="['/vehicles', vehicle.id]">{{ vehicle.plateNumber }}</a>
+                      <span class="cell-sub">{{ vehicle.fleetNumber }}</span>
+                    } @else {
+                      <span class="subtle">{{ 'common.labels.unassigned' | t }}</span>
+                    }
+                  </td>
+                  <td [attr.data-label]="'drivers.columns.status' | t"><app-status-badge kind="driver" [value]="driver.status" /></td>
+                  <td class="data-table__actions">
+                    <app-dropdown align="end">
+                      <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + name(driver)">
+                        <app-icon name="ellipsis" [size]="16" />
+                      </button>
+                      <div dropdownMenu>
+                        <a class="menu__item" role="menuitem" [routerLink]="['/drivers', driver.id]">
+                          <app-icon name="eye" [size]="16" /> {{ 'common.actions.viewDetails' | t }}
+                        </a>
+                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(driver)">
+                          <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                        </button>
+                        <button type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(driver)">
+                          <app-icon name="refresh" [size]="16" /> {{ 'common.actions.changeStatus' | t }}
+                        </button>
+                        <a class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ driverId: driver.id }">
+                          <app-icon name="route" [size]="16" /> {{ 'drivers.newTrip' | t }}
+                        </a>
+                        <div class="menu__separator"></div>
+                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(driver)">
+                          <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                        </button>
+                      </div>
+                    </app-dropdown>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (result && result.total > 0) {
+        <app-pagination
+          [page]="result.page"
+          [pageSize]="list.pageSize()"
+          [total]="result.total"
+          (pageChange)="list.page.set($event)"
+          (pageSizeChange)="list.setPageSize($event)"
+        />
+      }
+    }
+  </section>
+</div>
+
+<app-modal
+  variant="drawer"
+  [open]="formOpen()"
+  [title]="(editing() ? 'drivers.edit' : 'drivers.new') | t"
+  [description]="editing() ? ('drivers.editDescription' | t: { name: name(editing()!) }) : ('drivers.newDescription' | t)"
+  (closed)="formOpen.set(false)"
+>
+  @if (formOpen()) {
+    <app-driver-form [driver]="editing()" (saved)="onSaved($event, !editing())" (cancelled)="formOpen.set(false)" />
+  }
+</app-modal>
+
+<app-driver-status-dialog [driver]="statusTarget()" (closed)="statusTarget.set(null)" />

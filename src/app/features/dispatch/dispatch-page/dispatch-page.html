@@ -1,0 +1,206 @@
+<div class="page">
+  <app-page-header [title]="'dispatch.title' | t" [subtitle]="subtitle()">
+    <ng-container actions>
+      <a class="btn btn--primary" routerLink="/trips/new">
+        <app-icon name="plus" [size]="16" />
+        {{ 'dispatch.newTrip' | t }}
+      </a>
+    </ng-container>
+  </app-page-header>
+
+  @let s = summary();
+  <div class="grid grid--4">
+    <app-kpi-card
+      icon="route"
+      [label]="'dispatch.summary.active' | t"
+      [value]="s.active | num"
+      [hint]="'dispatch.summary.activeHint' | t"
+      [loading]="query.initialLoading()"
+      link="/trips"
+      [queryParams]="{ status: 'preparing,in_transit,delayed' }"
+    />
+    <app-kpi-card
+      icon="hourglass"
+      [label]="'dispatch.summary.delayed' | t"
+      [value]="s.delayed | num"
+      [hint]="'dispatch.summary.delayedHint' | t"
+      [loading]="query.initialLoading()"
+      link="/trips"
+      [queryParams]="{ status: 'delayed' }"
+    />
+    <app-kpi-card
+      icon="navigation"
+      [label]="'dispatch.summary.departuresToday' | t"
+      [value]="s.departuresToday | num"
+      [hint]="'dispatch.summary.departuresHint' | t: { done: s.departedToday }"
+      [loading]="query.initialLoading()"
+    />
+    <app-kpi-card
+      icon="map-pin"
+      [label]="'dispatch.summary.arrivalsToday' | t"
+      [value]="s.arrivalsToday | num"
+      [hint]="'dispatch.summary.arrivalsHint' | t: { done: s.arrivedToday }"
+      [loading]="query.initialLoading()"
+    />
+  </div>
+
+  <section class="card board-card">
+    <div class="toolbar">
+      <div class="toolbar__search input-group">
+        <app-icon class="input-group__icon" name="search" [size]="16" />
+        <input
+          type="search"
+          class="input"
+          [placeholder]="'dispatch.searchPlaceholder' | t"
+          [attr.aria-label]="'common.actions.search' | t"
+          [value]="list.searchInput()"
+          (input)="list.setSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="toolbar__filters">
+        <select class="select" [attr.aria-label]="'common.labels.customer' | t" (change)="setCustomer($event)">
+          <option value="" [selected]="!customerFilter()">{{ 'dispatch.allCustomers' | t }}</option>
+          @for (option of customerOptions(); track option.id) {
+            <option [value]="option.id" [selected]="customerFilter() === option.id">{{ option.label }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'vehicles.fields.type' | t" (change)="setVehicleType($event)">
+          <option value="" [selected]="!vehicleTypeFilter()">{{ 'dispatch.allVehicleTypes' | t }}</option>
+          @for (type of vehicleTypes; track type) {
+            <option [value]="type" [selected]="vehicleTypeFilter() === type">{{ 'vehicles.types.' + type | t }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'dispatch.corridor.label' | t" (change)="setCorridor($event)">
+          <option value="" [selected]="!corridorFilter()">{{ 'dispatch.corridor.all' | t }}</option>
+          @for (corridor of corridors; track corridor) {
+            <option [value]="corridor" [selected]="corridorFilter() === corridor">{{ 'dispatch.corridor.' + corridor | t }}</option>
+          }
+        </select>
+        @if (hasFilters()) {
+          <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+            <app-icon name="x" [size]="16" />
+            {{ 'common.actions.clearFilters' | t }}
+          </button>
+        }
+      </div>
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: visibleCount() } }}</span>
+    </div>
+
+    @if (query.initialLoading()) {
+      <div class="board" role="status" [attr.aria-label]="'common.states.loading' | t">
+        @for (column of columns; track column) {
+          <div class="board__column board__column--skeleton" [class.is-active]="activeColumn() === column">
+            <span class="skeleton skeleton--text"></span>
+            @for (i of [1, 2, 3]; track i) {
+              <span class="skeleton board__skeleton-card"></span>
+            }
+          </div>
+        }
+      </div>
+    } @else if (query.error()) {
+      <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+        <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+      </app-empty-state>
+    } @else {
+      @let buckets = board();
+
+      <div class="column-picker" role="tablist" [attr.aria-label]="'dispatch.columnPicker' | t">
+        @for (column of columns; track column; let i = $index) {
+          <button
+            type="button"
+            role="tab"
+            class="column-picker__tab"
+            [id]="'dispatch-pick-' + column"
+            [attr.aria-selected]="activeColumn() === column"
+            [attr.aria-controls]="'dispatch-column-' + column"
+            [tabindex]="activeColumn() === column ? 0 : -1"
+            [attr.data-column]="column"
+            (click)="activeColumn.set(column)"
+            (keydown)="onColumnPickerKeydown($event, i)"
+          >
+            <span class="column-dot" aria-hidden="true"></span>
+            {{ 'dispatch.columns.' + column | t }}
+            <span class="tab__count">{{ buckets.get(column)?.length ?? 0 }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="board-scroll">
+        <div class="board" [class.is-dragging]="!!drag()" [attr.aria-label]="'dispatch.boardLabel' | t" role="group">
+          @for (column of columns; track column) {
+            @let trips = buckets.get(column) ?? [];
+            @let dropState_ = dropState(column);
+            <section
+              class="board__column"
+              [id]="'dispatch-column-' + column"
+              [attr.data-column]="column"
+              [class.is-active]="activeColumn() === column"
+              [class.is-drop-valid]="dropState_ === 'valid'"
+              [class.is-drop-invalid]="dropState_ === 'invalid'"
+              [class.is-drop-over]="drag()?.over === column"
+              [attr.aria-labelledby]="'dispatch-heading-' + column"
+              (dragover)="onDragOver($event, column)"
+              (dragleave)="onDragLeave($event, column)"
+              (drop)="onDrop($event, column)"
+            >
+              <header class="board__header">
+                <h2 class="board__title" [id]="'dispatch-heading-' + column">
+                  <span class="column-dot" aria-hidden="true"></span>
+                  {{ 'dispatch.columns.' + column | t }}
+                  <span class="tab__count">{{ trips.length }}</span>
+                </h2>
+                @if (column === 'delivered') {
+                  <a class="link-button text-xs" routerLink="/trips" [queryParams]="{ status: 'delivered,completed' }">{{ 'dispatch.viewAllDelivered' | t }}</a>
+                }
+              </header>
+              @if (column === 'delivered') {
+                <p class="board__note">{{ 'dispatch.deliveredWindow' | t }}</p>
+              }
+              @if (dropState_ === 'valid' || dropState_ === 'invalid') {
+                <p class="board__drop-hint" aria-hidden="true">
+                  <app-icon [name]="dropState_ === 'valid' ? 'arrow-down' : 'ban'" [size]="14" />
+                  {{ (dropState_ === 'valid' ? 'dispatch.drag.valid' : 'dispatch.drag.invalid') | t }}
+                </p>
+              }
+
+              @if (trips.length) {
+                <ul class="board__list">
+                  @for (trip of trips; track trip.id; let last = $last, first = $first) {
+                    <li>
+                      <app-dispatch-card
+                        [trip]="trip"
+                        [moving]="isMoving(trip)"
+                        [dragging]="drag()?.trip?.id === trip.id"
+                        [menuUp]="last && !first"
+                        (moveRequested)="requestMove(trip, $event)"
+                        (dragStarted)="onDragStart(trip, column)"
+                        (dragEnded)="onDragEnd()"
+                      />
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="board__empty">{{ 'dispatch.columnEmpty' | t }}</p>
+              }
+            </section>
+          }
+        </div>
+      </div>
+
+      @if (!visibleCount() && hasFilters()) {
+        <app-empty-state icon="search" compact [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+          <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+        </app-empty-state>
+      }
+      <p class="board-hint subtle text-xs">
+        <app-icon name="grip" [size]="12" />
+        {{ 'dispatch.card.dragHint' | t }}
+      </p>
+    }
+  </section>
+
+  <div class="visually-hidden" aria-live="polite" aria-atomic="true">{{ announcement() }}</div>
+</div>
+
+<app-delay-reason-dialog [trip]="delayTarget()" [saving]="delaySaving()" (confirmed)="confirmDelay($event)" (closed)="delayTarget.set(null)" />

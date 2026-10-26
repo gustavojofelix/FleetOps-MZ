@@ -1,0 +1,96 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.alerts-card {
+  height: 100%;
+}
+
+.card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.alerts-card__header-icon {
+  color: var(--color-text-muted);
+
+  &.is-critical {
+    color: var(--color-danger);
+  }
+}
+
+.alerts-card__list {
+  margin-top: var(--space-3);
+}
+
+.alert-row {
+  align-items: flex-start;
+}
+
+.alert-row__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  background: var(--color-info-soft);
+  color: var(--color-info-text);
+
+  &[data-severity='warning'] {
+    background: var(--color-warning-soft);
+    color: var(--color-warning-text);
+  }
+
+  &[data-severity='critical'] {
+    background: var(--color-danger-soft);
+    color: var(--color-danger-text);
+  }
+}
+
+.alert-row__title {
+  display: block;
+  font-weight: 500;
+}
+
+.alert-row__description {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.alert-row__aside {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+
+  @include down(sm) {
+    app-status-badge {
+      display: none;
+    }
+  }
+}
+
+.alerts-card__skeleton-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.alerts-card__skeleton-title {
+  width: 55%;
+  margin-bottom: var(--space-2);
+}
+
+.alerts-card__skeleton-meta {
+  width: 85%;
+}

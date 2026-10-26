@@ -1,0 +1,189 @@
+[
+  {
+    "id": "r-bei-don",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Dondo",
+      "country": "MZ",
+      "site": "Parque Industrial de Dondo"
+    },
+    "distanceKm": 32,
+    "typicalDurationHours": 1.5,
+    "crossBorder": false,
+    "borderPost": null
+  },
+  {
+    "id": "r-bei-chi",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Chimoio",
+      "country": "MZ",
+      "site": "Zona Industrial de Chimoio"
+    },
+    "distanceKm": 200,
+    "typicalDurationHours": 4.5,
+    "crossBorder": false,
+    "borderPost": null
+  },
+  {
+    "id": "r-bei-tet",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "distanceKm": 590,
+    "typicalDurationHours": 14,
+    "crossBorder": false,
+    "borderPost": null
+  },
+  {
+    "id": "r-bei-mpm",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Maputo",
+      "country": "MZ",
+      "site": "Machava — Centro de Distribuição"
+    },
+    "distanceKm": 1190,
+    "typicalDurationHours": 24,
+    "crossBorder": false,
+    "borderPost": null
+  },
+  {
+    "id": "r-bei-mut",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Mutare",
+      "country": "ZW",
+      "site": "Mutare — Armazém Sakubva"
+    },
+    "distanceKm": 300,
+    "typicalDurationHours": 9,
+    "crossBorder": true,
+    "borderPost": "Machipanda / Forbes"
+  },
+  {
+    "id": "r-bei-hre",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Harare",
+      "country": "ZW",
+      "site": "Harare — Workington"
+    },
+    "distanceKm": 560,
+    "typicalDurationHours": 17,
+    "crossBorder": true,
+    "borderPost": "Machipanda / Forbes"
+  },
+  {
+    "id": "r-bei-bly",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Blantyre",
+      "country": "MW",
+      "site": "Blantyre — Makata"
+    },
+    "distanceKm": 830,
+    "typicalDurationHours": 26,
+    "crossBorder": true,
+    "borderPost": "Zóbuè / Mwanza"
+  },
+  {
+    "id": "r-bei-lun",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Lusaka",
+      "country": "ZM",
+      "site": "Lusaka — Zona Industrial"
+    },
+    "distanceKm": 1060,
+    "typicalDurationHours": 36,
+    "crossBorder": true,
+    "borderPost": "Cassacatiza / Chanida"
+  },
+  {
+    "id": "r-bei-jnb",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Joanesburgo",
+      "country": "ZA",
+      "site": "Germiston — Armazém Logístico"
+    },
+    "distanceKm": 1620,
+    "typicalDurationHours": 34,
+    "crossBorder": true,
+    "borderPost": "Ressano Garcia / Lebombo"
+  },
+  {
+    "id": "r-tet-bei",
+    "origin": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "destination": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Granéis"
+    },
+    "distanceKm": 590,
+    "typicalDurationHours": 14,
+    "crossBorder": false,
+    "borderPost": null
+  },
+  {
+    "id": "r-chi-bei",
+    "origin": {
+      "city": "Chimoio",
+      "country": "MZ",
+      "site": "Zona Industrial de Chimoio"
+    },
+    "destination": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "distanceKm": 200,
+    "typicalDurationHours": 4.5,
+    "crossBorder": false,
+    "borderPost": null
+  }
+]

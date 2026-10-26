@@ -1,0 +1,51 @@
+<form class="stack stack--lg" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <p class="alert alert--info">
+    <app-icon name="mail" [size]="16" />
+    <span>{{ 'users.hints.noEmail' | t }}</span>
+  </p>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <div class="form-grid">
+      <div class="field field--full">
+        <label class="field__label" for="inv-name">{{ 'users.fields.fullName' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="inv-name" class="input" formControlName="fullName" autocomplete="off" />
+        <app-field-error [control]="form.controls.fullName" />
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="inv-email">{{ 'users.fields.email' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="inv-email" class="input" type="email" formControlName="email" autocomplete="off" placeholder="nome@empresa.co.mz" aria-describedby="inv-email-hint" />
+        <p class="field__hint" id="inv-email-hint">{{ 'users.hints.email' | t }}</p>
+        <app-field-error [control]="form.controls.email" />
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="inv-job">{{ 'users.fields.jobTitle' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="inv-job" class="input" formControlName="jobTitle" autocomplete="off" />
+        <app-field-error [control]="form.controls.jobTitle" />
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()" aria-describedby="inv-role-hint">
+    <legend class="form-section__title">{{ 'users.fields.role' | t }}<span class="field__required" aria-hidden="true">*</span></legend>
+    <p class="form-section__description" id="inv-role-hint">{{ 'users.hints.role' | t }}</p>
+    <div class="role-options">
+      @for (role of roles; track role) {
+        <label class="role-option" [class.is-selected]="form.controls.role.value === role">
+          <input type="radio" formControlName="role" [value]="role" />
+          <span class="role-option__text">
+            <span class="role-option__name">{{ 'users.roles.' + role | t }}</span>
+            <span class="role-option__description">{{ 'users.roleDescriptions.' + role | t }}</span>
+          </span>
+        </label>
+      }
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="cancelled.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">
+      <app-icon name="send" [size]="16" />
+      {{ 'users.actions.sendInvite' | t }}
+    </button>
+  </div>
+</form>

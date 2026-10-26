@@ -1,0 +1,60 @@
+@use 'mixins' as *;
+
+.suggestion {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  align-self: flex-start;
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+.file-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-sunken);
+
+  &:focus-within {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.file-card__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-text);
+  flex-shrink: 0;
+}
+
+.file-card__main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-card__name {
+  font-weight: 500;
+  @include truncate;
+}
+
+.file-card__meta {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.file-card__replace {
+  cursor: pointer;
+
+  @include down(sm) {
+    display: none;
+  }
+}

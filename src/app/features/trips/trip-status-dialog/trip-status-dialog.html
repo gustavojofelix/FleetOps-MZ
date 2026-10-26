@@ -1,0 +1,87 @@
+@let target = trip();
+<app-modal
+  size="sm"
+  [open]="!!target"
+  [title]="'trips.statusDialog.title' | t"
+  [description]="target ? ('trips.statusDialog.description' | t: { reference: target.reference, status: ('trips.status.' + target.status | t) }) : null"
+  [dismissible]="!saving()"
+  (closed)="closed.emit()"
+>
+  @if (target) {
+    @if (options().length) {
+      <div class="stack">
+        <fieldset class="form-reset" [disabled]="saving()">
+          <legend class="field__label">{{ 'trips.statusDialog.newStatus' | t }}</legend>
+          <div class="stack stack--sm">
+            @for (status of options(); track status) {
+              <label class="radio">
+                <input type="radio" name="trip-status" [value]="status" [checked]="selected() === status" (change)="selected.set(status)" />
+                <app-status-badge kind="trip" [value]="status" />
+              </label>
+            }
+          </div>
+        </fieldset>
+
+        @if (selected(); as status) {
+          <p class="alert alert--info">
+            <app-icon name="info" [size]="16" />
+            <span>{{ 'trips.statusDialog.effects.' + status | t }}</span>
+          </p>
+        }
+
+        @if (needsReason()) {
+          <div class="field">
+            <label class="field__label" for="trip-delay-reason">
+              {{ 'trips.fields.delayReason' | t }}<span class="field__required" aria-hidden="true">*</span>
+            </label>
+            <textarea
+              id="trip-delay-reason"
+              class="textarea"
+              rows="2"
+              maxlength="200"
+              required
+              [attr.aria-invalid]="attempted() && reasonMissing()"
+              [attr.aria-describedby]="attempted() && reasonMissing() ? 'trip-delay-reason-error' : null"
+              [placeholder]="'trips.statusDialog.delayReasonPlaceholder' | t"
+              [value]="delayReason()"
+              [disabled]="saving()"
+              (input)="delayReason.set($any($event.target).value)"
+            ></textarea>
+            @if (attempted() && reasonMissing()) {
+              <p class="field__error" id="trip-delay-reason-error" role="alert">
+                <app-icon name="circle-alert" [size]="14" />
+                {{ 'trips.validation.delayReasonRequired' | t }}
+              </p>
+            }
+          </div>
+        } @else {
+          <div class="field">
+            <label class="field__label" for="trip-status-note">
+              {{ 'trips.statusDialog.note' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span>
+            </label>
+            <textarea
+              id="trip-status-note"
+              class="textarea"
+              rows="2"
+              maxlength="200"
+              [placeholder]="'trips.statusDialog.notePlaceholder' | t"
+              [value]="note()"
+              [disabled]="saving()"
+              (input)="note.set($any($event.target).value)"
+            ></textarea>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="muted">{{ 'trips.statusDialog.noTransitions' | t }}</p>
+    }
+  }
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="closed.emit()">{{ 'common.actions.cancel' | t }}</button>
+    @if (options().length) {
+      <button type="button" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving() || !selected()" (click)="confirm()">
+        {{ 'trips.statusDialog.confirm' | t }}
+      </button>
+    }
+  </ng-container>
+</app-modal>

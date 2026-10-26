@@ -1,0 +1,145 @@
+<form class="stack stack--lg" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'expenses.sections.expense' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="e-date">{{ 'expenses.fields.date' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="e-date" class="input" type="date" formControlName="date" [max]="today" />
+        <app-field-error [control]="form.controls.date" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="e-category">{{ 'expenses.fields.category' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="e-category" class="select" formControlName="category">
+          @for (category of categories; track category) {
+            <option [value]="category">{{ 'expenses.categories.' + category | t }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="e-amount">{{ 'expenses.fields.amount' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="e-amount" class="input" type="number" inputmode="decimal" step="0.01" min="0" formControlName="amount" />
+        <app-field-error [control]="form.controls.amount" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="e-currency">{{ 'expenses.fields.currency' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="e-currency" class="select" formControlName="currency" aria-describedby="e-currency-hint">
+          @for (code of currencies; track code) {
+            <option [value]="code">{{ code }} — {{ 'currencies.' + code | t }}</option>
+          }
+        </select>
+        <p class="field__hint" id="e-currency-hint">{{ 'expenses.hints.currency' | t }}</p>
+      </div>
+      @if (value().amount) {
+        <p class="field field--full expense-form__preview" aria-live="polite">
+          {{ value().amount | amount: value().currency }}
+        </p>
+      }
+      <div class="field field--full">
+        <label class="field__label" for="e-description">{{ 'expenses.fields.description' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="e-description" class="input" formControlName="description" autocomplete="off" />
+        <app-field-error [control]="form.controls.description" />
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="e-vendor">{{ 'expenses.fields.vendor' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="e-vendor" class="input" formControlName="vendor" autocomplete="off" />
+        <app-field-error [control]="form.controls.vendor" />
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'expenses.sections.assignment' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="e-vehicle">{{ 'expenses.fields.vehicle' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <select id="e-vehicle" class="select" formControlName="vehicleId" (change)="onVehicleChange()">
+          <option value="">{{ 'expenses.noVehicle' | t }}</option>
+          @for (option of vehicleOptions(); track option.id) {
+            <option [value]="option.id">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="e-driver">{{ 'expenses.fields.driver' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <select id="e-driver" class="select" formControlName="driverId">
+          <option value="">{{ 'expenses.noDriver' | t }}</option>
+          @for (option of driverOptions(); track option.id) {
+            <option [value]="option.id">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="e-trip">{{ 'expenses.fields.trip' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <select id="e-trip" class="select" formControlName="tripId" aria-describedby="e-trip-hint" (change)="onTripChange()">
+          <option value="">{{ 'expenses.noTrip' | t }}</option>
+          @for (option of tripOptions(); track option.id) {
+            <option [value]="option.id">{{ option.label }} · {{ option.departure | fmtDate: 'short' }}</option>
+          }
+        </select>
+        <p class="field__hint" id="e-trip-hint">{{ (value().vehicleId ? 'expenses.hints.tripFiltered' : 'expenses.hints.trip') | t }}</p>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'expenses.sections.payment' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="e-payment">{{ 'expenses.fields.paymentMethod' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="e-payment" class="select" formControlName="paymentMethod">
+          @for (method of paymentMethods; track method) {
+            <option [value]="method">{{ 'expenses.paymentMethods.' + method | t }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="e-approval">{{ 'expenses.fields.approvalStatus' | t }}</label>
+        <select id="e-approval" class="select" formControlName="approvalStatus" aria-describedby="e-approval-hint">
+          @for (status of approvalStatuses; track status) {
+            <option [value]="status">{{ 'expenses.approval.' + status | t }}</option>
+          }
+        </select>
+        <p class="field__hint" id="e-approval-hint"><span class="sim-tag">{{ 'common.labels.demo' | t }}</span> {{ 'expenses.hints.approval' | t }}</p>
+      </div>
+      <div class="field field--full">
+        <span class="field__label">{{ 'expenses.fields.receipt' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></span>
+        @if (value().receiptFileName; as name) {
+          <div class="expense-form__receipt">
+            <app-icon name="paperclip" [size]="16" />
+            <span class="truncate">{{ 'expenses.receipt.attached' | t: { name } }}</span>
+            <button type="button" class="btn btn--ghost btn--sm" (click)="clearReceipt()">
+              <app-icon name="x" [size]="14" />
+              {{ 'expenses.receipt.remove' | t }}
+            </button>
+          </div>
+        } @else {
+          <label class="dropzone">
+            <app-icon name="file-up" [size]="20" />
+            <span class="strong">{{ 'expenses.receipt.choose' | t }}</span>
+            <span class="text-xs">{{ 'expenses.receipt.formats' | t }}</span>
+            <input class="visually-hidden" type="file" accept="image/*,application/pdf" (change)="onReceiptSelected($event)" />
+          </label>
+        }
+        <p class="field__hint"><span class="sim-tag">{{ 'common.labels.demo' | t }}</span> {{ 'expenses.receipt.demo' | t }}</p>
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="e-notes">{{ 'expenses.fields.notes' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <textarea id="e-notes" class="textarea" formControlName="notes" rows="3"></textarea>
+        <app-field-error [control]="form.controls.notes" />
+      </div>
+      @if (submittedBy(); as name) {
+        <p class="field field--full field__hint">
+          <app-icon name="user" [size]="12" />
+          {{ 'expenses.hints.submittedBy' | t: { name } }}
+        </p>
+      }
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="cancelled.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">
+      {{ (isEditing() ? 'common.actions.saveChanges' : 'expenses.new') | t }}
+    </button>
+  </div>
+</form>

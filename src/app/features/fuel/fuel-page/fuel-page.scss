@@ -1,0 +1,200 @@
+@use 'mixins' as *;
+
+.context-banner {
+  flex-wrap: wrap;
+  align-items: center;
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1 1 260px;
+    min-width: 0;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+}
+
+.summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+
+  @include up(md) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @include up(xl) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.chart-skeleton {
+  height: 240px;
+  border-radius: var(--radius-md);
+}
+
+.ranking-legend {
+  margin-bottom: var(--space-3);
+
+  &__average {
+    background: var(--color-accent);
+  }
+
+  &__reference {
+    width: 2px;
+    height: 12px;
+    border-radius: 1px;
+    background: var(--color-text);
+  }
+}
+
+.ranking {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  &__plate {
+    font-weight: 600;
+    color: var(--color-text);
+
+    &:hover {
+      color: var(--color-accent-text);
+    }
+  }
+
+  &__value {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  &__track {
+    position: relative;
+  }
+
+  &__marker {
+    position: absolute;
+    top: -3px;
+    width: 2px;
+    height: 12px;
+    margin-left: -1px;
+    border-radius: 1px;
+    background: var(--color-text);
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px var(--space-3);
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+
+    app-icon {
+      vertical-align: -2px;
+    }
+  }
+}
+
+.warnings-switch {
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+.fuel-table {
+  .cell-sub-link {
+    color: inherit;
+
+    &:hover {
+      color: var(--color-accent-text);
+    }
+  }
+}
+
+.review-toggle {
+  @include reset-button;
+  height: 24px;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(0.97);
+  }
+
+  &:focus-visible {
+    box-shadow: var(--focus-ring);
+  }
+
+  &__count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: var(--radius-pill);
+    background: var(--color-warning);
+    color: var(--color-surface);
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+}
+
+.review-details {
+  max-width: 320px;
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  white-space: normal;
+
+  ul {
+    margin: 0 0 var(--space-1);
+    padding-left: var(--space-4);
+    color: var(--color-warning-text);
+  }
+
+  p {
+    font-size: var(--text-xs);
+  }
+}
+
+.receipt-indicator {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}

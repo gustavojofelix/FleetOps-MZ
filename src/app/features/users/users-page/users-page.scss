@@ -1,0 +1,50 @@
+@use 'mixins' as *;
+
+.demo-banner p + p {
+  margin-top: 2px;
+}
+
+.view-tabs {
+  margin-bottom: calc(var(--space-1) * -1);
+}
+
+.status-tabs {
+  padding: 0 var(--space-3);
+
+  @include up(md) {
+    padding: 0 var(--space-4);
+  }
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.user-cell__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.user-cell__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.menu__hint {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  max-width: 260px;
+  padding: 6px 10px 8px;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  white-space: normal;
+}

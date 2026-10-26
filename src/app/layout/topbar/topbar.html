@@ -1,0 +1,200 @@
+<div class="topbar">
+  @if (!layout.isDesktop()) {
+    <button
+      type="button"
+      class="btn btn--ghost btn--icon"
+      [attr.aria-label]="'shell.openMenu' | t"
+      [attr.aria-expanded]="layout.mobileNavOpen()"
+      aria-controls="app-sidebar"
+      (click)="layout.mobileNavOpen.set(true)"
+    >
+      <app-icon name="menu" />
+    </button>
+  }
+
+  <p class="topbar__title">{{ sectionTitle() | t }}</p>
+
+  <button type="button" class="search-trigger" [attr.aria-label]="'search.label' | t" (click)="layout.openSearch()">
+    <app-icon name="search" [size]="16" />
+    <span class="search-trigger__text">{{ 'search.placeholder' | t }}</span>
+    <kbd class="search-trigger__kbd">{{ 'search.shortcut' | t }}</kbd>
+  </button>
+
+  <div class="topbar__actions">
+    <button type="button" class="btn btn--ghost btn--icon topbar__search-mobile" [attr.aria-label]="'search.label' | t" (click)="layout.openSearch()">
+      <app-icon name="search" />
+    </button>
+
+    <!-- Desktop-only preference controls; on small screens they live in the "more" menu. -->
+    <div class="topbar__prefs">
+      <app-dropdown align="end">
+        <button dropdownTrigger type="button" class="btn btn--ghost btn--sm topbar__pref" [attr.aria-label]="'shell.language.label' | t">
+          <app-icon name="languages" [size]="16" />
+          {{ i18n.definition().shortLabel }}
+        </button>
+        <div dropdownMenu>
+          <p class="menu__label">{{ 'shell.language.label' | t }}</p>
+          @for (language of i18n.languages; track language.code) {
+            <button
+              type="button"
+              class="menu__item"
+              role="menuitemradio"
+              [attr.aria-checked]="language.code === i18n.language()"
+              [attr.lang]="language.code"
+              (click)="setLanguage(language.code)"
+            >
+              <span class="menu__check">@if (language.code === i18n.language()) { <app-icon name="check" [size]="16" /> }</span>
+              {{ language.nativeName }}
+            </button>
+          }
+        </div>
+      </app-dropdown>
+
+      <app-dropdown align="end" menuClass="currency-menu">
+        <button dropdownTrigger type="button" class="btn btn--ghost btn--sm topbar__pref" [attr.aria-label]="'shell.currency.label' | t">
+          <app-icon name="coins" [size]="16" />
+          {{ currency.display() }}
+        </button>
+        <div dropdownMenu>
+          <p class="menu__label">{{ 'shell.currency.label' | t }}</p>
+          @for (code of currencies; track code) {
+            <button type="button" class="menu__item" role="menuitemradio" [attr.aria-checked]="code === currency.display()" (click)="setCurrency(code)">
+              <span class="menu__check">@if (code === currency.display()) { <app-icon name="check" [size]="16" /> }</span>
+              <span class="currency-menu__code">{{ code }}</span>
+              <span class="currency-menu__name">{{ currencyMeta[code].nameKey | t }}</span>
+              @if (code === currency.reporting()) {
+                <span class="badge badge--accent">{{ 'shell.currency.reportingBadge' | t }}</span>
+              }
+            </button>
+          }
+          <p class="menu__hint">{{ 'shell.currency.hint' | t: { reporting: currency.reporting() } }}</p>
+        </div>
+      </app-dropdown>
+
+      <button
+        type="button"
+        class="btn btn--ghost btn--icon"
+        [attr.aria-label]="(theme.resolved() === 'dark' ? 'shell.theme.switchToLight' : 'shell.theme.switchToDark') | t"
+        [appTooltip]="(theme.resolved() === 'dark' ? 'shell.theme.switchToLight' : 'shell.theme.switchToDark') | t"
+        tooltipPlacement="bottom"
+        (click)="theme.toggle()"
+      >
+        <app-icon [name]="theme.resolved() === 'dark' ? 'sun' : 'moon'" />
+      </button>
+    </div>
+
+    <app-dropdown align="end" menuClass="notifications-menu">
+      <button
+        dropdownTrigger
+        type="button"
+        class="btn btn--ghost btn--icon topbar__bell"
+        [attr.aria-label]="('shell.notifications.label' | t) + (notifications.unreadCount() ? ' — ' + ('shell.notifications.unread' | t: { count: notifications.unreadCount() }) : '')"
+      >
+        <app-icon name="bell" />
+        @if (notifications.unreadCount() > 0) {
+          <span class="topbar__bell-badge" aria-hidden="true">{{ notifications.unreadCount() }}</span>
+        }
+      </button>
+      <div dropdownMenu>
+        <div class="notifications-menu__head">
+          <p class="notifications-menu__title">{{ 'shell.notifications.label' | t }}</p>
+          @if (notifications.unreadCount() > 0) {
+            <button type="button" class="link-button text-sm" data-keep-open (click)="notifications.markAllRead()">
+              {{ 'shell.notifications.markAllRead' | t }}
+            </button>
+          }
+        </div>
+        @for (item of recentNotifications(); track item.id) {
+          <button type="button" class="menu__item notification-item" [class.is-unread]="!item.read" role="menuitem" (click)="openNotification(item.id, item.link)">
+            <span class="notification-item__icon" [attr.data-severity]="item.severity">
+              <app-icon [name]="notificationIcon(item.category)" [size]="16" />
+            </span>
+            <span class="notification-item__text">
+              <span class="notification-item__title">{{ notifications.title(item) }}</span>
+              <span class="notification-item__body">{{ notifications.message(item) }}</span>
+              <span class="notification-item__time">{{ item.createdAt | relativeTime }}</span>
+            </span>
+            @if (!item.read) {
+              <span class="notification-item__dot" aria-hidden="true"></span>
+            }
+          </button>
+        } @empty {
+          <p class="notifications-menu__empty">{{ 'shell.notifications.empty' | t }}</p>
+        }
+        <div class="menu__separator"></div>
+        <a class="menu__item notifications-menu__all" routerLink="/notifications">
+          {{ 'shell.notifications.viewAll' | t }}
+          <app-icon name="arrow-right" [size]="16" />
+        </a>
+      </div>
+    </app-dropdown>
+
+    <!-- Compact preferences menu for small screens. -->
+    <app-dropdown align="end" class="topbar__more">
+      <button dropdownTrigger type="button" class="btn btn--ghost btn--icon" [attr.aria-label]="'shell.moreOptions' | t">
+        <app-icon name="sliders" />
+      </button>
+      <div dropdownMenu>
+        <p class="menu__label">{{ 'shell.theme.label' | t }}</p>
+        @for (option of themes; track option.value) {
+          <button type="button" class="menu__item" role="menuitemradio" [attr.aria-checked]="theme.preference() === option.value" (click)="theme.setPreference(option.value)">
+            <app-icon [name]="option.icon" [size]="16" />
+            {{ 'shell.theme.' + option.value | t }}
+          </button>
+        }
+        <div class="menu__separator"></div>
+        <p class="menu__label">{{ 'shell.language.label' | t }}</p>
+        @for (language of i18n.languages; track language.code) {
+          <button type="button" class="menu__item" role="menuitemradio" [attr.aria-checked]="language.code === i18n.language()" (click)="setLanguage(language.code)">
+            <span class="menu__check">@if (language.code === i18n.language()) { <app-icon name="check" [size]="16" /> }</span>
+            {{ language.nativeName }}
+          </button>
+        }
+        <div class="menu__separator"></div>
+        <p class="menu__label">{{ 'shell.currency.label' | t }}</p>
+        @for (code of currencies; track code) {
+          <button type="button" class="menu__item" role="menuitemradio" [attr.aria-checked]="code === currency.display()" (click)="setCurrency(code)">
+            <span class="menu__check">@if (code === currency.display()) { <app-icon name="check" [size]="16" /> }</span>
+            {{ code }} · {{ currencyMeta[code].nameKey | t }}
+          </button>
+        }
+      </div>
+    </app-dropdown>
+
+    <app-dropdown align="end">
+      <button dropdownTrigger type="button" class="avatar-button" [attr.aria-label]="'shell.profile.menu' | t">
+        <span class="avatar">{{ initials() }}</span>
+      </button>
+      <div dropdownMenu>
+        @if (user(); as u) {
+          <div class="profile-card">
+            <span class="avatar avatar--lg">{{ initials() }}</span>
+            <div class="profile-card__text">
+              <p class="profile-card__name">{{ u.fullName }}</p>
+              <p class="profile-card__email">{{ u.email }}</p>
+              <span class="badge badge--accent">{{ 'users.roles.' + u.role | t }} · {{ 'common.labels.demo' | t }}</span>
+            </div>
+          </div>
+        }
+        <div class="menu__separator"></div>
+        <a class="menu__item" routerLink="/settings" [queryParams]="{ tab: 'preferences' }">
+          <app-icon name="user" [size]="16" />
+          {{ 'shell.profile.myPreferences' | t }}
+        </a>
+        <a class="menu__item" routerLink="/settings">
+          <app-icon name="building" [size]="16" />
+          {{ 'shell.profile.companySettings' | t }}
+        </a>
+        <button type="button" class="menu__item" (click)="resetDemo()">
+          <app-icon name="rotate-ccw" [size]="16" />
+          {{ 'shell.profile.resetDemo' | t }}
+        </button>
+        <div class="menu__separator"></div>
+        <button type="button" class="menu__item" (click)="signOut()">
+          <app-icon name="log-out" [size]="16" />
+          {{ 'shell.profile.signOut' | t }}
+        </button>
+      </div>
+    </app-dropdown>
+  </div>
+</div>

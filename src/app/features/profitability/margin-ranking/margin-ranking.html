@@ -1,0 +1,39 @@
+@if (bars().length) {
+  <ol class="ranking" [attr.aria-label]="ariaLabel()">
+    @for (bar of bars(); track bar.key; let i = $index) {
+      <li class="ranking__row">
+        <span class="ranking__rank" aria-hidden="true">{{ i + 1 }}</span>
+        <span class="ranking__label">
+          @if (bar.link) {
+            <a class="cell-link ranking__name" [routerLink]="bar.link">{{ bar.label }}</a>
+          } @else {
+            <span class="ranking__name">{{ bar.label }}</span>
+          }
+          @if (bar.sub) {
+            <span class="ranking__sub">{{ bar.sub }}</span>
+          }
+        </span>
+        <span class="ranking__track" aria-hidden="true">
+          @if (hasNegative()) {
+            <span class="ranking__zero" [style.left.%]="zero()"></span>
+          }
+          <span class="ranking__bar" [class]="'ranking__bar ranking__bar--' + bar.tone" [style.left.%]="bar.left" [style.width.%]="bar.width"></span>
+        </span>
+        <span class="ranking__value" [class]="'ranking__value ranking__value--' + bar.tone">
+          {{ bar.value }}
+          <span class="visually-hidden">— {{ bar.toneLabel | t }}</span>
+        </span>
+      </li>
+    }
+  </ol>
+  @if (hiddenCount() > 0) {
+    <button type="button" class="link-button text-sm ranking__more" [attr.aria-expanded]="expanded()" (click)="expanded.set(!expanded())">
+      {{ (expanded() ? 'common.actions.showLess' : 'common.actions.showMore') | t }}
+      @if (!expanded()) {
+        <span>({{ hiddenCount() }})</span>
+      }
+    </button>
+  }
+} @else {
+  <p class="muted text-sm">{{ 'profitability.charts.noData' | t }}</p>
+}

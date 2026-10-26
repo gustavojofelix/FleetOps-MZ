@@ -1,0 +1,163 @@
+import type { dashboard as source } from '../pt-MZ/dashboard';
+import { TranslationOf } from '../../translation.types';
+
+export const dashboard: TranslationOf<typeof source> = {
+  title: 'Dashboard',
+  greeting: {
+    morning: 'Good morning, {name}',
+    afternoon: 'Good afternoon, {name}',
+    evening: 'Good evening, {name}',
+    anonymous: 'Welcome',
+  },
+  subtitle: '{greeting} · {organization} · {date}',
+  periodLabel: 'Analysis period',
+  vsPrevious: 'vs previous period',
+  noComparison: 'No comparison period',
+  kpis: {
+    fleet: 'Total fleet',
+    fleetHint: '{available} available · {inactive} inactive',
+    operational: 'Operational vehicles',
+    operationalHint: '{share} of fleet · available and in transit',
+    maintenance: 'In maintenance',
+    maintenanceHint: {
+      one: '{count} work order overdue',
+      other: '{count} work orders overdue',
+    },
+    maintenanceHintNone: 'No overdue work orders',
+    tripsActive: 'Trips in progress',
+    tripsActiveHint: {
+      one: '{count} delayed',
+      other: '{count} delayed',
+    },
+    tripsFinished: 'Completed trips',
+    tripsFinishedHint: 'Delivered and completed in period',
+    revenue: 'Revenue in period',
+    revenueHint: 'Delivered and completed trips',
+    expenses: 'Operating costs',
+    expensesHint: 'Fuel, expenses and maintenance',
+    margin: 'Contribution margin (estimated)',
+    marginHint: 'Margin {ratio} · not net profit',
+    marginHintNoRevenue: 'No revenue in period',
+    deltaPoints: '{value} pp',
+  },
+  charts: {
+    revenueTitle: 'Revenue vs direct costs',
+    revenueSubtitle: '6 months to {month} · delivered and completed trips, by departure month',
+    revenueSeries: 'Revenue',
+    costsSeries: 'Direct costs',
+    revenueAria: 'Revenue and direct costs by month',
+    fuelTitle: 'Fuel consumption',
+    fuelSubtitle: 'Litres fuelled per month · 6 months to {month}',
+    fuelSeries: 'Litres',
+    fuelAria: 'Litres of fuel per month',
+    fuelPeriod: 'In period: {litres} · {cost}',
+    maintenanceTitle: 'Maintenance cost',
+    maintenanceSubtitle: 'Completed work orders per month · 6 months to {month}',
+    maintenanceSeries: 'Maintenance',
+    maintenanceAria: 'Completed maintenance cost per month',
+    maintenancePeriod: 'In period: {cost}',
+    breakdownTitle: 'Cost breakdown',
+    breakdownSubtitle: 'Operating costs in the selected period',
+    breakdownAria: 'Operating costs by category',
+    breakdownTotal: 'Total',
+    emptyTitle: 'No data to show',
+    emptyDescription: 'There are no records in the months shown.',
+    emptyPeriod: 'No costs were recorded in the selected period.',
+  },
+  buckets: {
+    fuel: 'Fuel',
+    tolls_fees: 'Tolls & fees',
+    driver_allowance: 'Driver allowances',
+    maintenance: 'Maintenance',
+    other: 'Other',
+  },
+  panels: {
+    recentTitle: 'Recent trips',
+    recentSubtitle: 'Latest delivered, completed or cancelled trips',
+    recentEmpty: 'No trips have been recorded yet.',
+    activeTitle: 'Active trips',
+    activeSubtitle: 'Preparing, in transit and delayed',
+    activeEmpty: 'There are no trips in progress right now.',
+    arrival: 'ETA {date}',
+    departure: 'Departure {date}',
+    noDelayReason: 'No delay reason given',
+    maintenanceTitle: 'Scheduled maintenance',
+    maintenanceSubtitle: 'Scheduled and overdue work orders',
+    maintenanceEmpty: 'There is no scheduled maintenance.',
+    viewOverdue: 'View overdue',
+    dueIn: {
+      one: 'In {count} day',
+      other: 'In {count} days',
+    },
+    dueToday: 'Today',
+    overdueBy: {
+      one: '{count} day overdue',
+      other: '{count} days overdue',
+    },
+    documentsTitle: 'Expiring documents',
+    documentsSubtitle: 'Expired and expiring in the next {days} days',
+    documentsEmpty: 'No expired or expiring documents.',
+    alertsTitle: 'Operational alerts',
+    alertsSubtitle: 'Situations that need attention',
+    alertsEmpty: 'No alerts right now. All clear.',
+    moreItems: {
+      one: '+{count} more',
+      other: '+{count} more',
+    },
+  },
+  alerts: {
+    trip_delayed: {
+      title: 'Trip {reference} delayed',
+      description: '{route} · {reason}',
+    },
+    maintenance_overdue: {
+      title: 'Maintenance overdue',
+      description: {
+        one: '{count} work order is past its planned date.',
+        other: '{count} work orders are past their planned date.',
+      },
+    },
+    documents_expired: {
+      title: 'Expired documents',
+      description: {
+        one: '{count} document has expired. Renew it to keep the vehicle or driver compliant.',
+        other: '{count} documents have expired. Renew them to keep vehicles and drivers compliant.',
+      },
+    },
+    documents_expiring: {
+      title: 'Documents expiring',
+      description: {
+        one: '{count} document expires soon.',
+        other: '{count} documents expire soon.',
+      },
+    },
+    licence_expired: {
+      title: 'Driving licence expired',
+      description: {
+        one: '{name} · expired {count} day ago.',
+        other: '{name} · expired {count} days ago.',
+      },
+    },
+    licence_expiring: {
+      title: 'Driving licence expiring',
+      description: {
+        one: '{name} · expires in {count} day.',
+        other: '{name} · expires in {count} days.',
+      },
+    },
+    fuel_warnings: {
+      title: 'Fuel readings to review',
+      description: {
+        one: '{count} fuel record in the period has unexpected values.',
+        other: '{count} fuel records in the period have unexpected values.',
+      },
+    },
+    expenses_pending: {
+      title: 'Expenses awaiting approval',
+      description: {
+        one: '{count} expense awaits approval.',
+        other: '{count} expenses await approval.',
+      },
+    },
+  },
+};

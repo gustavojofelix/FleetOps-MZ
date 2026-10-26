@@ -1,0 +1,56 @@
+export const shell = {
+  skipToContent: 'Saltar para o conteúdo',
+  openMenu: 'Abrir menu',
+  closeMenu: 'Fechar menu',
+  collapseSidebar: 'Recolher barra lateral',
+  expandSidebar: 'Expandir barra lateral',
+  moreOptions: 'Mais opções',
+  theme: {
+    label: 'Tema',
+    light: 'Claro',
+    dark: 'Escuro',
+    system: 'Sistema',
+    switchToDark: 'Mudar para tema escuro',
+    switchToLight: 'Mudar para tema claro',
+  },
+  language: {
+    label: 'Idioma',
+  },
+  currency: {
+    label: 'Moeda de apresentação',
+    hint: 'Os totais são calculados em {reporting}. Outras moedas usam taxas simuladas.',
+    reportingBadge: 'Relato',
+  },
+  notifications: {
+    label: 'Notificações',
+    unread: {
+      one: '{count} notificação por ler',
+      other: '{count} notificações por ler',
+    },
+    empty: 'Está tudo em dia.',
+    viewAll: 'Ver todas as notificações',
+    markAllRead: 'Marcar todas como lidas',
+  },
+  profile: {
+    menu: 'Menu do perfil',
+    myPreferences: 'As minhas preferências',
+    companySettings: 'Definições da empresa',
+    resetDemo: 'Repor dados de demonstração',
+    signOut: 'Terminar sessão',
+    signOutDemo: 'A autenticação ainda não está implementada nesta versão de demonstração.',
+    demoRole: 'Função de demonstração',
+  },
+  demoBanner: 'Versão de demonstração — todos os dados são fictícios e ficam guardados apenas neste navegador.',
+  resetDemo: {
+    title: 'Repor dados de demonstração?',
+    message: 'Todas as alterações feitas neste navegador (viagens, despesas, definições…) serão substituídas pelos dados originais.',
+    confirm: 'Repor dados',
+    done: 'Dados de demonstração repostos.',
+  },
+  notFound: {
+    title: 'Página não encontrada',
+    description: 'O endereço que abriu não existe ou foi movido.',
+    action: 'Ir para o painel',
+  },
+  bootError: 'Não foi possível iniciar a aplicação.',
+};

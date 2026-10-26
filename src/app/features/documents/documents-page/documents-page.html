@@ -1,0 +1,230 @@
+<div class="page">
+  <app-page-header [title]="'documents.title' | t" [subtitle]="subtitle()">
+    <ng-container actions>
+      <button type="button" class="btn btn--secondary" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+      <button type="button" class="btn btn--primary" (click)="openCreate()">
+        <app-icon name="upload" [size]="16" />
+        {{ 'documents.new' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  <div class="doc-summary" role="group" [attr.aria-label]="'documents.summary.label' | t">
+    @for (item of summary(); track item.status) {
+      <button
+        type="button"
+        class="doc-summary__item"
+        [class]="'doc-summary__item--' + item.status"
+        [attr.aria-pressed]="statusFilter() === item.status"
+        [attr.aria-label]="('documents.summary.filterBy' | t: { status: ('documents.status.' + item.status | t) }) + ': ' + item.count"
+        (click)="toggleStatus(item.status)"
+      >
+        <span class="doc-summary__icon" aria-hidden="true"><app-icon [name]="item.icon" [size]="18" /></span>
+        <span class="doc-summary__body">
+          <span class="doc-summary__label">{{ 'documents.status.' + item.status | t }}</span>
+          <span class="doc-summary__value">
+            @if (directory.loading()) {
+              <span class="skeleton skeleton--text doc-summary__skeleton"></span>
+            } @else {
+              {{ item.count | num }}
+            }
+          </span>
+          <span class="doc-summary__hint">{{ item.hint }}</span>
+        </span>
+        @if (statusFilter() === item.status) {
+          <span class="doc-summary__check" aria-hidden="true"><app-icon name="check" [size]="14" /></span>
+        }
+      </button>
+    }
+  </div>
+
+  <section class="card" aria-labelledby="documents-register-title">
+    <h2 class="visually-hidden" id="documents-register-title">{{ 'documents.title' | t }}</h2>
+    <div class="toolbar">
+      <div class="toolbar__search input-group">
+        <app-icon class="input-group__icon" name="search" [size]="16" />
+        <input
+          type="search"
+          class="input"
+          [placeholder]="'documents.searchPlaceholder' | t"
+          [attr.aria-label]="'common.actions.search' | t"
+          [value]="list.searchInput()"
+          (input)="list.setSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="toolbar__filters">
+        <select class="select" [attr.aria-label]="'documents.fields.status' | t" (change)="setStatus($event)">
+          <option value="" [selected]="!statusFilter()">{{ 'documents.allStatuses' | t }}</option>
+          @for (status of statuses; track status) {
+            <option [value]="status" [selected]="statusFilter() === status">{{ 'documents.status.' + status | t }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'documents.fields.type' | t" (change)="setType($event)">
+          <option value="" [selected]="!typeFilter()">{{ 'documents.allTypes' | t }}</option>
+          @for (type of types; track type) {
+            <option [value]="type" [selected]="typeFilter() === type">{{ 'documents.types.' + type | t }}</option>
+          }
+        </select>
+        <select class="select" [attr.aria-label]="'documents.fields.entityType' | t" (change)="setEntityType($event)">
+          <option value="" [selected]="!entityTypeFilter()">{{ 'documents.allEntities' | t }}</option>
+          @for (entityType of entityTypes; track entityType) {
+            <option [value]="entityType" [selected]="entityTypeFilter() === entityType">{{ 'entities.' + entityType | t }}</option>
+          }
+        </select>
+        @if (hasFilters()) {
+          <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+            <app-icon name="x" [size]="16" />
+            {{ 'common.actions.clearFilters' | t }}
+          </button>
+        }
+      </div>
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: query.value()?.total ?? 0 } }}</span>
+    </div>
+
+    @if (query.initialLoading()) {
+      <app-table-skeleton [columns]="7" />
+    } @else if (query.error()) {
+      <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+        <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+      </app-empty-state>
+    } @else {
+      @let result = query.value();
+      @if (!rows().length) {
+        @if (hasFilters()) {
+          <app-empty-state icon="search" [title]="'common.states.noResultsTitle' | t" [description]="'common.states.noResultsDescription' | t">
+            <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'common.actions.clearFilters' | t }}</button>
+          </app-empty-state>
+        } @else {
+          <app-empty-state icon="file-text" [title]="'common.states.emptyTitle' | t" [description]="'documents.empty' | t">
+            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'documents.new' | t }}</button>
+          </app-empty-state>
+        }
+      } @else {
+        <div class="table-wrap" [class.is-refreshing]="query.loading()">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('title')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('title')" (click)="list.toggleSort('title')">
+                    {{ 'documents.columns.document' | t }}
+                    <app-icon [name]="list.sortIcon('title')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('type')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('type')" (click)="list.toggleSort('type')">
+                    {{ 'documents.columns.type' | t }}
+                    <app-icon [name]="list.sortIcon('type')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'documents.columns.entity' | t }}</th>
+                <th scope="col">{{ 'documents.columns.issuer' | t }}</th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('issueDate')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('issueDate')" (click)="list.toggleSort('issueDate')">
+                    {{ 'documents.columns.issueDate' | t }}
+                    <app-icon [name]="list.sortIcon('issueDate')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col" [attr.aria-sort]="list.ariaSort('expiryDate')">
+                  <button type="button" class="sort-button" [attr.data-active]="list.isSorted('expiryDate')" (click)="list.toggleSort('expiryDate')">
+                    {{ 'documents.columns.expiryDate' | t }}
+                    <app-icon [name]="list.sortIcon('expiryDate')" [size]="14" />
+                  </button>
+                </th>
+                <th scope="col">{{ 'documents.columns.file' | t }}</th>
+                <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of rows(); track row.document.id) {
+                @let d = row.document;
+                <tr>
+                  <td class="data-table__primary">
+                    <button type="button" class="link-button doc-title" (click)="previewing.set(d)">{{ d.title }}</button>
+                    <span class="cell-sub mono">{{ d.reference }}</span>
+                  </td>
+                  <td [attr.data-label]="'documents.columns.type' | t">{{ 'documents.types.' + d.type | t }}</td>
+                  <td [attr.data-label]="'documents.columns.entity' | t">
+                    <a class="cell-link" [routerLink]="directory.entityLink(d.entityType, d.entityId)">{{ directory.entityLabel(d.entityType, d.entityId) }}</a>
+                    <span class="cell-sub">{{ 'entities.' + d.entityType | t }}</span>
+                  </td>
+                  <td [attr.data-label]="'documents.columns.issuer' | t">{{ d.issuer }}</td>
+                  <td class="nowrap" [attr.data-label]="'documents.columns.issueDate' | t">{{ d.issueDate | fmtDate }}</td>
+                  <td [attr.data-label]="'documents.columns.expiryDate' | t">
+                    <span class="expiry-cell">
+                      @if (d.expiryDate) {
+                        <span class="nowrap">{{ d.expiryDate | fmtDate }}</span>
+                      }
+                      <app-expiry-badge [date]="d.expiryDate" relative />
+                    </span>
+                  </td>
+                  <td [attr.data-label]="'documents.columns.file' | t">
+                    @if (d.fileName) {
+                      <span class="file-indicator" tabindex="0" [appTooltip]="d.fileName + ' · ' + fileSize(d.fileSizeKb)">
+                        <app-icon name="paperclip" [size]="14" />
+                        <span class="file-indicator__name">{{ d.fileName }}</span>
+                      </span>
+                    } @else {
+                      <span class="file-indicator file-indicator--missing">
+                        <app-icon name="file-x" [size]="14" />
+                        {{ 'documents.file.none' | t }}
+                      </span>
+                    }
+                  </td>
+                  <td class="data-table__actions">
+                    <app-dropdown align="end">
+                      <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + d.reference">
+                        <app-icon name="ellipsis" [size]="16" />
+                      </button>
+                      <div dropdownMenu>
+                        <button type="button" class="menu__item" role="menuitem" (click)="previewing.set(d)">
+                          <app-icon name="eye" [size]="16" /> {{ 'documents.actions.preview' | t }}
+                        </button>
+                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(d)">
+                          <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                        </button>
+                        @if (canRenew(row.status)) {
+                          <button type="button" class="menu__item" role="menuitem" (click)="openRenew(d)">
+                            <app-icon name="refresh" [size]="16" /> {{ 'documents.actions.renew' | t }}
+                          </button>
+                        }
+                        <a class="menu__item" role="menuitem" [routerLink]="directory.entityLink(d.entityType, d.entityId)">
+                          <app-icon name="external-link" [size]="16" /> {{ 'documents.preview.openRecord' | t }}
+                        </a>
+                        <div class="menu__separator"></div>
+                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(d)">
+                          <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                        </button>
+                      </div>
+                    </app-dropdown>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+      @if (result && result.total > 0) {
+        <app-pagination
+          [page]="result.page"
+          [pageSize]="list.pageSize()"
+          [total]="result.total"
+          (pageChange)="list.page.set($event)"
+          (pageSizeChange)="list.setPageSize($event)"
+        />
+      }
+    }
+  </section>
+</div>
+
+<app-modal variant="drawer" size="lg" [open]="formOpen()" [title]="formTitle()" [description]="formDescription()" (closed)="formOpen.set(false)">
+  @if (formOpen()) {
+    <app-document-form [document]="editing()" [mode]="formMode()" [preset]="preset()" (saved)="onSaved($event)" (cancelled)="formOpen.set(false)" />
+  }
+</app-modal>
+
+<app-document-preview [document]="previewing()" (closed)="previewing.set(null)" (edit)="openEdit($event)" (renew)="openRenew($event)" />

@@ -1,0 +1,180 @@
+@use 'mixins' as *;
+
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  cursor: grab;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard);
+
+  &:hover {
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-sm);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+:host(.is-dragging) {
+  opacity: 0.45;
+  border-style: dashed;
+}
+
+:host(.is-moving) {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.dc__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+// Stretched link: the whole card opens the trip; interactive children sit above it.
+.dc__ref {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+  margin-right: auto;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  &:hover {
+    color: var(--color-accent-text);
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+
+    &::after {
+      border-radius: var(--radius-md);
+      box-shadow: var(--focus-ring);
+    }
+  }
+}
+
+.dc__tag {
+  flex-shrink: 0;
+}
+
+.dc__route {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  font-weight: 600;
+  font-size: var(--text-md);
+  color: var(--color-text);
+}
+
+.dc__arrow {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.dc__customer {
+  margin: -4px 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.dc__facts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text);
+
+  > div {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  dt {
+    display: inline-flex;
+    padding-top: 1px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  dd {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+.dc__delay {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.dc__reason {
+  margin: 0;
+  padding: 6px 8px;
+  border-left: 2px solid var(--color-danger);
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+  background: var(--color-danger-soft);
+  color: var(--color-danger-text);
+  font-size: var(--text-xs);
+  line-height: 1.45;
+}
+
+.dc__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: 2px;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-divider);
+}
+
+.dc__timing {
+  display: inline-flex;
+  flex: 1 1 120px;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.dc__menu,
+.dc__moving {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.dc__moving {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}

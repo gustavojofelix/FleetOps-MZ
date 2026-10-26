@@ -1,0 +1,90 @@
+<form class="card" [formGroup]="form" (ngSubmit)="save()" novalidate aria-labelledby="notif-panel-title">
+  <header class="card__header card__header--bordered panel-header">
+    <div>
+      <h2 class="card__title" id="notif-panel-title">{{ 'settings.notifications.title' | t }}</h2>
+      <p class="card__subtitle">{{ 'settings.notifications.subtitle' | t }}</p>
+    </div>
+    <div class="cluster">
+      <a class="btn btn--ghost btn--sm" routerLink="/notifications">
+        <app-icon name="bell" [size]="14" />
+        {{ 'settings.notifications.viewNotifications' | t }}
+      </a>
+      <app-settings-scope scope="company" />
+    </div>
+  </header>
+
+  <div class="card__body panel-body">
+    <fieldset class="form-section" [disabled]="saving()">
+      <legend class="form-section__title">{{ 'settings.notifications.thresholds' | t }}</legend>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="ns-maint">{{ 'settings.notifications.fields.maintenanceDueDays' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <div class="input-group">
+            <input id="ns-maint" class="input" type="number" inputmode="numeric" min="1" max="90" step="1" formControlName="maintenanceDueDays" aria-describedby="ns-maint-hint" />
+            <span class="input-group__suffix">{{ 'settings.notifications.daysSuffix' | t }}</span>
+          </div>
+          <p class="field__hint" id="ns-maint-hint">{{ 'settings.notifications.hints.maintenanceDueDays' | t }}</p>
+          <app-field-error [control]="form.controls.maintenanceDueDays" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="ns-docs">{{ 'settings.notifications.fields.documentExpiryDays' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <div class="input-group">
+            <input id="ns-docs" class="input" type="number" inputmode="numeric" min="1" max="180" step="1" formControlName="documentExpiryDays" aria-describedby="ns-docs-hint" />
+            <span class="input-group__suffix">{{ 'settings.notifications.daysSuffix' | t }}</span>
+          </div>
+          <p class="field__hint" id="ns-docs-hint">{{ 'settings.notifications.hints.documentExpiryDays' | t }}</p>
+          <app-field-error [control]="form.controls.documentExpiryDays" />
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="form-section" [disabled]="saving()">
+      <legend class="form-section__title">{{ 'settings.notifications.alerts' | t }}</legend>
+      <div>
+        @for (toggle of toggles; track toggle) {
+          <div class="switch-row">
+            <span class="switch-row__text">
+              <label class="switch-row__label" [for]="'ns-' + toggle">{{ 'settings.notifications.fields.' + toggle | t }}</label>
+              <span class="switch-row__hint" [id]="'ns-' + toggle + '-hint'">{{ 'settings.notifications.hints.' + toggle | t }}</span>
+            </span>
+            <span class="switch">
+              <input type="checkbox" role="switch" [id]="'ns-' + toggle" [formControlName]="toggle" [attr.aria-describedby]="'ns-' + toggle + '-hint'" />
+            </span>
+          </div>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="form-section" [disabled]="saving()">
+      <legend class="form-section__title">{{ 'settings.notifications.digest' | t }}</legend>
+      <div class="switch-row">
+        <span class="switch-row__text">
+          <label class="switch-row__label" for="ns-digest">
+            {{ 'settings.notifications.fields.emailDigest' | t }}
+            <span class="sim-tag">{{ 'common.labels.demo' | t }}</span>
+          </label>
+          <span class="switch-row__hint" id="ns-digest-hint">
+            {{ 'settings.notifications.hints.emailDigest' | t }} {{ 'settings.notifications.digestDemo' | t }}
+          </span>
+        </span>
+        <span class="switch">
+          <input type="checkbox" role="switch" id="ns-digest" formControlName="emailDigest" aria-describedby="ns-digest-hint" />
+        </span>
+      </div>
+    </fieldset>
+  </div>
+
+  <footer class="save-bar">
+    @if (tracker.dirty()) {
+      <span class="save-bar__status badge badge--warning" role="status">
+        <app-icon name="circle-alert" [size]="12" />
+        {{ 'settings.unsaved.badge' | t }}
+      </span>
+    }
+    <button type="button" class="btn btn--ghost" [disabled]="!tracker.dirty() || saving()" (click)="discard()">{{ 'settings.unsaved.discard' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="!tracker.dirty() || saving()">
+      <app-icon name="save" [size]="16" />
+      {{ 'common.actions.saveChanges' | t }}
+    </button>
+  </footer>
+</form>

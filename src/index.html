@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-MZ">
+  <head>
+    <meta charset="utf-8" />
+    <title>FleetOps MZ</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="FleetOps MZ — gestão de frota, viagens e rentabilidade para transportadoras." />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f6f8fb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#10151d" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <script>
+      // Resolve the stored theme before first paint to avoid a flash of the wrong theme.
+      // Mirrors ThemeService; keep the storage key in sync with PREFERENCES_STORAGE_KEY.
+      (function () {
+        try {
+          var raw = localStorage.getItem('fleetops.preferences.v1');
+          var pref = raw ? JSON.parse(raw).theme : 'system';
+          var dark = pref === 'dark' || (pref !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+          var lang = raw ? JSON.parse(raw).language : null;
+          if (lang) document.documentElement.setAttribute('lang', lang);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+    <noscript>FleetOps MZ requer JavaScript. / FleetOps MZ requires JavaScript.</noscript>
+  </body>
+</html>

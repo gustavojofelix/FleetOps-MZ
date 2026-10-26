@@ -1,0 +1,1406 @@
+[
+  {
+    "id": "f001",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02101",
+    "timestamp": "2026-05-04T21:27:00+02:00",
+    "vehicleId": "v01",
+    "driverId": "d01",
+    "tripId": "trp001",
+    "odometerKm": 416585,
+    "litres": 240.4,
+    "pricePerLitre": {
+      "amount": 89.2,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 21443.68,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Moatize",
+    "location": "Tete",
+    "receiptFileName": "recibo-abs-02101.jpg",
+    "notes": "",
+    "createdAt": "2026-05-04T21:27:00+02:00",
+    "updatedAt": "2026-05-04T21:27:00+02:00"
+  },
+  {
+    "id": "f002",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02102",
+    "timestamp": "2026-05-05T14:23:00+02:00",
+    "vehicleId": "v01",
+    "driverId": "d01",
+    "tripId": "trp001",
+    "odometerKm": 417204,
+    "litres": 238.6,
+    "pricePerLitre": {
+      "amount": 88.52,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 21120.87,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-05-05T14:23:00+02:00",
+    "updatedAt": "2026-05-05T14:23:00+02:00"
+  },
+  {
+    "id": "f003",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02103",
+    "timestamp": "2026-05-09T23:37:00+02:00",
+    "vehicleId": "v02",
+    "driverId": "d02",
+    "tripId": "trp002",
+    "odometerKm": 338076,
+    "litres": 253.9,
+    "pricePerLitre": {
+      "amount": 1.62,
+      "currency": "USD"
+    },
+    "totalAmount": {
+      "amount": 411.32,
+      "currency": "USD"
+    },
+    "fullTank": true,
+    "station": "Harare Workington Fuel",
+    "location": "Harare",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-05-09T23:37:00+02:00",
+    "updatedAt": "2026-05-09T23:37:00+02:00"
+  },
+  {
+    "id": "f004",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02104",
+    "timestamp": "2026-05-11T05:50:00+02:00",
+    "vehicleId": "v02",
+    "driverId": "d02",
+    "tripId": "trp002",
+    "odometerKm": 338658,
+    "litres": 244.4,
+    "pricePerLitre": {
+      "amount": 88.79,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 21700.28,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Manga Mascarenhas",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-05-11T05:50:00+02:00",
+    "updatedAt": "2026-05-11T05:50:00+02:00"
+  },
+  {
+    "id": "f005",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02105",
+    "timestamp": "2026-05-16T05:47:00+02:00",
+    "vehicleId": "v04",
+    "driverId": "d04",
+    "tripId": "trp003",
+    "odometerKm": 445669,
+    "litres": 536.2,
+    "pricePerLitre": {
+      "amount": 89.19,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 47823.68,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Matola Gare",
+    "location": "Maputo",
+    "receiptFileName": "recibo-abs-02105.jpg",
+    "notes": "",
+    "createdAt": "2026-05-16T05:47:00+02:00",
+    "updatedAt": "2026-05-16T05:47:00+02:00"
+  },
+  {
+    "id": "f006",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02106",
+    "timestamp": "2026-05-17T08:29:00+02:00",
+    "vehicleId": "v04",
+    "driverId": "d04",
+    "tripId": "trp003",
+    "odometerKm": 446873,
+    "litres": 526.8,
+    "pricePerLitre": {
+      "amount": 89.16,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 46969.49,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Manga Mascarenhas",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02106.jpg",
+    "notes": "",
+    "createdAt": "2026-05-17T08:29:00+02:00",
+    "updatedAt": "2026-05-17T08:29:00+02:00"
+  },
+  {
+    "id": "f007",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02107",
+    "timestamp": "2026-05-21T19:58:00+02:00",
+    "vehicleId": "v20",
+    "driverId": "d16",
+    "tripId": "trp004",
+    "odometerKm": 482762,
+    "litres": 152.5,
+    "pricePerLitre": {
+      "amount": 89.11,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 13589.28,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-05-21T19:58:00+02:00",
+    "updatedAt": "2026-05-21T19:58:00+02:00"
+  },
+  {
+    "id": "f008",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02108",
+    "timestamp": "2026-05-28T19:56:00+02:00",
+    "vehicleId": "v03",
+    "driverId": "d03",
+    "tripId": "trp005",
+    "odometerKm": 456050,
+    "litres": 440.8,
+    "pricePerLitre": {
+      "amount": 1.43,
+      "currency": "USD"
+    },
+    "totalAmount": {
+      "amount": 630.34,
+      "currency": "USD"
+    },
+    "fullTank": true,
+    "station": "Lusaka Kafue Road Fuel",
+    "location": "Lusaka",
+    "receiptFileName": "recibo-abs-02108.jpg",
+    "notes": "",
+    "createdAt": "2026-05-28T19:56:00+02:00",
+    "updatedAt": "2026-05-28T19:56:00+02:00"
+  },
+  {
+    "id": "f009",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02109",
+    "timestamp": "2026-05-30T16:18:00+02:00",
+    "vehicleId": "v03",
+    "driverId": "d03",
+    "tripId": "trp005",
+    "odometerKm": 457119,
+    "litres": 452.6,
+    "pricePerLitre": {
+      "amount": 88.53,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 40068.68,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02109.jpg",
+    "notes": "",
+    "createdAt": "2026-05-30T16:18:00+02:00",
+    "updatedAt": "2026-05-30T16:18:00+02:00"
+  },
+  {
+    "id": "f010",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02110",
+    "timestamp": "2026-06-03T19:11:00+02:00",
+    "vehicleId": "v05",
+    "driverId": "d05",
+    "tripId": "trp006",
+    "odometerKm": 393177,
+    "litres": 280.8,
+    "pricePerLitre": {
+      "amount": 89.16,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 25036.13,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Manga Mascarenhas",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02110.jpg",
+    "notes": "",
+    "createdAt": "2026-06-03T19:11:00+02:00",
+    "updatedAt": "2026-06-03T19:11:00+02:00"
+  },
+  {
+    "id": "f011",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02111",
+    "timestamp": "2026-06-04T14:36:00+02:00",
+    "vehicleId": "v05",
+    "driverId": "d05",
+    "tripId": "trp006",
+    "odometerKm": 393791,
+    "litres": 259.8,
+    "pricePerLitre": {
+      "amount": 88.56,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 23007.89,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02111.jpg",
+    "notes": "",
+    "createdAt": "2026-06-04T14:36:00+02:00",
+    "updatedAt": "2026-06-04T14:36:00+02:00"
+  },
+  {
+    "id": "f012",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02112",
+    "timestamp": "2026-06-10T09:56:00+02:00",
+    "vehicleId": "v07",
+    "driverId": "d07",
+    "tripId": "trp007",
+    "odometerKm": 235734,
+    "litres": 364.9,
+    "pricePerLitre": {
+      "amount": 1.91,
+      "currency": "USD"
+    },
+    "totalAmount": {
+      "amount": 696.96,
+      "currency": "USD"
+    },
+    "fullTank": true,
+    "station": "Blantyre Makata Fuel",
+    "location": "Blantyre",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-06-10T09:56:00+02:00",
+    "updatedAt": "2026-06-10T09:56:00+02:00"
+  },
+  {
+    "id": "f013",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02113",
+    "timestamp": "2026-06-12T01:12:00+02:00",
+    "vehicleId": "v07",
+    "driverId": "d07",
+    "tripId": "trp007",
+    "odometerKm": 236588,
+    "litres": 491.6,
+    "pricePerLitre": {
+      "amount": 88.54,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 43526.26,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-06-12T01:12:00+02:00",
+    "updatedAt": "2026-06-12T01:12:00+02:00"
+  },
+  {
+    "id": "f014",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02114",
+    "timestamp": "2026-06-20T00:08:00+02:00",
+    "vehicleId": "v08",
+    "driverId": "d08",
+    "tripId": "trp009",
+    "odometerKm": 339256,
+    "litres": 358.2,
+    "pricePerLitre": {
+      "amount": 88.33,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 31639.81,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Machava",
+    "location": "Maputo",
+    "receiptFileName": "recibo-abs-02114.jpg",
+    "notes": "",
+    "createdAt": "2026-06-20T00:08:00+02:00",
+    "updatedAt": "2026-06-20T00:08:00+02:00"
+  },
+  {
+    "id": "f015",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02115",
+    "timestamp": "2026-06-20T17:08:00+02:00",
+    "vehicleId": "v08",
+    "driverId": "d08",
+    "tripId": "trp009",
+    "odometerKm": 340066,
+    "litres": 317.9,
+    "pricePerLitre": {
+      "amount": 23.17,
+      "currency": "ZAR"
+    },
+    "totalAmount": {
+      "amount": 7365.74,
+      "currency": "ZAR"
+    },
+    "fullTank": true,
+    "station": "Germiston Truck Stop",
+    "location": "Joanesburgo",
+    "receiptFileName": "recibo-abs-02115.jpg",
+    "notes": "",
+    "createdAt": "2026-06-20T17:08:00+02:00",
+    "updatedAt": "2026-06-20T17:08:00+02:00"
+  },
+  {
+    "id": "f016",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02116",
+    "timestamp": "2026-06-22T12:19:00+02:00",
+    "vehicleId": "v08",
+    "driverId": "d08",
+    "tripId": "trp009",
+    "odometerKm": 341722,
+    "litres": 1020,
+    "pricePerLitre": {
+      "amount": 88.47,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 90239.4,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02116.jpg",
+    "notes": "",
+    "createdAt": "2026-06-22T12:19:00+02:00",
+    "updatedAt": "2026-06-22T12:19:00+02:00"
+  },
+  {
+    "id": "f017",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02117",
+    "timestamp": "2026-06-26T16:16:00+02:00",
+    "vehicleId": "v09",
+    "driverId": "d09",
+    "tripId": "trp010",
+    "odometerKm": 449968,
+    "litres": 166.8,
+    "pricePerLitre": {
+      "amount": 1.56,
+      "currency": "USD"
+    },
+    "totalAmount": {
+      "amount": 260.21,
+      "currency": "USD"
+    },
+    "fullTank": true,
+    "station": "Mutare Truck Stop",
+    "location": "Mutare",
+    "receiptFileName": "recibo-abs-02117.jpg",
+    "notes": "",
+    "createdAt": "2026-06-26T16:16:00+02:00",
+    "updatedAt": "2026-06-26T16:16:00+02:00"
+  },
+  {
+    "id": "f018",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02118",
+    "timestamp": "2026-06-27T13:55:00+02:00",
+    "vehicleId": "v09",
+    "driverId": "d09",
+    "tripId": "trp010",
+    "odometerKm": 450298,
+    "litres": 155.5,
+    "pricePerLitre": {
+      "amount": 88.98,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 13836.39,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02118.jpg",
+    "notes": "",
+    "createdAt": "2026-06-27T13:55:00+02:00",
+    "updatedAt": "2026-06-27T13:55:00+02:00"
+  },
+  {
+    "id": "f019",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02119",
+    "timestamp": "2026-07-02T20:45:00+02:00",
+    "vehicleId": "v14",
+    "driverId": "d19",
+    "tripId": "trp011",
+    "odometerKm": 696684,
+    "litres": 281,
+    "pricePerLitre": {
+      "amount": 89.09,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 25034.29,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Moatize",
+    "location": "Tete",
+    "receiptFileName": "recibo-abs-02119.jpg",
+    "notes": "",
+    "createdAt": "2026-07-02T20:45:00+02:00",
+    "updatedAt": "2026-07-02T20:45:00+02:00"
+  },
+  {
+    "id": "f020",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02120",
+    "timestamp": "2026-07-03T15:54:00+02:00",
+    "vehicleId": "v14",
+    "driverId": "d19",
+    "tripId": "trp011",
+    "odometerKm": 697296,
+    "litres": 277.2,
+    "pricePerLitre": {
+      "amount": 89.06,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 24687.43,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-07-03T15:54:00+02:00",
+    "updatedAt": "2026-07-03T15:54:00+02:00"
+  },
+  {
+    "id": "f021",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02121",
+    "timestamp": "2026-07-08T22:06:00+02:00",
+    "vehicleId": "v11",
+    "driverId": "d11",
+    "tripId": "trp012",
+    "odometerKm": 374479,
+    "litres": 288.3,
+    "pricePerLitre": {
+      "amount": 1.58,
+      "currency": "USD"
+    },
+    "totalAmount": {
+      "amount": 455.51,
+      "currency": "USD"
+    },
+    "fullTank": true,
+    "station": "Harare Workington Fuel",
+    "location": "Harare",
+    "receiptFileName": "recibo-abs-02121.jpg",
+    "notes": "",
+    "createdAt": "2026-07-08T22:06:00+02:00",
+    "updatedAt": "2026-07-08T22:06:00+02:00"
+  },
+  {
+    "id": "f022",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02122",
+    "timestamp": "2026-07-10T04:59:00+02:00",
+    "vehicleId": "v11",
+    "driverId": "d11",
+    "tripId": "trp012",
+    "odometerKm": 375073,
+    "litres": 258.6,
+    "pricePerLitre": {
+      "amount": 88.84,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 22974.02,
+      "currency": "MZN"
+    },
+    "fullTank": false,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02122.jpg",
+    "notes": "Abastecimento parcial — bomba com limite de volume.",
+    "createdAt": "2026-07-10T04:59:00+02:00",
+    "updatedAt": "2026-07-10T04:59:00+02:00"
+  },
+  {
+    "id": "f023",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02123",
+    "timestamp": "2026-07-14T21:39:00+02:00",
+    "vehicleId": "v12",
+    "driverId": "d12",
+    "tripId": "trp013",
+    "odometerKm": 320408,
+    "litres": 200.4,
+    "pricePerLitre": {
+      "amount": 88.55,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 17745.42,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-07-14T21:39:00+02:00",
+    "updatedAt": "2026-07-14T21:39:00+02:00"
+  },
+  {
+    "id": "f024",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02124",
+    "timestamp": "2026-07-22T07:01:00+02:00",
+    "vehicleId": "v10",
+    "driverId": "d10",
+    "tripId": "trp014",
+    "odometerKm": 193910,
+    "litres": 489.1,
+    "pricePerLitre": {
+      "amount": 88.53,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 43300.02,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Matola Gare",
+    "location": "Maputo",
+    "receiptFileName": "recibo-abs-02124.jpg",
+    "notes": "",
+    "createdAt": "2026-07-22T07:01:00+02:00",
+    "updatedAt": "2026-07-22T07:01:00+02:00"
+  },
+  {
+    "id": "f025",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02125",
+    "timestamp": "2026-07-23T12:44:00+02:00",
+    "vehicleId": "v10",
+    "driverId": "d10",
+    "tripId": "trp014",
+    "odometerKm": 195115,
+    "litres": 468.6,
+    "pricePerLitre": {
+      "amount": 88.45,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 41447.67,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02125.jpg",
+    "notes": "",
+    "createdAt": "2026-07-23T12:44:00+02:00",
+    "updatedAt": "2026-07-23T12:44:00+02:00"
+  },
+  {
+    "id": "f026",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02126",
+    "timestamp": "2026-07-29T01:34:00+02:00",
+    "vehicleId": "v15",
+    "driverId": "d19",
+    "tripId": "trp015",
+    "odometerKm": 538873,
+    "litres": 261.1,
+    "pricePerLitre": {
+      "amount": 89.21,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 23292.73,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Cassacatiza",
+    "location": "Cassacatiza",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-07-29T01:34:00+02:00",
+    "updatedAt": "2026-07-29T01:34:00+02:00"
+  },
+  {
+    "id": "f027",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02127",
+    "timestamp": "2026-07-29T19:34:00+02:00",
+    "vehicleId": "v15",
+    "driverId": "d19",
+    "tripId": "trp015",
+    "odometerKm": 539403,
+    "litres": 247.6,
+    "pricePerLitre": {
+      "amount": 1.48,
+      "currency": "USD"
+    },
+    "totalAmount": {
+      "amount": 366.45,
+      "currency": "USD"
+    },
+    "fullTank": true,
+    "station": "Lusaka Kafue Road Fuel",
+    "location": "Lusaka",
+    "receiptFileName": "recibo-abs-02127.jpg",
+    "notes": "",
+    "createdAt": "2026-07-29T19:34:00+02:00",
+    "updatedAt": "2026-07-29T19:34:00+02:00"
+  },
+  {
+    "id": "f028",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02128",
+    "timestamp": "2026-07-31T18:58:00+02:00",
+    "vehicleId": "v15",
+    "driverId": "d19",
+    "tripId": "trp015",
+    "odometerKm": 540501,
+    "litres": 522.8,
+    "pricePerLitre": {
+      "amount": 89.07,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 46565.8,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-07-31T18:58:00+02:00",
+    "updatedAt": "2026-07-31T18:58:00+02:00"
+  },
+  {
+    "id": "f051",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02129",
+    "timestamp": "2026-08-03T11:17:00+02:00",
+    "vehicleId": "v26",
+    "driverId": null,
+    "tripId": null,
+    "odometerKm": 33507,
+    "litres": 46.8,
+    "pricePerLitre": {
+      "amount": 88.3,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 4132.44,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Soalpo",
+    "location": "Chimoio",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-08-03T11:17:00+02:00",
+    "updatedAt": "2026-08-03T11:17:00+02:00"
+  },
+  {
+    "id": "f029",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02130",
+    "timestamp": "2026-08-04T23:16:00+02:00",
+    "vehicleId": "v22",
+    "driverId": "d17",
+    "tripId": "trp016",
+    "odometerKm": 473135,
+    "litres": 162.7,
+    "pricePerLitre": {
+      "amount": 89.22,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 14516.09,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02129.jpg",
+    "notes": "",
+    "createdAt": "2026-08-04T23:16:00+02:00",
+    "updatedAt": "2026-08-04T23:16:00+02:00"
+  },
+  {
+    "id": "f030",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02131",
+    "timestamp": "2026-08-11T23:04:00+02:00",
+    "vehicleId": "v06",
+    "driverId": "d06",
+    "tripId": "trp017",
+    "odometerKm": 617833,
+    "litres": 295.6,
+    "pricePerLitre": {
+      "amount": 89.4,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 26426.64,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Matundo",
+    "location": "Tete",
+    "receiptFileName": "recibo-abs-02130.jpg",
+    "notes": "",
+    "createdAt": "2026-08-11T23:04:00+02:00",
+    "updatedAt": "2026-08-11T23:04:00+02:00"
+  },
+  {
+    "id": "f031",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02132",
+    "timestamp": "2026-08-12T16:18:00+02:00",
+    "vehicleId": "v06",
+    "driverId": "d06",
+    "tripId": "trp017",
+    "odometerKm": 618451,
+    "litres": 260.3,
+    "pricePerLitre": {
+      "amount": 89.39,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 23268.22,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02131.jpg",
+    "notes": "",
+    "createdAt": "2026-08-12T16:18:00+02:00",
+    "updatedAt": "2026-08-12T16:18:00+02:00"
+  },
+  {
+    "id": "f032",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02133",
+    "timestamp": "2026-08-19T08:08:00+02:00",
+    "vehicleId": "v13",
+    "driverId": "d13",
+    "tripId": "trp018",
+    "odometerKm": 580959,
+    "litres": 383,
+    "pricePerLitre": {
+      "amount": 1.92,
+      "currency": "USD"
+    },
+    "totalAmount": {
+      "amount": 735.36,
+      "currency": "USD"
+    },
+    "fullTank": true,
+    "station": "Blantyre Makata Fuel",
+    "location": "Blantyre",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-08-19T08:08:00+02:00",
+    "updatedAt": "2026-08-19T08:08:00+02:00"
+  },
+  {
+    "id": "f033",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02134",
+    "timestamp": "2026-08-20T22:01:00+02:00",
+    "vehicleId": "v13",
+    "driverId": "d13",
+    "tripId": "trp018",
+    "odometerKm": 581821,
+    "litres": 355.9,
+    "pricePerLitre": {
+      "amount": 89.23,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 31756.96,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02133.jpg",
+    "notes": "",
+    "createdAt": "2026-08-20T22:01:00+02:00",
+    "updatedAt": "2026-08-20T22:01:00+02:00"
+  },
+  {
+    "id": "f034",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02135",
+    "timestamp": "2026-08-27T03:16:00+02:00",
+    "vehicleId": "v16",
+    "driverId": "d19",
+    "tripId": "trp019",
+    "odometerKm": 942226,
+    "litres": 256.7,
+    "pricePerLitre": {
+      "amount": 1.56,
+      "currency": "USD"
+    },
+    "totalAmount": {
+      "amount": 400.45,
+      "currency": "USD"
+    },
+    "fullTank": true,
+    "station": "Harare Workington Fuel",
+    "location": "Harare",
+    "receiptFileName": "recibo-abs-02134.jpg",
+    "notes": "",
+    "createdAt": "2026-08-27T03:16:00+02:00",
+    "updatedAt": "2026-08-27T03:16:00+02:00"
+  },
+  {
+    "id": "f035",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02136",
+    "timestamp": "2026-08-28T07:05:00+02:00",
+    "vehicleId": "v16",
+    "driverId": "d19",
+    "tripId": "trp019",
+    "odometerKm": 942792,
+    "litres": 238.4,
+    "pricePerLitre": {
+      "amount": 88.68,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 21141.31,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02135.jpg",
+    "notes": "",
+    "createdAt": "2026-08-28T07:05:00+02:00",
+    "updatedAt": "2026-08-28T07:05:00+02:00"
+  },
+  {
+    "id": "f036",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02137",
+    "timestamp": "2026-09-09T22:25:00+02:00",
+    "vehicleId": "v02",
+    "driverId": "d02",
+    "tripId": "trp021",
+    "odometerKm": 339326,
+    "litres": 277.4,
+    "pricePerLitre": {
+      "amount": 88.85,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 24646.99,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02136.jpg",
+    "notes": "",
+    "createdAt": "2026-09-09T22:25:00+02:00",
+    "updatedAt": "2026-09-09T22:25:00+02:00"
+  },
+  {
+    "id": "f037",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02138",
+    "timestamp": "2026-09-10T15:52:00+02:00",
+    "vehicleId": "v02",
+    "driverId": "d02",
+    "tripId": "trp021",
+    "odometerKm": 339952,
+    "litres": 261.3,
+    "pricePerLitre": {
+      "amount": 89.01,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 23258.31,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-09-10T15:52:00+02:00",
+    "updatedAt": "2026-09-10T15:52:00+02:00"
+  },
+  {
+    "id": "f038",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02139",
+    "timestamp": "2026-09-17T00:24:00+02:00",
+    "vehicleId": "v04",
+    "driverId": "d04",
+    "tripId": "trp022",
+    "odometerKm": 447717,
+    "litres": 338.6,
+    "pricePerLitre": {
+      "amount": 89.29,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 30233.59,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Machava",
+    "location": "Maputo",
+    "receiptFileName": "recibo-abs-02138.jpg",
+    "notes": "",
+    "createdAt": "2026-09-17T00:24:00+02:00",
+    "updatedAt": "2026-09-17T00:24:00+02:00"
+  },
+  {
+    "id": "f039",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02140",
+    "timestamp": "2026-09-17T17:24:00+02:00",
+    "vehicleId": "v04",
+    "driverId": "d04",
+    "tripId": "trp022",
+    "odometerKm": 448527,
+    "litres": 344.8,
+    "pricePerLitre": {
+      "amount": 23.16,
+      "currency": "ZAR"
+    },
+    "totalAmount": {
+      "amount": 7985.57,
+      "currency": "ZAR"
+    },
+    "fullTank": true,
+    "station": "Germiston Truck Stop",
+    "location": "Joanesburgo",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-09-17T17:24:00+02:00",
+    "updatedAt": "2026-09-17T17:24:00+02:00"
+  },
+  {
+    "id": "f040",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02141",
+    "timestamp": "2026-09-19T20:13:00+02:00",
+    "vehicleId": "v04",
+    "driverId": "d04",
+    "tripId": "trp022",
+    "odometerKm": 450173,
+    "litres": 708.4,
+    "pricePerLitre": {
+      "amount": 89.1,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 63118.44,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Manga Mascarenhas",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-09-19T20:13:00+02:00",
+    "updatedAt": "2026-09-19T20:13:00+02:00"
+  },
+  {
+    "id": "f041",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02142",
+    "timestamp": "2026-09-24T17:36:00+02:00",
+    "vehicleId": "v01",
+    "driverId": "d01",
+    "tripId": "trp023",
+    "odometerKm": 417530,
+    "litres": 128,
+    "pricePerLitre": {
+      "amount": 1.59,
+      "currency": "USD"
+    },
+    "totalAmount": {
+      "amount": 203.52,
+      "currency": "USD"
+    },
+    "fullTank": true,
+    "station": "Mutare Truck Stop",
+    "location": "Mutare",
+    "receiptFileName": "recibo-abs-02141.jpg",
+    "notes": "",
+    "createdAt": "2026-09-24T17:36:00+02:00",
+    "updatedAt": "2026-09-24T17:36:00+02:00"
+  },
+  {
+    "id": "f042",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02143",
+    "timestamp": "2026-09-25T14:54:00+02:00",
+    "vehicleId": "v01",
+    "driverId": "d01",
+    "tripId": "trp023",
+    "odometerKm": 417844,
+    "litres": 132,
+    "pricePerLitre": {
+      "amount": 89.04,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 11753.28,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Manga Mascarenhas",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02142.jpg",
+    "notes": "",
+    "createdAt": "2026-09-25T14:54:00+02:00",
+    "updatedAt": "2026-09-25T14:54:00+02:00"
+  },
+  {
+    "id": "f053",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02144",
+    "timestamp": "2026-09-30T11:45:00+02:00",
+    "vehicleId": "v25",
+    "driverId": null,
+    "tripId": null,
+    "odometerKm": 286123,
+    "litres": 304.2,
+    "pricePerLitre": {
+      "amount": 89.05,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 27089.01,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Dondo Cruzamento",
+    "location": "Dondo",
+    "receiptFileName": "recibo-abs-02153.jpg",
+    "notes": "",
+    "createdAt": "2026-09-30T11:45:00+02:00",
+    "updatedAt": "2026-09-30T11:45:00+02:00"
+  },
+  {
+    "id": "f043",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02145",
+    "timestamp": "2026-10-01T22:26:00+02:00",
+    "vehicleId": "v03",
+    "driverId": "d03",
+    "tripId": "trp024",
+    "odometerKm": 447785,
+    "litres": 290.8,
+    "pricePerLitre": {
+      "amount": 88.42,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 25712.54,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Matundo",
+    "location": "Tete",
+    "receiptFileName": "recibo-abs-02143.jpg",
+    "notes": "Leitura do conta-quilómetros introduzida manualmente.",
+    "createdAt": "2026-10-01T22:26:00+02:00",
+    "updatedAt": "2026-10-01T22:26:00+02:00"
+  },
+  {
+    "id": "f044",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02146",
+    "timestamp": "2026-10-02T18:27:00+02:00",
+    "vehicleId": "v03",
+    "driverId": "d03",
+    "tripId": "trp024",
+    "odometerKm": 458394,
+    "litres": 243.7,
+    "pricePerLitre": {
+      "amount": 89.03,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 21696.61,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Manga Mascarenhas",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02144.jpg",
+    "notes": "",
+    "createdAt": "2026-10-02T18:27:00+02:00",
+    "updatedAt": "2026-10-02T18:27:00+02:00"
+  },
+  {
+    "id": "f052",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02147",
+    "timestamp": "2026-10-06T07:40:00+02:00",
+    "vehicleId": "v26",
+    "driverId": null,
+    "tripId": null,
+    "odometerKm": 34017,
+    "litres": 48.5,
+    "pricePerLitre": {
+      "amount": 88.91,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 4312.14,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-10-06T07:40:00+02:00",
+    "updatedAt": "2026-10-06T07:40:00+02:00"
+  },
+  {
+    "id": "f045",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02148",
+    "timestamp": "2026-10-08T21:33:00+02:00",
+    "vehicleId": "v19",
+    "driverId": "d15",
+    "tripId": "trp025",
+    "odometerKm": 418142,
+    "litres": 144.2,
+    "pricePerLitre": {
+      "amount": 88.33,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 12737.19,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Manga Mascarenhas",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02145.jpg",
+    "notes": "",
+    "createdAt": "2026-10-08T21:33:00+02:00",
+    "updatedAt": "2026-10-08T21:33:00+02:00"
+  },
+  {
+    "id": "f054",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02149",
+    "timestamp": "2026-10-15T15:00:00+02:00",
+    "vehicleId": "v24",
+    "driverId": "d19",
+    "tripId": null,
+    "odometerKm": 445036,
+    "litres": 236.9,
+    "pricePerLitre": {
+      "amount": 89,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 21084.1,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Dondo Cruzamento",
+    "location": "Dondo",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-10-15T15:00:00+02:00",
+    "updatedAt": "2026-10-15T15:00:00+02:00"
+  },
+  {
+    "id": "f046",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02150",
+    "timestamp": "2026-10-19T17:03:00+02:00",
+    "vehicleId": "v06",
+    "driverId": "d06",
+    "tripId": "trp040",
+    "odometerKm": 618825,
+    "litres": 169.6,
+    "pricePerLitre": {
+      "amount": 1.61,
+      "currency": "USD"
+    },
+    "totalAmount": {
+      "amount": 273.06,
+      "currency": "USD"
+    },
+    "fullTank": true,
+    "station": "Mutare Truck Stop",
+    "location": "Mutare",
+    "receiptFileName": "recibo-abs-02146.jpg",
+    "notes": "",
+    "createdAt": "2026-10-19T17:03:00+02:00",
+    "updatedAt": "2026-10-19T17:03:00+02:00"
+  },
+  {
+    "id": "f047",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02151",
+    "timestamp": "2026-10-20T09:43:00+02:00",
+    "vehicleId": "v06",
+    "driverId": "d06",
+    "tripId": "trp040",
+    "odometerKm": 619153,
+    "litres": 136.8,
+    "pricePerLitre": {
+      "amount": 88.99,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 12173.83,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02147.jpg",
+    "notes": "",
+    "createdAt": "2026-10-20T09:43:00+02:00",
+    "updatedAt": "2026-10-20T09:43:00+02:00"
+  },
+  {
+    "id": "f048",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02152",
+    "timestamp": "2026-10-21T19:54:00+02:00",
+    "vehicleId": "v13",
+    "driverId": "d13",
+    "tripId": "trp039",
+    "odometerKm": 582283,
+    "litres": 196.8,
+    "pricePerLitre": {
+      "amount": 88.8,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 17475.84,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Munhava",
+    "location": "Beira",
+    "receiptFileName": null,
+    "notes": "",
+    "createdAt": "2026-10-21T19:54:00+02:00",
+    "updatedAt": "2026-10-21T19:54:00+02:00"
+  },
+  {
+    "id": "f050",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02153",
+    "timestamp": "2026-10-23T18:20:00+02:00",
+    "vehicleId": "v21",
+    "driverId": "d18",
+    "tripId": "trp041",
+    "odometerKm": 316738,
+    "litres": 47.2,
+    "pricePerLitre": {
+      "amount": 89.05,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 4203.16,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Manga Mascarenhas",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02150.jpg",
+    "notes": "",
+    "createdAt": "2026-10-23T18:20:00+02:00",
+    "updatedAt": "2026-10-23T18:20:00+02:00"
+  },
+  {
+    "id": "f049",
+    "organizationId": "org-kuyenda",
+    "reference": "ABS-02154",
+    "timestamp": "2026-10-23T22:27:00+02:00",
+    "vehicleId": "v12",
+    "driverId": "d12",
+    "tripId": "trp038",
+    "odometerKm": 320874,
+    "litres": 187.5,
+    "pricePerLitre": {
+      "amount": 89.35,
+      "currency": "MZN"
+    },
+    "totalAmount": {
+      "amount": 16753.13,
+      "currency": "MZN"
+    },
+    "fullTank": true,
+    "station": "Posto Inhamízua",
+    "location": "Beira",
+    "receiptFileName": "recibo-abs-02149.jpg",
+    "notes": "",
+    "createdAt": "2026-10-23T22:27:00+02:00",
+    "updatedAt": "2026-10-23T22:27:00+02:00"
+  }
+]

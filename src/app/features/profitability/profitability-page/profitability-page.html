@@ -1,0 +1,435 @@
+<div class="page">
+  <app-page-header [title]="'profitability.title' | t" [subtitle]="'profitability.subtitle' | t">
+    <ng-container actions>
+      <a class="btn btn--secondary" routerLink="/reports" [queryParams]="{ report: 'profitability' }">
+        <app-icon name="file-text" [size]="16" />
+        {{ 'profitability.actions.openReport' | t }}
+      </a>
+      <button type="button" class="btn btn--secondary" [disabled]="loading() || !rows().length" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  <section class="card controls" [attr.aria-label]="'common.actions.filters' | t">
+    <div class="controls__row">
+      <div class="controls__group">
+        <span class="controls__label">{{ 'common.labels.period' | t }}</span>
+        <app-period-filter [period]="period()" (periodChange)="setPeriod($event)" />
+      </div>
+      <div class="controls__group">
+        <span class="controls__label" id="profit-scope-label">{{ 'profitability.scope.label' | t }}</span>
+        <div class="segmented" role="group" aria-labelledby="profit-scope-label">
+          @for (scope of scopes; track scope) {
+            <button type="button" [attr.aria-pressed]="statusScope() === scope" (click)="setScope(scope)">
+              {{ 'profitability.scope.' + scope | t }}
+            </button>
+          }
+        </div>
+      </div>
+      <div class="controls__group">
+        <span class="controls__label" id="profit-group-label">{{ 'profitability.groupBy.label' | t }}</span>
+        <div class="segmented" role="group" aria-labelledby="profit-group-label">
+          @for (option of groupBys; track option) {
+            <button type="button" [attr.aria-pressed]="view() === option" (click)="setView(option)">
+              <app-icon [name]="groupIcons[option]" [size]="14" />
+              {{ 'profitability.groupBy.' + option | t }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="alert alert--info disclaimer" role="note">
+    <app-icon name="info" [size]="18" />
+    <div>
+      <p class="strong">{{ 'profitability.disclaimerTitle' | t }}</p>
+      <p>{{ 'profitability.disclaimer' | t }}</p>
+    </div>
+  </div>
+
+  @if (!loading() && !rows().length) {
+    <section class="card">
+      <app-empty-state
+        icon="chart-column"
+        [title]="'profitability.empty.title' | t"
+        [description]="'profitability.empty.description' | t: { scope: scopeLabel() }"
+      >
+        @if (period().preset !== 'allTime') {
+          <button type="button" class="btn btn--secondary" (click)="showAllTime()">{{ 'profitability.empty.showAll' | t }}</button>
+        }
+        @if (statusScope() === 'finished') {
+          <button type="button" class="btn btn--ghost" (click)="setScope('provisional')">{{ 'profitability.empty.includeProvisional' | t }}</button>
+        }
+      </app-empty-state>
+    </section>
+  } @else {
+    @let total = totals();
+    <div class="kpi-grid">
+      <app-kpi-card icon="banknote" [loading]="loading()" [label]="'profitability.metrics.revenue' | t" [value]="total.revenue | reporting: { wholeUnits: true }" [hint]="'profitability.kpis.revenueHint' | t">
+        <span class="badge badge--accent">{{ 'profitability.labels.actual' | t }}</span>
+      </app-kpi-card>
+      <app-kpi-card icon="receipt" [loading]="loading()" [label]="'profitability.metrics.directCosts' | t" [value]="total.totalDirectCosts | reporting: { wholeUnits: true }" [hint]="'profitability.kpis.costsHint' | t">
+        <span class="badge badge--accent">{{ 'profitability.labels.actual' | t }}</span>
+      </app-kpi-card>
+      <app-kpi-card icon="coins" [loading]="loading()" [label]="'profitability.metrics.contributionMargin' | t" [value]="total.contributionMargin | reporting: { wholeUnits: true }" [hint]="'profitability.kpis.marginHint' | t" />
+      <app-kpi-card icon="percent" [loading]="loading()" [label]="'profitability.metrics.grossMargin' | t" [value]="total.marginRatio | pct">
+        @let marginTone = tone(total.marginRatio);
+        <span [class]="marginTone.cls">{{ marginTone.label | t }}</span>
+      </app-kpi-card>
+      <app-kpi-card icon="gauge" [loading]="loading()" [label]="'profitability.kpis.avgCostPerKm' | t" [value]="total.costPerKm | reporting" [hint]="'profitability.kpis.costPerKmHint' | t: { km: (total.distanceKm | distance) }" />
+      <app-kpi-card
+        icon="route"
+        [loading]="loading()"
+        [label]="'profitability.kpis.trips' | t"
+        [value]="total.trips | num"
+        [hint]="provisionalCount() ? ('profitability.kpis.provisionalHint' | t: { count: provisionalCount() }) : ('profitability.scope.' + statusScope() + 'Short' | t)"
+      >
+        @if (provisionalCount()) {
+          <span class="badge badge--warning">{{ 'profitability.labels.estimated' | t }}</span>
+        }
+      </app-kpi-card>
+    </div>
+
+    <section class="card value-legend" [attr.aria-label]="'profitability.legend.title' | t">
+      <div class="value-legend__items">
+        <span class="value-legend__title">{{ 'profitability.legend.title' | t }}</span>
+        <span class="value-legend__item">
+          <span class="badge badge--accent">{{ 'profitability.labels.actual' | t }}</span>
+          <span class="text-sm muted">{{ 'profitability.legend.actual' | t }}</span>
+        </span>
+        <span class="value-legend__item">
+          <span class="badge badge--warning">{{ 'profitability.labels.estimated' | t }}</span>
+          <span class="text-sm muted">{{ 'profitability.legend.estimated' | t }}</span>
+        </span>
+        <span class="value-legend__item">
+          <span class="badge badge--outline">{{ 'profitability.labels.allocated' | t }}</span>
+          <span class="text-sm muted">{{ 'profitability.legend.allocated' | t: { amount: (total.maintenanceAllocation | reporting: { wholeUnits: true }) } }}</span>
+        </span>
+      </div>
+      <app-simulated-notice always />
+    </section>
+
+    <div class="grid grid--2">
+      <section class="card">
+        <header class="card__header">
+          <div>
+            <h2 class="card__title">{{ 'profitability.charts.revenueVsCosts' | t }}</h2>
+            <p class="card__subtitle">{{ 'profitability.charts.revenueVsCostsSubtitle' | t }}</p>
+          </div>
+        </header>
+        <div class="card__body">
+          @if (loading()) {
+            <div class="skeleton chart-skeleton"></div>
+          } @else {
+            <app-bar-chart
+              [categories]="monthLabels()"
+              [series]="revenueCostSeries()"
+              [format]="moneyFormat"
+              [axisFormat]="axisFormat"
+              [ariaLabel]="'profitability.charts.revenueVsCosts' | t"
+            />
+          }
+        </div>
+      </section>
+
+      <section class="card">
+        <header class="card__header">
+          <div>
+            <h2 class="card__title">{{ 'profitability.charts.costStructure' | t }}</h2>
+            <p class="card__subtitle">{{ (costView() === 'month' ? 'profitability.charts.costStructureMonthly' : 'profitability.charts.costStructureShare') | t }}</p>
+          </div>
+          <div class="card__actions">
+            <div class="segmented" role="group" [attr.aria-label]="'profitability.charts.costStructure' | t">
+              <button type="button" [attr.aria-pressed]="costView() === 'month'" (click)="costView.set('month')">
+                <app-icon name="chart-column" [size]="14" />
+                {{ 'profitability.charts.byMonth' | t }}
+              </button>
+              <button type="button" [attr.aria-pressed]="costView() === 'share'" (click)="costView.set('share')">
+                <app-icon name="chart-pie" [size]="14" />
+                {{ 'profitability.charts.periodShare' | t }}
+              </button>
+            </div>
+          </div>
+        </header>
+        <div class="card__body">
+          @if (loading()) {
+            <div class="skeleton chart-skeleton"></div>
+          } @else if (costView() === 'month') {
+            <app-bar-chart
+              [stacked]="true"
+              [categories]="monthLabels()"
+              [series]="bucketSeries()"
+              [format]="moneyFormat"
+              [axisFormat]="axisFormat"
+              [ariaLabel]="'profitability.charts.costStructureMonthly' | t"
+            />
+          } @else {
+            <app-donut-chart
+              [slices]="bucketSlices()"
+              [format]="moneyFormat"
+              [percentFormat]="percentFormat"
+              [centerLabel]="'profitability.charts.totalCosts' | t"
+              [centerValue]="total.totalDirectCosts | reporting: { compact: true }"
+              [ariaLabel]="'profitability.charts.costStructureShare' | t"
+            />
+          }
+        </div>
+      </section>
+    </div>
+
+    <div class="grid grid--main-side">
+      <section class="card">
+        <header class="card__header">
+          <div>
+            <h2 class="card__title">{{ 'profitability.ranking.title' | t: { dimension: ('profitability.groupByLower.' + rankingDimension() | t) } }}</h2>
+            <p class="card__subtitle">{{ 'profitability.ranking.subtitle' | t }}</p>
+          </div>
+          <div class="card__actions">
+            <div class="segmented" role="group" [attr.aria-label]="'profitability.groupBy.label' | t">
+              @for (dimension of dimensions; track dimension) {
+                <button type="button" [attr.aria-pressed]="rankingDimension() === dimension" (click)="rankingDimension.set(dimension)">
+                  {{ 'profitability.groupBy.' + dimension | t }}
+                </button>
+              }
+            </div>
+          </div>
+        </header>
+        <div class="card__body">
+          @if (loading()) {
+            <div class="skeleton chart-skeleton"></div>
+          } @else {
+            <app-margin-ranking
+              [items]="rankingItems()"
+              [ariaLabel]="'profitability.ranking.title' | t: { dimension: ('profitability.groupByLower.' + rankingDimension() | t) }"
+            />
+          }
+        </div>
+      </section>
+
+      <div class="stack callouts">
+        @for (kind of ['best', 'worst']; track kind) {
+          @let item = kind === 'best' ? callouts().best : callouts().worst;
+          <section class="card callout" [class.callout--best]="kind === 'best'" [class.callout--worst]="kind === 'worst'">
+            <div class="card__body">
+              <p class="callout__eyebrow">
+                <app-icon [name]="kind === 'best' ? 'trending-up' : 'trending-down'" [size]="16" />
+                {{ 'profitability.callouts.' + kind | t }} · {{ 'profitability.groupBy.' + rankingDimension() | t }}
+              </p>
+              @if (item) {
+                @let itemTone = tone(item.marginRatio);
+                <p class="callout__name">
+                  @if (item.link) {
+                    <a class="cell-link" [routerLink]="item.link">{{ item.label }}</a>
+                  } @else {
+                    <button type="button" class="link-button" (click)="drillDown(rankingDimension(), item.key)">{{ item.label }}</button>
+                  }
+                </p>
+                <p class="callout__value">
+                  <span class="callout__pct">{{ item.marginRatio | pct }}</span>
+                  <span [class]="itemTone.cls">{{ itemTone.label | t }}</span>
+                </p>
+                <p class="text-sm muted">{{ item.sub }}</p>
+                <button type="button" class="link-button text-sm" (click)="drillDown(rankingDimension(), item.key)">
+                  {{ 'profitability.table.viewTrips' | t }}
+                  <app-icon name="arrow-right" [size]="14" />
+                </button>
+              } @else {
+                <p class="text-sm muted">{{ 'profitability.callouts.none' | t }}</p>
+              }
+            </div>
+          </section>
+        }
+      </div>
+    </div>
+
+    <section class="card">
+      <header class="card__header">
+        <div>
+          <h2 class="card__title">{{ 'profitability.table.title' | t: { dimension: ('profitability.groupByLower.' + view() | t) } }}</h2>
+          <p class="card__subtitle">{{ 'profitability.table.subtitle' | t }}</p>
+        </div>
+        <div class="card__actions">
+          <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: resultCount() } }}</span>
+        </div>
+      </header>
+
+      @if (focus(); as f) {
+        <div class="focus-bar">
+          <span class="chip">
+            {{ 'profitability.table.focus' | t: { dimension: ('profitability.groupBy.' + f.dimension | t), label: f.label } }}
+            <button type="button" [attr.aria-label]="'profitability.table.clearFocus' | t" (click)="clearFocus()">
+              <app-icon name="x" [size]="14" />
+            </button>
+          </span>
+          @if (focusTotals(); as ft) {
+            <span class="text-sm muted">
+              {{ 'profitability.table.focusSummary' | t: { revenue: (ft.revenue | reporting: { wholeUnits: true }), margin: (ft.marginRatio | pct) } }}
+            </span>
+          }
+        </div>
+      }
+
+      @if (loading()) {
+        <app-table-skeleton [columns]="8" />
+      } @else if (view() === 'trip') {
+        <div class="table-wrap">
+          <table class="data-table profit-table">
+            <thead>
+              <tr>
+                @for (column of tripColumns(); track column.key) {
+                  <th scope="col" [class.num]="column.num" [class.col-muted]="column.muted" [attr.aria-sort]="ariaSort(column.key)">
+                    <button type="button" class="sort-button" [attr.data-active]="sort().field === column.key" (click)="toggleSort(column.key)">
+                      {{ column.label | t }}
+                      <app-icon [name]="sortIcon(column.key)" [size]="14" />
+                    </button>
+                    @if (column.key === 'maintenance') {
+                      <span class="th-tag">{{ 'profitability.labels.allocated' | t }} · {{ 'profitability.table.notInMargin' | t }}</span>
+                    }
+                  </th>
+                }
+                <th scope="col">{{ 'profitability.table.valueType' | t }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of pagedTripRows(); track row.id) {
+                @let r = row.result;
+                @let rowTone = tone(r.marginRatio);
+                <tr class="is-clickable" (click)="openTrip(row.id)">
+                  <td class="data-table__primary">
+                    <a class="cell-link mono" [routerLink]="['/trips', row.id]" (click)="$event.stopPropagation()">{{ row.trip.reference }}</a>
+                    <span class="cell-sub">{{ row.trip.plannedDeparture | fmtDate }}</span>
+                  </td>
+                  <td [attr.data-label]="'common.labels.route' | t">{{ row.route }}</td>
+                  <td [attr.data-label]="'common.labels.customer' | t">
+                    <a class="cell-link" [routerLink]="['/customers', row.trip.customerId]" (click)="$event.stopPropagation()">{{ row.customer }}</a>
+                  </td>
+                  <td [attr.data-label]="'common.labels.vehicle' | t">
+                    <a class="cell-link" [routerLink]="['/vehicles', row.trip.vehicleId]" (click)="$event.stopPropagation()">{{ row.plate }}</a>
+                  </td>
+                  <td class="num" [attr.data-label]="'profitability.metrics.revenue' | t">
+                    <app-money [value]="row.trip.revenue" showConverted />
+                  </td>
+                  @for (bucket of buckets; track bucket) {
+                    <td class="num" [attr.data-label]="'profitability.buckets.' + bucket | t">{{ r.costs[bucket] | reporting }}</td>
+                  }
+                  <td class="num strong" [attr.data-label]="'profitability.table.totalDirectCosts' | t">{{ r.totalDirectCosts | reporting }}</td>
+                  <td class="num strong" [class.text-danger]="r.contributionMargin < 0" [attr.data-label]="'profitability.metrics.contributionMargin' | t">
+                    {{ r.contributionMargin | reporting }}
+                  </td>
+                  <td class="num" [attr.data-label]="'profitability.table.marginPct' | t">
+                    <span [class]="rowTone.cls" [appTooltip]="rowTone.label | t">{{ r.marginRatio | pct }}</span>
+                    <span class="visually-hidden">{{ rowTone.label | t }}</span>
+                  </td>
+                  <td class="num" [attr.data-label]="'profitability.metrics.costPerKm' | t">{{ r.costPerKm | reporting }}</td>
+                  <td class="num col-muted" [attr.data-label]="'profitability.metrics.maintenanceAllocation' | t">{{ r.maintenanceAllocation | reporting }}</td>
+                  <td [attr.data-label]="'profitability.table.valueType' | t">
+                    @if (r.provisional) {
+                      <span class="badge badge--warning" tabindex="0" [appTooltip]="'profitability.labels.provisionalHint' | t">
+                        <span class="badge__dot"></span>{{ 'profitability.labels.provisional' | t }}
+                      </span>
+                      <app-status-badge kind="trip" [value]="row.trip.status" />
+                    } @else {
+                      <span class="badge badge--accent"><span class="badge__dot"></span>{{ 'profitability.labels.actual' | t }}</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+            @if (!focus()) {
+              <tfoot>
+                <tr class="totals-row">
+                  <th scope="row" class="data-table__primary" colspan="4">{{ 'common.labels.total' | t }}</th>
+                  <td class="num" [attr.data-label]="'profitability.metrics.revenue' | t">{{ total.revenue | reporting }}</td>
+                  @for (bucket of buckets; track bucket) {
+                    <td class="num" [attr.data-label]="'profitability.buckets.' + bucket | t">{{ total.costs[bucket] | reporting }}</td>
+                  }
+                  <td class="num" [attr.data-label]="'profitability.table.totalDirectCosts' | t">{{ total.totalDirectCosts | reporting }}</td>
+                  <td class="num" [class.text-danger]="total.contributionMargin < 0" [attr.data-label]="'profitability.metrics.contributionMargin' | t">{{ total.contributionMargin | reporting }}</td>
+                  <td class="num" [attr.data-label]="'profitability.table.marginPct' | t">{{ total.marginRatio | pct }}</td>
+                  <td class="num" [attr.data-label]="'profitability.metrics.costPerKm' | t">{{ total.costPerKm | reporting }}</td>
+                  <td class="num col-muted" [attr.data-label]="'profitability.metrics.maintenanceAllocation' | t">{{ total.maintenanceAllocation | reporting }}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            }
+          </table>
+        </div>
+        @if (tripRows().length > 0) {
+          <app-pagination [page]="page()" [pageSize]="pageSize()" [total]="tripRows().length" (pageChange)="page.set($event)" (pageSizeChange)="setPageSize($event)" />
+        }
+      } @else {
+        <div class="table-wrap">
+          <table class="data-table profit-table">
+            <thead>
+              <tr>
+                <th scope="col" [attr.aria-sort]="ariaSort('label')">
+                  <button type="button" class="sort-button" [attr.data-active]="sort().field === 'label'" (click)="toggleSort('label')">
+                    {{ 'profitability.groupBy.' + view() | t }}
+                    <app-icon [name]="sortIcon('label')" [size]="14" />
+                  </button>
+                </th>
+                @for (column of groupColumns; track column.key) {
+                  <th scope="col" [class.num]="column.num" [attr.aria-sort]="ariaSort(column.key)">
+                    <button type="button" class="sort-button" [attr.data-active]="sort().field === column.key" (click)="toggleSort(column.key)">
+                      {{ column.label | t }}
+                      <app-icon [name]="sortIcon(column.key)" [size]="14" />
+                    </button>
+                  </th>
+                }
+                <th scope="col" class="data-table__actions"><span class="visually-hidden">{{ 'common.labels.actions' | t }}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of groupRowsView(); track row.key) {
+                @let rowTone = tone(row.marginRatio);
+                <tr class="is-clickable" (click)="openGroup(row)">
+                  <td class="data-table__primary">
+                    @if (row.link) {
+                      <a class="cell-link" [routerLink]="row.link" (click)="$event.stopPropagation()">{{ row.label }}</a>
+                    } @else {
+                      <button type="button" class="link-button cell-strong" (click)="$event.stopPropagation(); openGroup(row)">{{ row.label }}</button>
+                    }
+                    @if (row.sub) {
+                      <span class="cell-sub">{{ row.sub }}</span>
+                    }
+                  </td>
+                  <td class="num" [attr.data-label]="'profitability.table.trips' | t">
+                    {{ row.trips | num }}
+                    @if (row.provisionalTrips) {
+                      <span class="cell-sub text-warning">{{ 'profitability.table.provisionalCount' | t: { count: row.provisionalTrips } }}</span>
+                    }
+                  </td>
+                  <td class="num" [attr.data-label]="'profitability.metrics.revenue' | t">{{ row.revenue | reporting }}</td>
+                  <td class="num" [attr.data-label]="'profitability.metrics.directCosts' | t">{{ row.totalDirectCosts | reporting }}</td>
+                  <td class="num strong" [class.text-danger]="row.contributionMargin < 0" [attr.data-label]="'profitability.metrics.contributionMargin' | t">
+                    {{ row.contributionMargin | reporting }}
+                  </td>
+                  <td class="num" [attr.data-label]="'profitability.table.marginPct' | t">
+                    <span [class]="rowTone.cls" [appTooltip]="rowTone.label | t">{{ row.marginRatio | pct }}</span>
+                    <span class="visually-hidden">{{ rowTone.label | t }}</span>
+                  </td>
+                  <td class="num" [attr.data-label]="'profitability.metrics.costPerKm' | t">{{ row.costPerKm | reporting }}</td>
+                  <td class="num" [attr.data-label]="'profitability.metrics.revenuePerKm' | t">{{ row.revenuePerKm | reporting }}</td>
+                  <td class="data-table__actions">
+                    <button
+                      type="button"
+                      class="btn btn--ghost btn--sm"
+                      [attr.aria-label]="('profitability.table.viewTrips' | t) + ' — ' + row.label"
+                      (click)="$event.stopPropagation(); drillGroup(row)"
+                    >
+                      {{ 'profitability.table.viewTrips' | t }}
+                      <app-icon name="arrow-right" [size]="14" />
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  }
+</div>

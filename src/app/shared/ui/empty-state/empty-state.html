@@ -1,0 +1,12 @@
+<div class="empty-state" [attr.role]="tone() === 'error' ? 'alert' : 'status'">
+  <span class="empty-state__icon">
+    <app-icon [name]="tone() === 'error' ? 'circle-alert' : icon()" [size]="compact() ? 20 : 24" />
+  </span>
+  <p class="empty-state__title">{{ title() }}</p>
+  @if (description()) {
+    <p class="empty-state__description">{{ description() }}</p>
+  }
+  <div class="empty-state__actions">
+    <ng-content />
+  </div>
+</div>

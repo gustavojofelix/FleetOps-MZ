@@ -1,0 +1,6 @@
+@if (message(); as text) {
+  <p class="field__error" role="alert">
+    <app-icon name="circle-alert" [size]="14" />
+    <span>{{ text }}</span>
+  </p>
+}

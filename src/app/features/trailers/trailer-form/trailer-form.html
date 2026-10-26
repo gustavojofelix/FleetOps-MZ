@@ -1,0 +1,127 @@
+<form class="stack stack--lg" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'trailers.sections.identification' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="t-plate">{{ 'trailers.fields.plateNumber' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="t-plate" class="input mono" formControlName="plateNumber" autocomplete="off" placeholder="RB-1234-SF" aria-describedby="t-plate-hint" />
+        <p class="field__hint" id="t-plate-hint">{{ 'trailers.hints.plateNumber' | t }}</p>
+        <app-field-error [control]="form.controls.plateNumber" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="t-fleet">{{ 'trailers.fields.fleetNumber' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="t-fleet" class="input mono" formControlName="fleetNumber" autocomplete="off" placeholder="KR-031" />
+        <app-field-error [control]="form.controls.fleetNumber" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="t-make">{{ 'trailers.fields.make' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="t-make" class="input" formControlName="make" list="trailer-makes" />
+        <datalist id="trailer-makes">
+          <option value="Henred"></option>
+          <option value="Afrit"></option>
+          <option value="SA Truck Bodies"></option>
+          <option value="Serco"></option>
+          <option value="GRW"></option>
+          <option value="Schmitz Cargobull"></option>
+          <option value="CIMC"></option>
+        </datalist>
+        <app-field-error [control]="form.controls.make" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="t-year">{{ 'trailers.fields.year' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="t-year" class="input" type="number" inputmode="numeric" formControlName="year" min="1980" [max]="maxYear" />
+        <app-field-error [control]="form.controls.year" />
+      </div>
+      @if (!isEditing()) {
+        <div class="field field--full">
+          <label class="field__label" for="t-status">{{ 'trailers.fields.status' | t }}</label>
+          <select id="t-status" class="select" formControlName="status" aria-describedby="t-status-hint">
+            @for (status of statuses; track status) {
+              <option [value]="status">{{ 'trailers.status.' + status | t }}</option>
+            }
+          </select>
+          <p class="field__hint" id="t-status-hint">{{ 'trailers.hints.statusOnCreate' | t }}</p>
+        </div>
+      }
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'trailers.sections.specifications' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="t-type">{{ 'trailers.fields.type' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="t-type" class="select" formControlName="type">
+          @for (type of types; track type) {
+            <option [value]="type">{{ 'trailers.types.' + type | t }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="t-axles">{{ 'trailers.fields.axles' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="t-axles" class="input" type="number" inputmode="numeric" formControlName="axles" min="2" max="5" step="1" />
+        <app-field-error [control]="form.controls.axles" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="t-cap">{{ 'trailers.fields.capacityTonnes' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <div class="input-group">
+          <input id="t-cap" class="input" type="number" inputmode="decimal" step="0.5" formControlName="capacityTonnes" min="0" />
+          <span class="input-group__suffix">{{ 'common.units.tonnes' | t }}</span>
+        </div>
+        <app-field-error [control]="form.controls.capacityTonnes" />
+      </div>
+      @if (isTanker()) {
+        <div class="field">
+          <label class="field__label" for="t-litres">{{ 'trailers.fields.capacityLitres' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <div class="input-group">
+            <input id="t-litres" class="input" type="number" inputmode="numeric" step="100" formControlName="capacityLitres" min="0" aria-describedby="t-litres-hint" />
+            <span class="input-group__suffix">l</span>
+          </div>
+          <p class="field__hint" id="t-litres-hint">{{ 'trailers.hints.capacityLitres' | t }}</p>
+          <app-field-error [control]="form.controls.capacityLitres" />
+        </div>
+      }
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'trailers.sections.inspection' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="t-last">{{ 'trailers.fields.lastInspectionDate' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="t-last" class="input" type="date" formControlName="lastInspectionDate" [max]="today" />
+        <app-field-error [control]="form.controls.lastInspectionDate" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="t-exp">{{ 'trailers.fields.inspectionExpiry' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="t-exp" class="input" type="date" formControlName="inspectionExpiry" aria-describedby="t-exp-hint" />
+        <p class="field__hint" id="t-exp-hint">{{ 'trailers.hints.inspectionExpiry' | t }}</p>
+        <app-field-error [control]="form.controls.inspectionExpiry" [group]="form" groupError="dateOrder" />
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="t-vehicle">{{ 'trailers.fields.assignedVehicle' | t }}</label>
+        <select id="t-vehicle" class="select" formControlName="assignedVehicleId" aria-describedby="t-vehicle-hint">
+          <option value="">{{ 'trailers.noVehicle' | t }}</option>
+          @for (option of vehicleOptions(); track option.id) {
+            <option [value]="option.id">
+              {{ option.label }} {{ option.linkedTo ? ('trailers.hints.alreadyLinked' | t: { plate: option.linkedTo }) : '' }}
+            </option>
+          }
+        </select>
+        <p class="field__hint" id="t-vehicle-hint">{{ 'trailers.hints.assignedVehicle' | t }}</p>
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="t-notes">{{ 'trailers.fields.notes' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <textarea id="t-notes" class="textarea" formControlName="notes" rows="3"></textarea>
+        <app-field-error [control]="form.controls.notes" />
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="cancelled.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">
+      {{ (isEditing() ? 'common.actions.saveChanges' : 'trailers.new') | t }}
+    </button>
+  </div>
+</form>

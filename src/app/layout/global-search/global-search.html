@@ -1,0 +1,74 @@
+<dialog #dialog class="search-dialog" [attr.aria-label]="'search.label' | t" (cancel)="onCancel($event)" (mousedown)="onBackdrop($event)">
+  @if (layout.searchOpen()) {
+    @let results = flat();
+    <div class="search-panel">
+      <div class="search-panel__field">
+        <app-icon name="search" [size]="18" />
+        <input
+          #input
+          type="search"
+          class="search-panel__input"
+          role="combobox"
+          aria-autocomplete="list"
+          aria-controls="global-search-results"
+          [attr.aria-expanded]="results.length > 0"
+          [attr.aria-activedescendant]="results[activeIndex()] ? optionId(results[activeIndex()]) : null"
+          [attr.aria-label]="'search.label' | t"
+          [placeholder]="'search.placeholder' | t"
+          [value]="term()"
+          autocomplete="off"
+          spellcheck="false"
+          (input)="onInput($event)"
+          (keydown)="onKeydown($event)"
+        />
+        @if (term()) {
+          <button type="button" class="btn btn--ghost btn--sm" (click)="clear()">{{ 'common.actions.clear' | t }}</button>
+        }
+        <button type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="'common.actions.close' | t" (click)="close()">
+          <app-icon name="x" [size]="16" />
+        </button>
+      </div>
+
+      <div class="search-panel__results" id="global-search-results" role="listbox" [attr.aria-label]="'search.label' | t">
+        @if (term().trim().length < 2) {
+          <p class="search-panel__hint">{{ 'search.hint' | t }}</p>
+        } @else if (loading()) {
+          <p class="search-panel__hint">{{ 'common.states.loading' | t }}</p>
+        } @else {
+          @for (group of groups(); track group.key) {
+            <div role="group" [attr.aria-labelledby]="'search-group-' + group.key">
+              <p class="search-group__label" [id]="'search-group-' + group.key">{{ 'search.groups.' + group.key | t }}</p>
+              @for (result of group.results; track result.id) {
+                <div
+                  class="search-result"
+                  role="option"
+                  [id]="optionId(result)"
+                  [class.is-active]="indexOf(result) === activeIndex()"
+                  [attr.aria-selected]="indexOf(result) === activeIndex()"
+                  (mouseenter)="activeIndex.set(indexOf(result))"
+                  (click)="open(result)"
+                >
+                  <span class="search-result__icon"><app-icon [name]="result.icon" [size]="16" /></span>
+                  <span class="search-result__text">
+                    <span class="search-result__title">{{ result.title }}</span>
+                    <span class="search-result__subtitle">{{ result.subtitle }}</span>
+                  </span>
+                  <app-icon class="search-result__go" name="arrow-right" [size]="16" />
+                </div>
+              }
+            </div>
+          } @empty {
+            <p class="search-panel__hint">{{ 'search.noResults' | t: { term: term() } }}</p>
+          }
+        }
+      </div>
+
+      <p class="search-panel__footer" aria-live="polite">
+        @if (term().trim().length >= 2) {
+          <span>{{ 'search.resultsCount' | t: { count: results.length } }}</span>
+        }
+        <span class="search-panel__keys">{{ 'search.navigateHint' | t }}</span>
+      </p>
+    </div>
+  }
+</dialog>

@@ -1,0 +1,13 @@
+@if (scope() === 'company') {
+  <span class="badge badge--accent" tabindex="0" [appTooltip]="'settings.scope.companyHint' | t">
+    <app-icon name="building" [size]="12" />
+    {{ 'settings.scope.company' | t }}
+    <span class="visually-hidden">— {{ 'settings.scope.companyHint' | t }}</span>
+  </span>
+} @else {
+  <span class="badge badge--info" tabindex="0" [appTooltip]="'settings.scope.personalHint' | t">
+    <app-icon name="user" [size]="12" />
+    {{ 'settings.scope.personal' | t }}
+    <span class="visually-hidden">— {{ 'settings.scope.personalHint' | t }}</span>
+  </span>
+}

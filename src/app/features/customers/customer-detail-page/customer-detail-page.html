@@ -1,0 +1,402 @@
+<div class="page">
+  @if (customer(); as c) {
+    @let credit_ = credit();
+    <app-page-header [title]="c.name" [subtitle]="c.code + ' · ' + c.legalName + ' · ' + ('customers.segments.' + c.segment | t)" [breadcrumbs]="breadcrumbs()">
+      <ng-container meta>
+        <app-status-badge kind="customer" [value]="c.status" />
+        <app-simulated-notice always />
+      </ng-container>
+      <ng-container actions>
+        <button type="button" class="btn btn--secondary" [class.btn--loading]="statusSaving()" [disabled]="statusSaving()" (click)="toggleStatus(c)">
+          <app-icon [name]="c.status === 'active' ? 'ban' : 'circle-check'" [size]="16" />
+          {{ (c.status === 'active' ? 'customers.deactivate' : 'customers.activate') | t }}
+        </button>
+        <button type="button" class="btn btn--secondary" (click)="editOpen.set(true)">
+          <app-icon name="pencil" [size]="16" />
+          {{ 'common.actions.edit' | t }}
+        </button>
+        <a class="btn btn--primary" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">
+          <app-icon name="plus" [size]="16" />
+          {{ 'customers.newTrip' | t }}
+        </a>
+      </ng-container>
+    </app-page-header>
+
+    <div class="grid grid--4">
+      <app-kpi-card
+        icon="route"
+        [label]="'customers.detail.kpis.trips' | t"
+        [value]="metrics().tripsTotal | num"
+        [hint]="'customers.detail.kpis.tripsHint' | t: { active: metrics().tripsActive }"
+        link="/trips"
+        [queryParams]="{ customerId: c.id }"
+      />
+      <app-kpi-card
+        icon="banknote"
+        [label]="'customers.detail.kpis.revenue' | t"
+        [value]="metrics().revenueTotal | reporting: { wholeUnits: true }"
+        [hint]="'customers.detail.kpis.revenueHint' | t"
+      />
+      <app-kpi-card
+        icon="percent"
+        [label]="'customers.detail.kpis.margin' | t"
+        [value]="metrics().averageMarginRatio === null ? '—' : (metrics().averageMarginRatio | pct)"
+        [hint]="metrics().finishedTrips ? ('customers.detail.kpis.marginHint' | t: { count: metrics().finishedTrips }) : ('customers.detail.kpis.marginNone' | t)"
+      />
+
+      <section class="credit-kpi" [attr.aria-label]="'customers.detail.kpis.outstanding' | t">
+        <div class="credit-kpi__head">
+          <span class="credit-kpi__label">{{ 'customers.detail.kpis.outstanding' | t }}</span>
+          <span class="demo-tag" tabindex="0" [appTooltip]="'customers.demoFigureHint' | t">{{ 'customers.demoFigure' | t }}</span>
+        </div>
+        <span class="credit-kpi__value">{{ c.outstandingBalance | money: { wholeUnits: true } }}</span>
+        @if (credit_ && credit_.ratio !== null) {
+          <div
+            class="meter"
+            role="meter"
+            [class.meter--warning]="credit_.level === 'warning'"
+            [class.meter--danger]="credit_.level === 'danger'"
+            [attr.aria-label]="'customers.detail.kpis.creditUsageLabel' | t"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-valuenow]="credit_.percent"
+            [attr.aria-valuetext]="credit_.ratio | pct: 0"
+            [style.--value]="credit_.percent"
+          ></div>
+          <span class="credit-kpi__hint" [class.text-warning]="credit_.level === 'warning'" [class.text-danger]="credit_.level === 'danger'">
+            @if (credit_.level !== 'ok') {
+              <app-icon name="triangle-alert" [size]="12" />
+            }
+            {{ 'customers.detail.kpis.creditUsage' | t: { pct: (credit_.ratio | pct: 0), limit: creditLimitText(c) } }}
+          </span>
+        } @else {
+          <span class="credit-kpi__hint">{{ 'customers.detail.kpis.noCreditLimit' | t }}</span>
+        }
+      </section>
+    </div>
+
+    @if (credit_ && credit_.level !== 'ok') {
+      <p class="alert" [class.alert--warning]="credit_.level === 'warning'" [class.alert--danger]="credit_.level === 'danger'" role="status">
+        <app-icon name="triangle-alert" [size]="16" />
+        <span>
+          {{ (credit_.level === 'danger' ? 'customers.detail.kpis.creditExceeded' : 'customers.detail.kpis.creditWarning') | t }}
+          <span class="muted">({{ 'customers.demoFigure' | t }})</span>
+        </span>
+      </p>
+    }
+
+    <div class="tabs detail-tabs" role="tablist" [attr.aria-label]="c.name">
+      @for (tab of tabs; track tab; let i = $index) {
+        <button
+          type="button"
+          class="tab"
+          role="tab"
+          [id]="'customer-tab-' + tab"
+          [attr.aria-selected]="activeTab() === tab"
+          [attr.aria-controls]="'customer-panel-' + tab"
+          [tabindex]="activeTab() === tab ? 0 : -1"
+          (click)="selectTab(tab)"
+          (keydown)="onTabKeydown($event, i)"
+        >
+          {{ 'customers.detail.tabs.' + tab | t }}
+          @switch (tab) {
+            @case ('trips') { <span class="tab__count">{{ trips().length }}</span> }
+            @case ('documents') { <span class="tab__count">{{ documents().length }}</span> }
+          }
+        </button>
+      }
+    </div>
+
+    <section role="tabpanel" [id]="'customer-panel-' + activeTab()" [attr.aria-labelledby]="'customer-tab-' + activeTab()">
+      @switch (activeTab()) {
+        @case ('overview') {
+          <div class="grid grid--main-side">
+            <div class="stack">
+              <section class="card">
+                <header class="card__header"><h2 class="card__title">{{ 'customers.detail.company' | t }}</h2></header>
+                <div class="card__body">
+                  <dl class="dl dl--3">
+                    <div class="span-full"><dt>{{ 'customers.fields.legalName' | t }}</dt><dd>{{ c.legalName }}</dd></div>
+                    <div><dt>{{ 'customers.fields.taxId' | t }}</dt><dd class="mono">{{ c.taxId || '—' }}</dd></div>
+                    <div><dt>{{ 'customers.fields.code' | t }}</dt><dd class="mono">{{ c.code }}</dd></div>
+                    <div><dt>{{ 'customers.fields.segment' | t }}</dt><dd>{{ 'customers.segments.' + c.segment | t }}</dd></div>
+                    <div><dt>{{ 'customers.fields.address' | t }}</dt><dd>{{ c.city }}, {{ countryLabel(c.country) }}</dd></div>
+                    <div><dt>{{ 'customers.fields.paymentTerms' | t }}</dt><dd>{{ 'customers.fields.paymentTermsValue' | t: { days: c.paymentTermsDays } }}</dd></div>
+                    <div><dt>{{ 'customers.fields.preferredCurrency' | t }}</dt><dd><span class="mono">{{ c.preferredCurrency }}</span> · {{ currencyName(c) }}</dd></div>
+                    <div><dt>{{ 'customers.fields.creditLimit' | t }}</dt><dd>{{ c.creditLimit.amount ? (c.creditLimit | money: { wholeUnits: true }) : ('customers.detail.kpis.noCreditLimit' | t) }}</dd></div>
+                    <div>
+                      <dt>{{ 'customers.fields.outstandingBalance' | t }}</dt>
+                      <dd>{{ c.outstandingBalance | money }} <span class="demo-tag" tabindex="0" [appTooltip]="'customers.demoFigureHint' | t">{{ 'customers.demoFigure' | t }}</span></dd>
+                    </div>
+                    <div><dt>{{ 'common.labels.createdAt' | t }}</dt><dd>{{ c.createdAt | fmtDate: 'medium' }}</dd></div>
+                    <div class="span-full"><dt>{{ 'customers.fields.notes' | t }}</dt><dd>{{ c.notes || ('customers.detail.noNotes' | t) }}</dd></div>
+                  </dl>
+                </div>
+              </section>
+
+              <section class="card">
+                <header class="card__header">
+                  <h2 class="card__title">{{ 'customers.detail.recentTrips' | t }}</h2>
+                  @if (trips().length) {
+                    <button type="button" class="link-button text-sm" (click)="selectTab('trips')">{{ 'common.actions.viewAll' | t }}</button>
+                  }
+                </header>
+                @if (trips().length) {
+                  <ul class="list">
+                    @for (entry of trips().slice(0, 5); track entry.trip.id) {
+                      <li>
+                        <a class="list-row" [routerLink]="['/trips', entry.trip.id]">
+                          <span class="avatar"><app-icon name="route" [size]="16" /></span>
+                          <span class="list-row__main">
+                            <span class="list-row__title mono">{{ entry.trip.reference }}</span>
+                            <span class="list-row__meta">{{ directory.routeLabel(entry.trip) }} · {{ entry.trip.plannedDeparture | fmtDate }}</span>
+                          </span>
+                          <app-status-badge kind="trip" [value]="entry.trip.status" />
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                } @else {
+                  <app-empty-state icon="route" compact [title]="'customers.detail.noTrips' | t">
+                    <a class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">{{ 'customers.newTrip' | t }}</a>
+                  </app-empty-state>
+                }
+              </section>
+            </div>
+
+            <div class="stack">
+              <section class="card">
+                <header class="card__header"><h2 class="card__title">{{ 'customers.detail.contact' | t }}</h2></header>
+                <ul class="list contact-list">
+                  <li class="list-row">
+                    <span class="avatar">{{ c.contactName.slice(0, 1) }}{{ c.contactName.split(' ').slice(-1)[0].slice(0, 1) }}</span>
+                    <span class="list-row__main">
+                      <span class="list-row__title">{{ c.contactName }}</span>
+                      <span class="list-row__meta">{{ c.contactRole || '—' }}</span>
+                    </span>
+                  </li>
+                  @if (c.email) {
+                    <li>
+                      <a class="list-row" [href]="'mailto:' + c.email" [attr.aria-label]="'customers.detail.sendEmail' | t: { email: c.email }">
+                        <span class="avatar"><app-icon name="mail" [size]="16" /></span>
+                        <span class="list-row__main">
+                          <span class="list-row__title truncate">{{ c.email }}</span>
+                          <span class="list-row__meta">{{ 'customers.fields.email' | t }}</span>
+                        </span>
+                      </a>
+                    </li>
+                  }
+                  @if (c.phone) {
+                    <li>
+                      <a class="list-row" [href]="'tel:' + c.phone" [attr.aria-label]="'customers.detail.call' | t: { phone: c.phone }">
+                        <span class="avatar"><app-icon name="phone" [size]="16" /></span>
+                        <span class="list-row__main">
+                          <span class="list-row__title">{{ c.phone }}</span>
+                          <span class="list-row__meta">{{ 'customers.fields.phone' | t }}</span>
+                        </span>
+                      </a>
+                    </li>
+                  }
+                </ul>
+              </section>
+
+              <section class="card">
+                <header class="card__header"><h2 class="card__title">{{ 'customers.detail.billing' | t }}</h2></header>
+                <div class="card__body">
+                  <dl class="dl dl--1">
+                    <div><dt>{{ 'customers.fields.billingAddress' | t }}</dt><dd>{{ c.billingAddress || '—' }}</dd></div>
+                    <div>
+                      <dt>{{ 'customers.fields.billingEmail' | t }}</dt>
+                      <dd>
+                        @if (c.billingEmail) {
+                          <a [href]="'mailto:' + c.billingEmail">{{ c.billingEmail }}</a>
+                        } @else {
+                          —
+                        }
+                      </dd>
+                    </div>
+                    <div><dt>{{ 'customers.fields.paymentTerms' | t }}</dt><dd>{{ 'customers.fields.paymentTermsValue' | t: { days: c.paymentTermsDays } }}</dd></div>
+                  </dl>
+                </div>
+              </section>
+            </div>
+          </div>
+        }
+
+        @case ('trips') {
+          <section class="card">
+            @if (trips().length) {
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">{{ 'common.labels.trip' | t }}</th>
+                      <th scope="col">{{ 'common.labels.route' | t }}</th>
+                      <th scope="col">{{ 'common.labels.date' | t }}</th>
+                      <th scope="col">{{ 'common.labels.status' | t }}</th>
+                      <th scope="col" class="num">{{ 'customers.columns.revenue' | t }}</th>
+                      <th scope="col" class="num">
+                        <span [appTooltip]="'customers.detail.marginHelp' | t" tabindex="0">{{ 'customers.columns.margin' | t }}</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (entry of trips(); track entry.trip.id) {
+                      <tr>
+                        <td class="data-table__primary">
+                          <a class="cell-link mono" [routerLink]="['/trips', entry.trip.id]">{{ entry.trip.reference }}</a>
+                          <span class="cell-sub">{{ 'trips.cargoTypes.' + entry.trip.cargo.type | t }} · {{ entry.trip.cargo.description }}</span>
+                        </td>
+                        <td [attr.data-label]="'common.labels.route' | t">{{ directory.routeLabel(entry.trip) }}</td>
+                        <td [attr.data-label]="'common.labels.date' | t">{{ entry.trip.plannedDeparture | fmtDate }}</td>
+                        <td [attr.data-label]="'common.labels.status' | t"><app-status-badge kind="trip" [value]="entry.trip.status" /></td>
+                        <td class="num" [attr.data-label]="'customers.columns.revenue' | t"><app-money [value]="entry.trip.revenue" /></td>
+                        <td class="num" [attr.data-label]="'customers.columns.margin' | t">
+                          @if (entry.trip.status === 'cancelled' || entry.profitability?.marginRatio == null) {
+                            <span class="subtle">—</span>
+                          } @else {
+                            <span
+                              [class.text-success]="entry.profitability!.marginRatio! >= 0"
+                              [class.text-danger]="entry.profitability!.marginRatio! < 0"
+                            >{{ entry.profitability!.marginRatio | pct }}</span>
+                            @if (entry.profitability!.provisional) {
+                              <span class="cell-sub">{{ 'customers.detail.marginEstimated' | t }}</span>
+                            }
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <app-empty-state icon="route" compact [title]="'customers.detail.noTrips' | t">
+                <a class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">{{ 'customers.newTrip' | t }}</a>
+              </app-empty-state>
+            }
+          </section>
+        }
+
+        @case ('revenue') {
+          <div class="grid grid--main-side">
+            <section class="card">
+              <header class="card__header">
+                <div>
+                  <h2 class="card__title">{{ 'customers.detail.monthlyRevenue' | t }}</h2>
+                  <p class="card__subtitle">{{ 'customers.detail.monthlyRevenueHint' | t }}</p>
+                </div>
+                <app-simulated-notice always />
+              </header>
+              <div class="card__body">
+                @if (monthly().hasData) {
+                  <app-bar-chart
+                    [categories]="monthly().categories"
+                    [series]="monthly().series"
+                    [format]="formatReporting"
+                    [axisFormat]="formatAxis"
+                    [ariaLabel]="'customers.detail.monthlyRevenueAria' | t"
+                    [showValues]="true"
+                  />
+                } @else {
+                  <app-empty-state icon="chart-column" compact [title]="'customers.detail.noRevenue' | t" />
+                }
+              </div>
+            </section>
+
+            <section class="card">
+              <header class="card__header">
+                <div>
+                  <h2 class="card__title">{{ 'customers.detail.topRoutes' | t }}</h2>
+                  <p class="card__subtitle">{{ 'customers.detail.topRoutesHint' | t }}</p>
+                </div>
+              </header>
+              @if (topRoutes().length) {
+                <ol class="list route-list">
+                  @for (route of topRoutes(); track route.label) {
+                    <li class="route-list__item">
+                      <div class="route-list__row">
+                        <span class="route-list__label">{{ route.label }}</span>
+                        <span class="strong num nowrap">{{ route.revenue | reporting: { wholeUnits: true } }}</span>
+                      </div>
+                      <div class="meter" aria-hidden="true" [style.--value]="route.share"></div>
+                      <span class="text-xs muted">{{ 'customers.detail.routeTrips' | t: { count: route.trips } }}</span>
+                    </li>
+                  }
+                </ol>
+              } @else {
+                <app-empty-state icon="route" compact [title]="'customers.detail.noRoutes' | t" />
+              }
+            </section>
+          </div>
+        }
+
+        @case ('documents') {
+          <section class="card">
+            <header class="card__header">
+              <h2 class="card__title">{{ 'customers.detail.tabs.documents' | t }}</h2>
+              <a class="link-button text-sm" routerLink="/documents" [queryParams]="{ entityType: 'customer', q: c.name }">{{ 'customers.detail.allDocuments' | t }}</a>
+            </header>
+            @if (documents().length) {
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">{{ 'documents.singular' | t }}</th>
+                      <th scope="col">{{ 'common.labels.reference' | t }}</th>
+                      <th scope="col">{{ 'customers.detail.expiry' | t }}</th>
+                      <th scope="col">{{ 'common.labels.status' | t }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (doc of documents(); track doc.id) {
+                      <tr>
+                        <td class="data-table__primary">
+                          <span class="cell-strong">{{ 'documents.types.' + doc.type | t }}</span>
+                          <span class="cell-sub">{{ doc.title }} · {{ doc.issuer }}</span>
+                        </td>
+                        <td class="mono" [attr.data-label]="'common.labels.reference' | t">{{ doc.reference }}</td>
+                        <td [attr.data-label]="'customers.detail.expiry' | t">{{ doc.expiryDate ? (doc.expiryDate | fmtDate) : '—' }}</td>
+                        <td [attr.data-label]="'common.labels.status' | t"><app-expiry-badge [date]="doc.expiryDate" relative /></td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <app-empty-state icon="file-text" compact [title]="'customers.detail.noDocuments' | t">
+                <a class="btn btn--secondary btn--sm" routerLink="/documents">{{ 'documents.title' | t }}</a>
+              </app-empty-state>
+            }
+          </section>
+        }
+      }
+    </section>
+
+    <app-modal
+      variant="drawer"
+      [open]="editOpen()"
+      [title]="'customers.edit' | t"
+      [description]="'customers.editDescription' | t: { name: c.name }"
+      (closed)="editOpen.set(false)"
+    >
+      @if (editOpen()) {
+        <app-customer-form [customer]="c" (saved)="onSaved($event)" (cancelled)="editOpen.set(false)" />
+      }
+    </app-modal>
+  } @else if (directory.loading()) {
+    <div class="stack" role="status" [attr.aria-label]="'common.states.loading' | t">
+      <span class="skeleton skeleton--title"></span>
+      <div class="grid grid--4">
+        @for (i of [1, 2, 3, 4]; track i) {
+          <app-kpi-card label="…" value="" [loading]="true" />
+        }
+      </div>
+    </div>
+  } @else {
+    <section class="card">
+      <app-empty-state icon="building" [title]="'common.states.notFoundTitle' | t" [description]="'common.states.notFoundDescription' | t">
+        <a class="btn btn--secondary" routerLink="/customers">{{ 'customers.detail.backToList' | t }}</a>
+      </app-empty-state>
+    </section>
+  }
+</div>

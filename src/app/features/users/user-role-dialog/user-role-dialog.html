@@ -1,0 +1,47 @@
+@let target = user();
+<app-modal
+  size="sm"
+  [open]="!!target"
+  [title]="'users.roleDialog.title' | t"
+  [description]="target ? ('users.roleDialog.description' | t: { name: target.fullName }) : null"
+  [dismissible]="!saving()"
+  (closed)="closed.emit()"
+>
+  <div class="stack">
+    <fieldset class="form-reset" [disabled]="saving()">
+      <legend class="visually-hidden">{{ 'users.fields.role' | t }}</legend>
+      <div class="role-options">
+        @for (role of roles; track role) {
+          <label class="role-option" [class.is-selected]="selected() === role">
+            <input type="radio" name="user-role" [value]="role" [checked]="selected() === role" (change)="selected.set(role)" />
+            <span class="role-option__text">
+              <span class="role-option__name">
+                {{ 'users.roles.' + role | t }}
+                @if (role === target?.role) {
+                  <span class="badge badge--outline">{{ 'users.roleDialog.current' | t }}</span>
+                }
+              </span>
+              <span class="role-option__description">{{ 'users.roleDescriptions.' + role | t }}</span>
+            </span>
+          </label>
+        }
+      </div>
+    </fieldset>
+    <p class="text-xs muted role-dialog__note">
+      <app-icon name="shield-check" [size]="14" />
+      <span>{{ 'users.roleDialog.demoNote' | t }}</span>
+    </p>
+  </div>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="closed.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button
+      type="button"
+      class="btn btn--primary"
+      [class.btn--loading]="saving()"
+      [disabled]="saving() || selected() === target?.role"
+      (click)="confirm()"
+    >
+      {{ 'users.roleDialog.confirm' | t }}
+    </button>
+  </ng-container>
+</app-modal>

@@ -1,0 +1,137 @@
+@use 'mixins' as *;
+
+.dashboard__period {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-width: 0;
+
+  @include up(md) {
+    align-items: flex-end;
+  }
+}
+
+.dashboard__comparison {
+  @include truncate;
+  max-width: 100%;
+}
+
+// KPIs: 2 columns on phones and tablets, 4 from 1024 px.
+.dashboard__kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+
+  @include up(md) {
+    gap: var(--space-4);
+  }
+
+  @include up(lg) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+// Fuel / maintenance / breakdown: stack → 2 columns (breakdown spans) → 3 columns.
+.dashboard__charts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+
+  @include up(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+
+  @include up(xl) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.dashboard__breakdown {
+  @include up(md) {
+    grid-column: 1 / -1;
+  }
+
+  @include up(xl) {
+    grid-column: auto;
+  }
+}
+
+.card__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.card__header > div:first-child {
+  min-width: 0;
+}
+
+.dashboard__list {
+  margin-top: var(--space-3);
+
+  > li.is-overdue {
+    box-shadow: inset 3px 0 0 var(--color-danger);
+  }
+}
+
+.dashboard__delay {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-danger-text);
+  min-width: 0;
+
+  > app-icon {
+    flex-shrink: 0;
+  }
+}
+
+.dashboard__delay-text {
+  min-width: 0;
+  @include truncate;
+}
+
+.dashboard__aside-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.dashboard__chart-note {
+  margin-top: var(--space-3);
+}
+
+.dashboard__chart-skeleton {
+  height: 220px;
+
+  &--tall {
+    height: 280px;
+  }
+}
+
+.dashboard__donut-skeleton {
+  width: 168px;
+  height: 168px;
+  margin: 0 auto;
+  border-radius: 50%;
+}
+
+.dashboard__skeleton-title {
+  width: 60%;
+  margin-bottom: var(--space-2);
+}
+
+.dashboard__skeleton-meta {
+  width: 80%;
+}
+
+.dashboard__skeleton-badge {
+  width: 72px;
+  height: 20px;
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}

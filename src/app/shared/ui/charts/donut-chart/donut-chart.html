@@ -1,0 +1,48 @@
+<div class="donut">
+  <div class="donut__figure" [style.width.px]="size()" [style.height.px]="size()">
+    <svg [attr.viewBox]="'0 0 ' + size() + ' ' + size()" role="img" [attr.aria-label]="ariaLabel()" [attr.aria-describedby]="id + '-list'">
+      @if (!arcs().length) {
+        <circle class="donut__empty" [attr.cx]="size() / 2" [attr.cy]="size() / 2" [attr.r]="size() / 2 - size() * 0.17 / 2" />
+      }
+      @for (arc of arcs(); track arc.key) {
+        <path
+          class="chart__bar"
+          [class.is-dimmed]="active() !== null && active() !== arc.key"
+          [attr.d]="arc.d"
+          [style.fill]="arc.color"
+          fill-rule="evenodd"
+          (pointerenter)="active.set(arc.key)"
+          (pointerleave)="active.set(null)"
+        />
+      }
+    </svg>
+    <div class="donut__center" aria-hidden="true">
+      @if (activeArc(); as arc) {
+        <span class="donut__center-label">{{ arc.label }}</span>
+        <span class="donut__center-value">{{ percentFormat()(arc.share) }}</span>
+      } @else {
+        <span class="donut__center-label">{{ centerLabel() }}</span>
+        <span class="donut__center-value">{{ centerValue() }}</span>
+      }
+    </div>
+  </div>
+
+  <ul class="donut__legend" [id]="id + '-list'">
+    @for (arc of arcs(); track arc.key) {
+      <li
+        class="donut__legend-item"
+        [class.is-active]="active() === arc.key"
+        tabindex="0"
+        (mouseenter)="active.set(arc.key)"
+        (mouseleave)="active.set(null)"
+        (focus)="active.set(arc.key)"
+        (blur)="active.set(null)"
+      >
+        <span class="legend__swatch" [style.background]="arc.color"></span>
+        <span class="donut__legend-label">{{ arc.label }}</span>
+        <span class="donut__legend-value">{{ format()(arc.value) }}</span>
+        <span class="donut__legend-share">{{ percentFormat()(arc.share) }}</span>
+      </li>
+    }
+  </ul>
+</div>

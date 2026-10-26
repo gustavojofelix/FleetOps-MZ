@@ -1,0 +1,9 @@
+<div class="table-skeleton" role="status" [attr.aria-label]="'common.states.loading' | t">
+  @for (row of rowList(); track row) {
+    <div class="table-skeleton__row">
+      @for (column of columnList(); track column) {
+        <span class="skeleton skeleton--text" [class.table-skeleton__wide]="column === 0"></span>
+      }
+    </div>
+  }
+</div>

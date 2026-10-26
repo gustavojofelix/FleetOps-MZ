@@ -1,0 +1,27 @@
+:host {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: inherit;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.money__original {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.money__converted {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  border-bottom: 1px dotted var(--color-border-strong);
+  width: fit-content;
+  align-self: inherit;
+  cursor: help;
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-outline);
+    outline-offset: 1px;
+    border-radius: 2px;
+  }
+}

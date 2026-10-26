@@ -1,0 +1,4453 @@
+[
+  {
+    "id": "trp001",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0401",
+    "customerId": "c15",
+    "vehicleId": "v01",
+    "driverId": "d01",
+    "trailerId": "t01",
+    "routeId": "r-bei-tet",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "plannedDistanceKm": 590,
+    "actualDistanceKm": 602,
+    "cargo": {
+      "type": "abnormal",
+      "description": "Componente de escavadora (carga excepcional)",
+      "weightTonnes": 33.3,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-05-04T05:30:00+02:00",
+    "plannedArrival": "2026-05-04T20:30:00+02:00",
+    "actualDeparture": "2026-05-04T06:57:00+02:00",
+    "actualArrival": "2026-05-04T20:23:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1320,
+      "currency": "USD"
+    },
+    "customerReference": "PO015-9942",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0001",
+        "timestamp": "2026-04-30T07:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO015-9942."
+      },
+      {
+        "id": "ev0002",
+        "timestamp": "2026-05-04T00:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0003",
+        "timestamp": "2026-05-04T06:57:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0004",
+        "timestamp": "2026-05-04T10:27:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0005",
+        "timestamp": "2026-05-04T13:57:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Catandica",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0006",
+        "timestamp": "2026-05-04T17:27:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Changara",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0007",
+        "timestamp": "2026-05-04T20:23:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Moatize — Terminal Mineiro",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0008",
+        "timestamp": "2026-05-07T05:23:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-04-30T07:30:00+02:00",
+    "updatedAt": "2026-05-07T05:23:00+02:00"
+  },
+  {
+    "id": "trp002",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0402",
+    "customerId": "c23",
+    "vehicleId": "v02",
+    "driverId": "d02",
+    "trailerId": "t02",
+    "routeId": "r-bei-hre",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Harare",
+      "country": "ZW",
+      "site": "Harare — Workington"
+    },
+    "plannedDistanceKm": 560,
+    "actualDistanceKm": 567,
+    "cargo": {
+      "type": "general",
+      "description": "Fertilizante ensacado",
+      "weightTonnes": 31.6,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-05-09T05:30:00+02:00",
+    "plannedArrival": "2026-05-10T04:30:00+02:00",
+    "actualDeparture": "2026-05-09T06:07:00+02:00",
+    "actualArrival": "2026-05-10T08:50:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1690,
+      "currency": "USD"
+    },
+    "customerReference": "PO023-2707",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0009",
+        "timestamp": "2026-05-07T14:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO023-2707."
+      },
+      {
+        "id": "ev0010",
+        "timestamp": "2026-05-09T00:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0011",
+        "timestamp": "2026-05-09T06:07:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0012",
+        "timestamp": "2026-05-09T09:31:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Chimoio",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0013",
+        "timestamp": "2026-05-09T12:55:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Machipanda",
+        "note": "Fronteira Machipanda / Forbes: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0014",
+        "timestamp": "2026-05-09T16:19:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Mutare",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0015",
+        "timestamp": "2026-05-09T19:43:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Rusape",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0016",
+        "timestamp": "2026-05-10T08:50:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Harare — Workington",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0017",
+        "timestamp": "2026-05-13T06:50:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-05-07T14:30:00+02:00",
+    "updatedAt": "2026-05-13T06:50:00+02:00"
+  },
+  {
+    "id": "trp003",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0403",
+    "customerId": "c08",
+    "vehicleId": "v04",
+    "driverId": "d04",
+    "trailerId": "t04",
+    "routeId": "r-bei-mpm",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Maputo",
+      "country": "MZ",
+      "site": "Machava — Centro de Distribuição"
+    },
+    "plannedDistanceKm": 1190,
+    "actualDistanceKm": 1212,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — mercadoria diversa",
+      "weightTonnes": 24.1,
+      "containerRef": "CRDU9671369",
+      "sealNumber": "SL229070"
+    },
+    "plannedDeparture": "2026-05-15T04:45:00+02:00",
+    "plannedArrival": "2026-05-16T05:45:00+02:00",
+    "actualDeparture": "2026-05-15T05:17:00+02:00",
+    "actualArrival": "2026-05-16T04:29:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 171500,
+      "currency": "MZN"
+    },
+    "customerReference": "PO008-6410",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0018",
+        "timestamp": "2026-05-14T04:45:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO008-6410."
+      },
+      {
+        "id": "ev0019",
+        "timestamp": "2026-05-14T23:45:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0020",
+        "timestamp": "2026-05-15T05:17:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0021",
+        "timestamp": "2026-05-15T10:05:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0022",
+        "timestamp": "2026-05-15T14:53:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Muxúnguè",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0023",
+        "timestamp": "2026-05-15T19:41:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Maxixe",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0024",
+        "timestamp": "2026-05-16T00:29:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Xai-Xai",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0025",
+        "timestamp": "2026-05-16T04:29:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Machava — Centro de Distribuição",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0026",
+        "timestamp": "2026-05-17T17:29:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-05-14T04:45:00+02:00",
+    "updatedAt": "2026-05-17T17:29:00+02:00"
+  },
+  {
+    "id": "trp004",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0404",
+    "customerId": "c02",
+    "vehicleId": "v20",
+    "driverId": "d16",
+    "trailerId": null,
+    "routeId": "r-bei-chi",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Chimoio",
+      "country": "MZ",
+      "site": "Zona Industrial de Chimoio"
+    },
+    "plannedDistanceKm": 200,
+    "actualDistanceKm": 207,
+    "cargo": {
+      "type": "fuel",
+      "description": "Gasóleo — 18 000 l",
+      "weightTonnes": 15.1,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-05-21T07:15:00+02:00",
+    "plannedArrival": "2026-05-21T12:45:00+02:00",
+    "actualDeparture": "2026-05-21T08:20:00+02:00",
+    "actualArrival": "2026-05-21T11:28:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 32550,
+      "currency": "MZN"
+    },
+    "customerReference": "PO002-2841",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0027",
+        "timestamp": "2026-05-18T05:15:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO002-2841."
+      },
+      {
+        "id": "ev0028",
+        "timestamp": "2026-05-21T02:15:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0029",
+        "timestamp": "2026-05-21T08:20:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0030",
+        "timestamp": "2026-05-21T09:27:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Dondo",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0031",
+        "timestamp": "2026-05-21T10:35:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Nhamatanda",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0033",
+        "timestamp": "2026-05-21T11:28:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Zona Industrial de Chimoio",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0032",
+        "timestamp": "2026-05-21T11:42:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0034",
+        "timestamp": "2026-05-23T00:28:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-05-18T05:15:00+02:00",
+    "updatedAt": "2026-05-23T00:28:00+02:00"
+  },
+  {
+    "id": "trp005",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0405",
+    "customerId": "c17",
+    "vehicleId": "v03",
+    "driverId": "d03",
+    "trailerId": "t03",
+    "routeId": "r-bei-lun",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Lusaka",
+      "country": "ZM",
+      "site": "Lusaka — Zona Industrial"
+    },
+    "plannedDistanceKm": 1060,
+    "actualDistanceKm": 1082,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — reagentes mineiros",
+      "weightTonnes": 29.3,
+      "containerRef": "PNGU2096644",
+      "sealNumber": "SL929371"
+    },
+    "plannedDeparture": "2026-05-27T07:45:00+02:00",
+    "plannedArrival": "2026-05-29T01:45:00+02:00",
+    "actualDeparture": "2026-05-27T07:26:00+02:00",
+    "actualArrival": "2026-05-29T00:18:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 3030,
+      "currency": "USD"
+    },
+    "customerReference": "PO017-5495",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0035",
+        "timestamp": "2026-05-24T03:45:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO017-5495."
+      },
+      {
+        "id": "ev0036",
+        "timestamp": "2026-05-27T02:45:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0037",
+        "timestamp": "2026-05-27T07:26:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0038",
+        "timestamp": "2026-05-27T14:38:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0039",
+        "timestamp": "2026-05-27T21:50:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Tete",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0040",
+        "timestamp": "2026-05-28T05:02:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Cassacatiza",
+        "note": "Fronteira Cassacatiza / Chanida: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0041",
+        "timestamp": "2026-05-28T12:14:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Chipata",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0042",
+        "timestamp": "2026-05-29T00:18:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Lusaka — Zona Industrial",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0043",
+        "timestamp": "2026-05-30T20:18:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-05-24T03:45:00+02:00",
+    "updatedAt": "2026-05-30T20:18:00+02:00"
+  },
+  {
+    "id": "trp006",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0406",
+    "customerId": "c01",
+    "vehicleId": "v05",
+    "driverId": "d05",
+    "trailerId": "t05",
+    "routeId": "r-tet-bei",
+    "origin": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "destination": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Granéis"
+    },
+    "plannedDistanceKm": 590,
+    "actualDistanceKm": 600,
+    "cargo": {
+      "type": "bulk",
+      "description": "Carvão metalúrgico a granel",
+      "weightTonnes": 28.8,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-06-03T04:15:00+02:00",
+    "plannedArrival": "2026-06-03T19:15:00+02:00",
+    "actualDeparture": "2026-06-03T04:41:00+02:00",
+    "actualArrival": "2026-06-03T20:36:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1230,
+      "currency": "USD"
+    },
+    "customerReference": "PO001-2908",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0044",
+        "timestamp": "2026-05-30T11:15:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Tete",
+        "note": "Pedido do cliente PO001-2908."
+      },
+      {
+        "id": "ev0045",
+        "timestamp": "2026-06-02T23:15:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Moatize — Terminal Mineiro",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0046",
+        "timestamp": "2026-06-03T04:41:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Tete",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0047",
+        "timestamp": "2026-06-03T08:11:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Changara",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0048",
+        "timestamp": "2026-06-03T11:41:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Catandica",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0049",
+        "timestamp": "2026-06-03T15:11:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0050",
+        "timestamp": "2026-06-03T20:36:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Porto da Beira — Terminal de Granéis",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0051",
+        "timestamp": "2026-06-06T16:36:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Tete",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-05-30T11:15:00+02:00",
+    "updatedAt": "2026-06-06T16:36:00+02:00"
+  },
+  {
+    "id": "trp007",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0407",
+    "customerId": "c11",
+    "vehicleId": "v07",
+    "driverId": "d07",
+    "trailerId": "t07",
+    "routeId": "r-bei-bly",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Blantyre",
+      "country": "MW",
+      "site": "Blantyre — Makata"
+    },
+    "plannedDistanceKm": 830,
+    "actualDistanceKm": 852,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — bens de consumo",
+      "weightTonnes": 27.3,
+      "containerRef": "BEIU6903333",
+      "sealNumber": "SL656511"
+    },
+    "plannedDeparture": "2026-06-09T07:30:00+02:00",
+    "plannedArrival": "2026-06-10T15:30:00+02:00",
+    "actualDeparture": "2026-06-09T07:26:00+02:00",
+    "actualArrival": "2026-06-10T19:12:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 2600,
+      "currency": "USD"
+    },
+    "customerReference": "PO011-3849",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0052",
+        "timestamp": "2026-06-07T15:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO011-3849."
+      },
+      {
+        "id": "ev0053",
+        "timestamp": "2026-06-09T02:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0054",
+        "timestamp": "2026-06-09T07:26:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0055",
+        "timestamp": "2026-06-09T12:38:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0056",
+        "timestamp": "2026-06-09T17:50:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Changara",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0057",
+        "timestamp": "2026-06-09T23:02:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Tete",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0058",
+        "timestamp": "2026-06-10T04:14:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Zóbuè",
+        "note": "Fronteira Zóbuè / Mwanza: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0059",
+        "timestamp": "2026-06-10T19:12:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Blantyre — Makata",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0060",
+        "timestamp": "2026-06-12T17:12:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-06-07T15:30:00+02:00",
+    "updatedAt": "2026-06-12T17:12:00+02:00"
+  },
+  {
+    "id": "trp008",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0408",
+    "customerId": "c03",
+    "vehicleId": "v24",
+    "driverId": "d19",
+    "trailerId": null,
+    "routeId": "r-bei-don",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Dondo",
+      "country": "MZ",
+      "site": "Parque Industrial de Dondo"
+    },
+    "plannedDistanceKm": 32,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "general",
+      "description": "Cilindros de gás industrial",
+      "weightTonnes": 8.7,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-06-14T08:45:00+02:00",
+    "plannedArrival": "2026-06-14T11:15:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "cancelled",
+    "revenue": {
+      "amount": 9550,
+      "currency": "MZN"
+    },
+    "customerReference": "PO003-2038",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0061",
+        "timestamp": "2026-06-10T01:45:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO003-2038."
+      },
+      {
+        "id": "ev0062",
+        "timestamp": "2026-06-13T22:45:00+02:00",
+        "type": "status_change",
+        "status": "cancelled",
+        "location": "Beira",
+        "note": "Cancelada a pedido do cliente — carga não disponibilizada no terminal."
+      }
+    ],
+    "createdAt": "2026-06-10T01:45:00+02:00",
+    "updatedAt": "2026-06-13T22:45:00+02:00"
+  },
+  {
+    "id": "trp009",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0409",
+    "customerId": "c20",
+    "vehicleId": "v08",
+    "driverId": "d08",
+    "trailerId": "t08",
+    "routeId": "r-bei-jnb",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Joanesburgo",
+      "country": "ZA",
+      "site": "Germiston — Armazém Logístico"
+    },
+    "plannedDistanceKm": 1620,
+    "actualDistanceKm": 1630,
+    "cargo": {
+      "type": "general",
+      "description": "Bobinas de aço",
+      "weightTonnes": 32.8,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-06-19T06:45:00+02:00",
+    "plannedArrival": "2026-06-20T22:45:00+02:00",
+    "actualDeparture": "2026-06-19T06:38:00+02:00",
+    "actualArrival": "2026-06-20T22:19:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 53650,
+      "currency": "ZAR"
+    },
+    "customerReference": "PO020-8079",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0063",
+        "timestamp": "2026-06-18T02:45:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO020-8079."
+      },
+      {
+        "id": "ev0064",
+        "timestamp": "2026-06-19T01:45:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0065",
+        "timestamp": "2026-06-19T06:38:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0066",
+        "timestamp": "2026-06-19T12:18:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0067",
+        "timestamp": "2026-06-19T17:58:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Maxixe",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0068",
+        "timestamp": "2026-06-19T23:38:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Maputo",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0069",
+        "timestamp": "2026-06-20T05:18:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Ressano Garcia",
+        "note": "Fronteira Ressano Garcia / Lebombo: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0070",
+        "timestamp": "2026-06-20T10:58:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Mbombela",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0071",
+        "timestamp": "2026-06-20T22:19:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Germiston — Armazém Logístico",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0072",
+        "timestamp": "2026-06-23T02:19:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-06-18T02:45:00+02:00",
+    "updatedAt": "2026-06-23T02:19:00+02:00"
+  },
+  {
+    "id": "trp010",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0410",
+    "customerId": "c16",
+    "vehicleId": "v09",
+    "driverId": "d09",
+    "trailerId": "t09",
+    "routeId": "r-bei-mut",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Mutare",
+      "country": "ZW",
+      "site": "Mutare — Armazém Sakubva"
+    },
+    "plannedDistanceKm": 300,
+    "actualDistanceKm": 305,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 20' — produtos hortícolas",
+      "weightTonnes": 17.1,
+      "containerRef": "ZMBU9296984",
+      "sealNumber": "SL641406"
+    },
+    "plannedDeparture": "2026-06-26T06:45:00+02:00",
+    "plannedArrival": "2026-06-26T21:45:00+02:00",
+    "actualDeparture": "2026-06-26T06:46:00+02:00",
+    "actualArrival": "2026-06-27T00:55:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1080,
+      "currency": "USD"
+    },
+    "customerReference": "PO016-4863",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0073",
+        "timestamp": "2026-06-21T10:45:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO016-4863."
+      },
+      {
+        "id": "ev0074",
+        "timestamp": "2026-06-26T01:45:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0075",
+        "timestamp": "2026-06-26T06:46:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0076",
+        "timestamp": "2026-06-26T09:01:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0077",
+        "timestamp": "2026-06-26T11:16:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Chimoio",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0078",
+        "timestamp": "2026-06-26T13:31:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Machipanda",
+        "note": "Fronteira Machipanda / Forbes: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0079",
+        "timestamp": "2026-06-27T00:55:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Mutare — Armazém Sakubva",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0080",
+        "timestamp": "2026-06-28T14:55:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-06-21T10:45:00+02:00",
+    "updatedAt": "2026-06-28T14:55:00+02:00"
+  },
+  {
+    "id": "trp011",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0411",
+    "customerId": "c04",
+    "vehicleId": "v14",
+    "driverId": "d19",
+    "trailerId": null,
+    "routeId": "r-bei-tet",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "plannedDistanceKm": 590,
+    "actualDistanceKm": 591,
+    "cargo": {
+      "type": "abnormal",
+      "description": "Componente de escavadora (carga excepcional)",
+      "weightTonnes": 30.3,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-07-02T05:30:00+02:00",
+    "plannedArrival": "2026-07-02T20:30:00+02:00",
+    "actualDeparture": "2026-07-02T06:15:00+02:00",
+    "actualArrival": "2026-07-02T21:54:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1360,
+      "currency": "USD"
+    },
+    "customerReference": "PO004-4680",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0081",
+        "timestamp": "2026-06-27T05:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO004-4680."
+      },
+      {
+        "id": "ev0082",
+        "timestamp": "2026-07-02T00:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0083",
+        "timestamp": "2026-07-02T06:15:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0084",
+        "timestamp": "2026-07-02T09:45:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0085",
+        "timestamp": "2026-07-02T13:15:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Catandica",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0086",
+        "timestamp": "2026-07-02T16:45:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Changara",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0087",
+        "timestamp": "2026-07-02T21:54:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Moatize — Terminal Mineiro",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0088",
+        "timestamp": "2026-07-05T06:54:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-06-27T05:30:00+02:00",
+    "updatedAt": "2026-07-05T06:54:00+02:00"
+  },
+  {
+    "id": "trp012",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0412",
+    "customerId": "c23",
+    "vehicleId": "v11",
+    "driverId": "d11",
+    "trailerId": "t11",
+    "routeId": "r-bei-hre",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Harare",
+      "country": "ZW",
+      "site": "Harare — Workington"
+    },
+    "plannedDistanceKm": 560,
+    "actualDistanceKm": 575,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — maquinaria agrícola",
+      "weightTonnes": 25.6,
+      "containerRef": "ZMBU6466114",
+      "sealNumber": "SL132985"
+    },
+    "plannedDeparture": "2026-07-08T04:45:00+02:00",
+    "plannedArrival": "2026-07-09T03:45:00+02:00",
+    "actualDeparture": "2026-07-08T04:36:00+02:00",
+    "actualArrival": "2026-07-09T07:59:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1720,
+      "currency": "USD"
+    },
+    "customerReference": "PO023-5613",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0089",
+        "timestamp": "2026-07-07T04:45:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO023-5613."
+      },
+      {
+        "id": "ev0090",
+        "timestamp": "2026-07-07T23:45:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0091",
+        "timestamp": "2026-07-08T04:36:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0092",
+        "timestamp": "2026-07-08T08:00:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Chimoio",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0093",
+        "timestamp": "2026-07-08T11:24:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Machipanda",
+        "note": "Fronteira Machipanda / Forbes: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0094",
+        "timestamp": "2026-07-08T14:48:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Mutare",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0095",
+        "timestamp": "2026-07-08T18:12:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Rusape",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0096",
+        "timestamp": "2026-07-09T07:59:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Harare — Workington",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0097",
+        "timestamp": "2026-07-11T23:59:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-07-07T04:45:00+02:00",
+    "updatedAt": "2026-07-11T23:59:00+02:00"
+  },
+  {
+    "id": "trp013",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0413",
+    "customerId": "c02",
+    "vehicleId": "v12",
+    "driverId": "d12",
+    "trailerId": "t12",
+    "routeId": "r-chi-bei",
+    "origin": {
+      "city": "Chimoio",
+      "country": "MZ",
+      "site": "Zona Industrial de Chimoio"
+    },
+    "destination": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "plannedDistanceKm": 200,
+    "actualDistanceKm": 204,
+    "cargo": {
+      "type": "general",
+      "description": "Milho ensacado para exportação",
+      "weightTonnes": 30.2,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-07-14T08:15:00+02:00",
+    "plannedArrival": "2026-07-14T13:45:00+02:00",
+    "actualDeparture": "2026-07-14T09:04:00+02:00",
+    "actualArrival": "2026-07-14T13:09:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 28800,
+      "currency": "MZN"
+    },
+    "customerReference": "PO002-8001",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0098",
+        "timestamp": "2026-07-10T23:15:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Chimoio",
+        "note": "Pedido do cliente PO002-8001."
+      },
+      {
+        "id": "ev0099",
+        "timestamp": "2026-07-14T03:15:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Zona Industrial de Chimoio",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0100",
+        "timestamp": "2026-07-14T09:04:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Chimoio",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0101",
+        "timestamp": "2026-07-14T10:11:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0102",
+        "timestamp": "2026-07-14T11:19:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Nhamatanda",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0103",
+        "timestamp": "2026-07-14T12:26:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Dondo",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0104",
+        "timestamp": "2026-07-14T13:09:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0105",
+        "timestamp": "2026-07-16T08:09:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Chimoio",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-07-10T23:15:00+02:00",
+    "updatedAt": "2026-07-16T08:09:00+02:00"
+  },
+  {
+    "id": "trp014",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0414",
+    "customerId": "c08",
+    "vehicleId": "v10",
+    "driverId": "d10",
+    "trailerId": "t10",
+    "routeId": "r-bei-mpm",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Maputo",
+      "country": "MZ",
+      "site": "Machava — Centro de Distribuição"
+    },
+    "plannedDistanceKm": 1190,
+    "actualDistanceKm": 1205,
+    "cargo": {
+      "type": "general",
+      "description": "Bebidas paletizadas",
+      "weightTonnes": 29.8,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-07-21T05:30:00+02:00",
+    "plannedArrival": "2026-07-22T06:30:00+02:00",
+    "actualDeparture": "2026-07-21T06:31:00+02:00",
+    "actualArrival": "2026-07-22T08:44:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 153400,
+      "currency": "MZN"
+    },
+    "customerReference": "PO008-5640",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0106",
+        "timestamp": "2026-07-19T05:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO008-5640."
+      },
+      {
+        "id": "ev0107",
+        "timestamp": "2026-07-21T00:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0108",
+        "timestamp": "2026-07-21T06:31:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0109",
+        "timestamp": "2026-07-21T11:19:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0110",
+        "timestamp": "2026-07-21T16:07:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Muxúnguè",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0111",
+        "timestamp": "2026-07-21T20:55:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Maxixe",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0112",
+        "timestamp": "2026-07-22T01:43:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Xai-Xai",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0113",
+        "timestamp": "2026-07-22T08:44:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Machava — Centro de Distribuição",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0114",
+        "timestamp": "2026-07-24T04:44:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-07-19T05:30:00+02:00",
+    "updatedAt": "2026-07-24T04:44:00+02:00"
+  },
+  {
+    "id": "trp015",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0415",
+    "customerId": "c17",
+    "vehicleId": "v15",
+    "driverId": "d19",
+    "trailerId": null,
+    "routeId": "r-bei-lun",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Lusaka",
+      "country": "ZM",
+      "site": "Lusaka — Zona Industrial"
+    },
+    "plannedDistanceKm": 1060,
+    "actualDistanceKm": 1100,
+    "cargo": {
+      "type": "general",
+      "description": "Sementes e insumos agrícolas",
+      "weightTonnes": 31.1,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-07-28T06:45:00+02:00",
+    "plannedArrival": "2026-07-30T00:45:00+02:00",
+    "actualDeparture": "2026-07-28T07:04:00+02:00",
+    "actualArrival": "2026-07-30T02:58:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 2940,
+      "currency": "USD"
+    },
+    "customerReference": "PO017-1462",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0115",
+        "timestamp": "2026-07-24T23:45:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO017-1462."
+      },
+      {
+        "id": "ev0116",
+        "timestamp": "2026-07-28T01:45:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0117",
+        "timestamp": "2026-07-28T07:04:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0118",
+        "timestamp": "2026-07-28T14:16:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0119",
+        "timestamp": "2026-07-28T21:28:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Tete",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0120",
+        "timestamp": "2026-07-29T04:40:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Cassacatiza",
+        "note": "Fronteira Cassacatiza / Chanida: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0121",
+        "timestamp": "2026-07-29T11:52:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Chipata",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0122",
+        "timestamp": "2026-07-30T02:58:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Lusaka — Zona Industrial",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0123",
+        "timestamp": "2026-08-01T21:58:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-07-24T23:45:00+02:00",
+    "updatedAt": "2026-08-01T21:58:00+02:00"
+  },
+  {
+    "id": "trp016",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0416",
+    "customerId": "c02",
+    "vehicleId": "v22",
+    "driverId": "d17",
+    "trailerId": null,
+    "routeId": "r-bei-chi",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Chimoio",
+      "country": "MZ",
+      "site": "Zona Industrial de Chimoio"
+    },
+    "plannedDistanceKm": 200,
+    "actualDistanceKm": 202,
+    "cargo": {
+      "type": "fuel",
+      "description": "Gasóleo — 20 000 l",
+      "weightTonnes": 16.8,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-08-04T08:00:00+02:00",
+    "plannedArrival": "2026-08-04T13:30:00+02:00",
+    "actualDeparture": "2026-08-04T08:21:00+02:00",
+    "actualArrival": "2026-08-04T14:46:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 34850,
+      "currency": "MZN"
+    },
+    "customerReference": "PO002-4980",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0124",
+        "timestamp": "2026-08-02T12:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO002-4980."
+      },
+      {
+        "id": "ev0125",
+        "timestamp": "2026-08-04T03:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0126",
+        "timestamp": "2026-08-04T08:21:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0127",
+        "timestamp": "2026-08-04T09:28:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Dondo",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0128",
+        "timestamp": "2026-08-04T10:36:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Nhamatanda",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0129",
+        "timestamp": "2026-08-04T11:43:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0130",
+        "timestamp": "2026-08-04T14:46:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Zona Industrial de Chimoio",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0131",
+        "timestamp": "2026-08-06T15:46:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-08-02T12:00:00+02:00",
+    "updatedAt": "2026-08-06T15:46:00+02:00"
+  },
+  {
+    "id": "trp017",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0417",
+    "customerId": "c01",
+    "vehicleId": "v06",
+    "driverId": "d06",
+    "trailerId": "t06",
+    "routeId": "r-bei-tet",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "plannedDistanceKm": 590,
+    "actualDistanceKm": 600,
+    "cargo": {
+      "type": "abnormal",
+      "description": "Componente de escavadora (carga excepcional)",
+      "weightTonnes": 31.5,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-08-11T07:15:00+02:00",
+    "plannedArrival": "2026-08-11T22:15:00+02:00",
+    "actualDeparture": "2026-08-11T08:34:00+02:00",
+    "actualArrival": "2026-08-11T22:18:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1240,
+      "currency": "USD"
+    },
+    "customerReference": "PO001-5582",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0132",
+        "timestamp": "2026-08-10T00:15:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO001-5582."
+      },
+      {
+        "id": "ev0133",
+        "timestamp": "2026-08-11T02:15:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0134",
+        "timestamp": "2026-08-11T08:34:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0135",
+        "timestamp": "2026-08-11T12:04:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0136",
+        "timestamp": "2026-08-11T15:34:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Catandica",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0137",
+        "timestamp": "2026-08-11T19:04:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Changara",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0138",
+        "timestamp": "2026-08-11T22:18:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Moatize — Terminal Mineiro",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0139",
+        "timestamp": "2026-08-13T19:18:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-08-10T00:15:00+02:00",
+    "updatedAt": "2026-08-13T19:18:00+02:00"
+  },
+  {
+    "id": "trp018",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0418",
+    "customerId": "c06",
+    "vehicleId": "v13",
+    "driverId": "d13",
+    "trailerId": "t13",
+    "routeId": "r-bei-bly",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Blantyre",
+      "country": "MW",
+      "site": "Blantyre — Makata"
+    },
+    "plannedDistanceKm": 830,
+    "actualDistanceKm": 836,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — bens de consumo",
+      "weightTonnes": 26,
+      "containerRef": "BEIU3390772",
+      "sealNumber": "SL922153"
+    },
+    "plannedDeparture": "2026-08-18T04:45:00+02:00",
+    "plannedArrival": "2026-08-19T12:45:00+02:00",
+    "actualDeparture": "2026-08-18T05:38:00+02:00",
+    "actualArrival": "2026-08-19T16:01:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 2810,
+      "currency": "USD"
+    },
+    "customerReference": "PO006-4599",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0140",
+        "timestamp": "2026-08-13T08:45:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO006-4599."
+      },
+      {
+        "id": "ev0141",
+        "timestamp": "2026-08-17T23:45:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0142",
+        "timestamp": "2026-08-18T05:38:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0143",
+        "timestamp": "2026-08-18T10:50:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0144",
+        "timestamp": "2026-08-18T16:02:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Changara",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0145",
+        "timestamp": "2026-08-18T21:14:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Tete",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0146",
+        "timestamp": "2026-08-19T02:26:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Zóbuè",
+        "note": "Fronteira Zóbuè / Mwanza: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0147",
+        "timestamp": "2026-08-19T16:01:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Blantyre — Makata",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0148",
+        "timestamp": "2026-08-22T04:01:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-08-13T08:45:00+02:00",
+    "updatedAt": "2026-08-22T04:01:00+02:00"
+  },
+  {
+    "id": "trp019",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0419",
+    "customerId": "c23",
+    "vehicleId": "v16",
+    "driverId": "d19",
+    "trailerId": null,
+    "routeId": "r-bei-hre",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Harare",
+      "country": "ZW",
+      "site": "Harare — Workington"
+    },
+    "plannedDistanceKm": 560,
+    "actualDistanceKm": 574,
+    "cargo": {
+      "type": "refrigerated",
+      "description": "Pescado congelado",
+      "weightTonnes": 22.5,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-08-26T08:30:00+02:00",
+    "plannedArrival": "2026-08-27T07:30:00+02:00",
+    "actualDeparture": "2026-08-26T09:46:00+02:00",
+    "actualArrival": "2026-08-27T10:05:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1790,
+      "currency": "USD"
+    },
+    "customerReference": "PO023-2947",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0149",
+        "timestamp": "2026-08-24T18:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO023-2947."
+      },
+      {
+        "id": "ev0150",
+        "timestamp": "2026-08-26T03:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0151",
+        "timestamp": "2026-08-26T09:46:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0152",
+        "timestamp": "2026-08-26T13:10:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Chimoio",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0153",
+        "timestamp": "2026-08-26T16:34:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Machipanda",
+        "note": "Fronteira Machipanda / Forbes: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0154",
+        "timestamp": "2026-08-26T19:58:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Mutare",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0155",
+        "timestamp": "2026-08-26T23:22:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Rusape",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0156",
+        "timestamp": "2026-08-27T10:05:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Harare — Workington",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0157",
+        "timestamp": "2026-08-29T22:05:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-08-24T18:30:00+02:00",
+    "updatedAt": "2026-08-29T22:05:00+02:00"
+  },
+  {
+    "id": "trp020",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0420",
+    "customerId": "c21",
+    "vehicleId": "v21",
+    "driverId": "d18",
+    "trailerId": null,
+    "routeId": "r-bei-don",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Dondo",
+      "country": "MZ",
+      "site": "Parque Industrial de Dondo"
+    },
+    "plannedDistanceKm": 32,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "bulk",
+      "description": "Clínquer a granel",
+      "weightTonnes": 16.7,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-09-02T07:30:00+02:00",
+    "plannedArrival": "2026-09-02T10:00:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "cancelled",
+    "revenue": {
+      "amount": 9600,
+      "currency": "MZN"
+    },
+    "customerReference": "PO021-1162",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0158",
+        "timestamp": "2026-08-28T16:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO021-1162."
+      },
+      {
+        "id": "ev0159",
+        "timestamp": "2026-09-01T21:30:00+02:00",
+        "type": "status_change",
+        "status": "cancelled",
+        "location": "Beira",
+        "note": "Cancelada a pedido do cliente — carga não disponibilizada no terminal."
+      }
+    ],
+    "createdAt": "2026-08-28T16:30:00+02:00",
+    "updatedAt": "2026-09-01T21:30:00+02:00"
+  },
+  {
+    "id": "trp021",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0421",
+    "customerId": "c01",
+    "vehicleId": "v02",
+    "driverId": "d02",
+    "trailerId": "t02",
+    "routeId": "r-tet-bei",
+    "origin": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "destination": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Granéis"
+    },
+    "plannedDistanceKm": 590,
+    "actualDistanceKm": 595,
+    "cargo": {
+      "type": "bulk",
+      "description": "Carvão metalúrgico a granel",
+      "weightTonnes": 34.6,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-09-09T06:30:00+02:00",
+    "plannedArrival": "2026-09-09T21:30:00+02:00",
+    "actualDeparture": "2026-09-09T07:55:00+02:00",
+    "actualArrival": "2026-09-09T21:52:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1210,
+      "currency": "USD"
+    },
+    "customerReference": "PO001-3617",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0160",
+        "timestamp": "2026-09-05T21:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Tete",
+        "note": "Pedido do cliente PO001-3617."
+      },
+      {
+        "id": "ev0161",
+        "timestamp": "2026-09-09T01:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Moatize — Terminal Mineiro",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0162",
+        "timestamp": "2026-09-09T07:55:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Tete",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0163",
+        "timestamp": "2026-09-09T11:25:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Changara",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0164",
+        "timestamp": "2026-09-09T14:55:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Catandica",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0165",
+        "timestamp": "2026-09-09T18:25:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0166",
+        "timestamp": "2026-09-09T21:52:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Porto da Beira — Terminal de Granéis",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0167",
+        "timestamp": "2026-09-11T22:52:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Tete",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-09-05T21:30:00+02:00",
+    "updatedAt": "2026-09-11T22:52:00+02:00"
+  },
+  {
+    "id": "trp022",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0422",
+    "customerId": "c20",
+    "vehicleId": "v04",
+    "driverId": "d04",
+    "trailerId": "t04",
+    "routeId": "r-bei-jnb",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Joanesburgo",
+      "country": "ZA",
+      "site": "Germiston — Armazém Logístico"
+    },
+    "plannedDistanceKm": 1620,
+    "actualDistanceKm": 1647,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — embalagens",
+      "weightTonnes": 23.8,
+      "containerRef": "BEIU2944904",
+      "sealNumber": "SL857161"
+    },
+    "plannedDeparture": "2026-09-16T07:15:00+02:00",
+    "plannedArrival": "2026-09-17T23:15:00+02:00",
+    "actualDeparture": "2026-09-16T06:54:00+02:00",
+    "actualArrival": "2026-09-18T06:13:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 53600,
+      "currency": "ZAR"
+    },
+    "customerReference": "PO020-3848",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0168",
+        "timestamp": "2026-09-13T06:15:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO020-3848."
+      },
+      {
+        "id": "ev0169",
+        "timestamp": "2026-09-16T02:15:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0170",
+        "timestamp": "2026-09-16T06:54:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0171",
+        "timestamp": "2026-09-16T12:34:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0172",
+        "timestamp": "2026-09-16T18:14:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Maxixe",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0173",
+        "timestamp": "2026-09-16T23:54:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Maputo",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0174",
+        "timestamp": "2026-09-17T05:34:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Ressano Garcia",
+        "note": "Fronteira Ressano Garcia / Lebombo: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0175",
+        "timestamp": "2026-09-17T11:14:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Mbombela",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0176",
+        "timestamp": "2026-09-18T06:13:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Germiston — Armazém Logístico",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0177",
+        "timestamp": "2026-09-20T23:13:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-09-13T06:15:00+02:00",
+    "updatedAt": "2026-09-20T23:13:00+02:00"
+  },
+  {
+    "id": "trp023",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0423",
+    "customerId": "c11",
+    "vehicleId": "v01",
+    "driverId": "d01",
+    "trailerId": "t01",
+    "routeId": "r-bei-mut",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Mutare",
+      "country": "ZW",
+      "site": "Mutare — Armazém Sakubva"
+    },
+    "plannedDistanceKm": 300,
+    "actualDistanceKm": 305,
+    "cargo": {
+      "type": "general",
+      "description": "Madeira serrada (retorno de contentor)",
+      "weightTonnes": 27.3,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-09-24T07:15:00+02:00",
+    "plannedArrival": "2026-09-24T22:15:00+02:00",
+    "actualDeparture": "2026-09-24T08:06:00+02:00",
+    "actualArrival": "2026-09-25T01:54:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1000,
+      "currency": "USD"
+    },
+    "customerReference": "PO011-9732",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0178",
+        "timestamp": "2026-09-23T01:15:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO011-9732."
+      },
+      {
+        "id": "ev0179",
+        "timestamp": "2026-09-24T02:15:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0180",
+        "timestamp": "2026-09-24T08:06:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0181",
+        "timestamp": "2026-09-24T10:21:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0182",
+        "timestamp": "2026-09-24T12:36:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Chimoio",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0183",
+        "timestamp": "2026-09-24T14:51:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Machipanda",
+        "note": "Fronteira Machipanda / Forbes: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0184",
+        "timestamp": "2026-09-25T01:54:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Mutare — Armazém Sakubva",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0185",
+        "timestamp": "2026-09-26T13:54:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-09-23T01:15:00+02:00",
+    "updatedAt": "2026-09-26T13:54:00+02:00"
+  },
+  {
+    "id": "trp024",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0424",
+    "customerId": "c13",
+    "vehicleId": "v03",
+    "driverId": "d03",
+    "trailerId": "t03",
+    "routeId": "r-bei-tet",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "plannedDistanceKm": 590,
+    "actualDistanceKm": 606,
+    "cargo": {
+      "type": "abnormal",
+      "description": "Componente de escavadora (carga excepcional)",
+      "weightTonnes": 31.3,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-01T07:45:00+02:00",
+    "plannedArrival": "2026-10-01T22:45:00+02:00",
+    "actualDeparture": "2026-10-01T07:56:00+02:00",
+    "actualArrival": "2026-10-02T00:27:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 1280,
+      "currency": "USD"
+    },
+    "customerReference": "PO013-6210",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0186",
+        "timestamp": "2026-09-30T03:45:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO013-6210."
+      },
+      {
+        "id": "ev0187",
+        "timestamp": "2026-10-01T02:45:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0188",
+        "timestamp": "2026-10-01T07:56:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0189",
+        "timestamp": "2026-10-01T11:26:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0190",
+        "timestamp": "2026-10-01T14:56:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Catandica",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0191",
+        "timestamp": "2026-10-01T18:26:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Changara",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0192",
+        "timestamp": "2026-10-02T00:27:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Moatize — Terminal Mineiro",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0193",
+        "timestamp": "2026-10-04T09:27:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-09-30T03:45:00+02:00",
+    "updatedAt": "2026-10-04T09:27:00+02:00"
+  },
+  {
+    "id": "trp025",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0425",
+    "customerId": "c10",
+    "vehicleId": "v19",
+    "driverId": "d15",
+    "trailerId": null,
+    "routeId": "r-bei-chi",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Chimoio",
+      "country": "MZ",
+      "site": "Zona Industrial de Chimoio"
+    },
+    "plannedDistanceKm": 200,
+    "actualDistanceKm": 206,
+    "cargo": {
+      "type": "fuel",
+      "description": "Gasóleo — 18 000 l",
+      "weightTonnes": 14.3,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-08T06:15:00+02:00",
+    "plannedArrival": "2026-10-08T11:45:00+02:00",
+    "actualDeparture": "2026-10-08T06:02:00+02:00",
+    "actualArrival": "2026-10-08T13:03:00+02:00",
+    "status": "completed",
+    "revenue": {
+      "amount": 34500,
+      "currency": "MZN"
+    },
+    "customerReference": "PO010-6680",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0194",
+        "timestamp": "2026-10-05T10:15:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO010-6680."
+      },
+      {
+        "id": "ev0195",
+        "timestamp": "2026-10-08T01:15:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0196",
+        "timestamp": "2026-10-08T06:02:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0197",
+        "timestamp": "2026-10-08T07:09:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Dondo",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0198",
+        "timestamp": "2026-10-08T08:17:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Nhamatanda",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0199",
+        "timestamp": "2026-10-08T09:24:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0200",
+        "timestamp": "2026-10-08T13:03:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Zona Industrial de Chimoio",
+        "note": "Entrega confirmada com guia assinada."
+      },
+      {
+        "id": "ev0201",
+        "timestamp": "2026-10-10T17:03:00+02:00",
+        "type": "status_change",
+        "status": "completed",
+        "location": "Beira",
+        "note": "Viagem encerrada e documentos entregues à contabilidade."
+      }
+    ],
+    "createdAt": "2026-10-05T10:15:00+02:00",
+    "updatedAt": "2026-10-10T17:03:00+02:00"
+  },
+  {
+    "id": "trp026",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0426",
+    "customerId": "c05",
+    "vehicleId": "v01",
+    "driverId": "d01",
+    "trailerId": "t01",
+    "routeId": "r-bei-hre",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Harare",
+      "country": "ZW",
+      "site": "Harare — Workington"
+    },
+    "plannedDistanceKm": 560,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — maquinaria agrícola",
+      "weightTonnes": 27.4,
+      "containerRef": "BEIU2494068",
+      "sealNumber": "SL631475"
+    },
+    "plannedDeparture": "2026-10-22T07:00:00+02:00",
+    "plannedArrival": "2026-10-24T16:00:00+02:00",
+    "actualDeparture": "2026-10-22T07:37:00+02:00",
+    "actualArrival": null,
+    "status": "in_transit",
+    "revenue": {
+      "amount": 1790,
+      "currency": "USD"
+    },
+    "customerReference": "PO005-5331",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0202",
+        "timestamp": "2026-10-20T05:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO005-5331."
+      },
+      {
+        "id": "ev0203",
+        "timestamp": "2026-10-22T02:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0204",
+        "timestamp": "2026-10-22T07:37:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0205",
+        "timestamp": "2026-10-22T11:01:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Chimoio",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0206",
+        "timestamp": "2026-10-22T14:25:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Machipanda",
+        "note": "Fronteira Machipanda / Forbes: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0207",
+        "timestamp": "2026-10-22T17:49:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Mutare",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0208",
+        "timestamp": "2026-10-22T21:13:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Rusape",
+        "note": "Passagem registada."
+      }
+    ],
+    "createdAt": "2026-10-20T05:00:00+02:00",
+    "updatedAt": "2026-10-22T21:13:00+02:00"
+  },
+  {
+    "id": "trp027",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0427",
+    "customerId": "c01",
+    "vehicleId": "v02",
+    "driverId": "d02",
+    "trailerId": "t02",
+    "routeId": "r-bei-tet",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "plannedDistanceKm": 590,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — peças de equipamento mineiro",
+      "weightTonnes": 25.2,
+      "containerRef": "BEIU7541265",
+      "sealNumber": "SL713920"
+    },
+    "plannedDeparture": "2026-10-23T05:30:00+02:00",
+    "plannedArrival": "2026-10-24T21:00:00+02:00",
+    "actualDeparture": "2026-10-23T05:46:00+02:00",
+    "actualArrival": null,
+    "status": "in_transit",
+    "revenue": {
+      "amount": 1330,
+      "currency": "USD"
+    },
+    "customerReference": "PO001-1009",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0209",
+        "timestamp": "2026-10-21T08:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO001-1009."
+      },
+      {
+        "id": "ev0210",
+        "timestamp": "2026-10-23T00:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0211",
+        "timestamp": "2026-10-23T05:46:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0212",
+        "timestamp": "2026-10-23T09:16:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0213",
+        "timestamp": "2026-10-23T12:46:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Catandica",
+        "note": "Passagem registada."
+      }
+    ],
+    "createdAt": "2026-10-21T08:30:00+02:00",
+    "updatedAt": "2026-10-23T12:46:00+02:00"
+  },
+  {
+    "id": "trp028",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0428",
+    "customerId": "c07",
+    "vehicleId": "v03",
+    "driverId": "d03",
+    "trailerId": "t03",
+    "routeId": "r-bei-lun",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Lusaka",
+      "country": "ZM",
+      "site": "Lusaka — Zona Industrial"
+    },
+    "plannedDistanceKm": 1060,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — reagentes mineiros",
+      "weightTonnes": 28,
+      "containerRef": "BEIU7034471",
+      "sealNumber": "SL879478"
+    },
+    "plannedDeparture": "2026-10-20T06:00:00+02:00",
+    "plannedArrival": "2026-10-25T02:00:00+02:00",
+    "actualDeparture": "2026-10-20T07:21:00+02:00",
+    "actualArrival": null,
+    "status": "in_transit",
+    "revenue": {
+      "amount": 3260,
+      "currency": "USD"
+    },
+    "customerReference": "PO007-4743",
+    "delayReason": null,
+    "notes": "Escolta não necessária. Contacto do destinatário: armazém turno da noite.",
+    "timeline": [
+      {
+        "id": "ev0214",
+        "timestamp": "2026-10-15T11:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO007-4743."
+      },
+      {
+        "id": "ev0215",
+        "timestamp": "2026-10-20T01:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0216",
+        "timestamp": "2026-10-20T07:21:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0217",
+        "timestamp": "2026-10-20T14:33:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0218",
+        "timestamp": "2026-10-20T21:45:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Tete",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0219",
+        "timestamp": "2026-10-21T04:57:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Cassacatiza",
+        "note": "Fronteira Cassacatiza / Chanida: despacho aduaneiro concluído."
+      }
+    ],
+    "createdAt": "2026-10-15T11:00:00+02:00",
+    "updatedAt": "2026-10-21T04:57:00+02:00"
+  },
+  {
+    "id": "trp029",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0429",
+    "customerId": "c08",
+    "vehicleId": "v04",
+    "driverId": "d04",
+    "trailerId": "t04",
+    "routeId": "r-bei-mpm",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Maputo",
+      "country": "MZ",
+      "site": "Machava — Centro de Distribuição"
+    },
+    "plannedDistanceKm": 1190,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — mercadoria diversa",
+      "weightTonnes": 26.1,
+      "containerRef": "BEIU3162664",
+      "sealNumber": "SL585753"
+    },
+    "plannedDeparture": "2026-10-23T04:00:00+02:00",
+    "plannedArrival": "2026-10-25T07:00:00+02:00",
+    "actualDeparture": "2026-10-23T03:55:00+02:00",
+    "actualArrival": null,
+    "status": "in_transit",
+    "revenue": {
+      "amount": 170350,
+      "currency": "MZN"
+    },
+    "customerReference": "PO008-9386",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0220",
+        "timestamp": "2026-10-19T08:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO008-9386."
+      },
+      {
+        "id": "ev0221",
+        "timestamp": "2026-10-22T23:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0222",
+        "timestamp": "2026-10-23T03:55:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0223",
+        "timestamp": "2026-10-23T08:43:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0224",
+        "timestamp": "2026-10-23T13:31:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Muxúnguè",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0225",
+        "timestamp": "2026-10-23T18:19:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Maxixe",
+        "note": "Passagem registada."
+      }
+    ],
+    "createdAt": "2026-10-19T08:00:00+02:00",
+    "updatedAt": "2026-10-23T18:19:00+02:00"
+  },
+  {
+    "id": "trp030",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0430",
+    "customerId": "c01",
+    "vehicleId": "v05",
+    "driverId": "d05",
+    "trailerId": "t05",
+    "routeId": "r-tet-bei",
+    "origin": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "destination": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Granéis"
+    },
+    "plannedDistanceKm": 590,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "bulk",
+      "description": "Carvão metalúrgico a granel",
+      "weightTonnes": 30.5,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-24T03:00:00+02:00",
+    "plannedArrival": "2026-10-24T18:00:00+02:00",
+    "actualDeparture": "2026-10-24T03:35:00+02:00",
+    "actualArrival": null,
+    "status": "in_transit",
+    "revenue": {
+      "amount": 1360,
+      "currency": "USD"
+    },
+    "customerReference": "PO001-1652",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0226",
+        "timestamp": "2026-10-22T06:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Tete",
+        "note": "Pedido do cliente PO001-1652."
+      },
+      {
+        "id": "ev0227",
+        "timestamp": "2026-10-23T22:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Moatize — Terminal Mineiro",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0228",
+        "timestamp": "2026-10-24T03:35:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Tete",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0229",
+        "timestamp": "2026-10-24T07:05:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Changara",
+        "note": "Passagem registada."
+      }
+    ],
+    "createdAt": "2026-10-22T06:00:00+02:00",
+    "updatedAt": "2026-10-24T07:05:00+02:00"
+  },
+  {
+    "id": "trp031",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0431",
+    "customerId": "c04",
+    "vehicleId": "v20",
+    "driverId": "d16",
+    "trailerId": null,
+    "routeId": "r-bei-chi",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Chimoio",
+      "country": "MZ",
+      "site": "Zona Industrial de Chimoio"
+    },
+    "plannedDistanceKm": 200,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "fuel",
+      "description": "Gasóleo — 18 000 l",
+      "weightTonnes": 15.1,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-24T09:30:00+02:00",
+    "plannedArrival": "2026-10-24T15:00:00+02:00",
+    "actualDeparture": "2026-10-24T10:17:00+02:00",
+    "actualArrival": null,
+    "status": "in_transit",
+    "revenue": {
+      "amount": 34750,
+      "currency": "MZN"
+    },
+    "customerReference": "PO004-6674",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0230",
+        "timestamp": "2026-10-21T14:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO004-6674."
+      },
+      {
+        "id": "ev0231",
+        "timestamp": "2026-10-24T04:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0232",
+        "timestamp": "2026-10-24T10:17:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0233",
+        "timestamp": "2026-10-24T11:24:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Dondo",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0234",
+        "timestamp": "2026-10-24T12:32:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Nhamatanda",
+        "note": "Passagem registada."
+      }
+    ],
+    "createdAt": "2026-10-21T14:30:00+02:00",
+    "updatedAt": "2026-10-24T12:32:00+02:00"
+  },
+  {
+    "id": "trp032",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0432",
+    "customerId": "c06",
+    "vehicleId": "v07",
+    "driverId": "d07",
+    "trailerId": "t07",
+    "routeId": "r-bei-bly",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Blantyre",
+      "country": "MW",
+      "site": "Blantyre — Makata"
+    },
+    "plannedDistanceKm": 830,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "general",
+      "description": "Fertilizante ureia ensacado",
+      "weightTonnes": 29.7,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-19T06:00:00+02:00",
+    "plannedArrival": "2026-10-20T14:00:00+02:00",
+    "actualDeparture": "2026-10-19T06:25:00+02:00",
+    "actualArrival": null,
+    "status": "delayed",
+    "revenue": {
+      "amount": 2920,
+      "currency": "USD"
+    },
+    "customerReference": "PO006-1066",
+    "delayReason": "Fila prolongada na fronteira de Zóbuè e inspecção fitossanitária adicional à carga.",
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0235",
+        "timestamp": "2026-10-17T10:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO006-1066."
+      },
+      {
+        "id": "ev0236",
+        "timestamp": "2026-10-19T01:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0237",
+        "timestamp": "2026-10-19T06:25:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0238",
+        "timestamp": "2026-10-19T11:37:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0239",
+        "timestamp": "2026-10-19T16:49:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Changara",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0240",
+        "timestamp": "2026-10-19T22:01:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Tete",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0241",
+        "timestamp": "2026-10-20T03:13:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Zóbuè",
+        "note": "Fronteira Zóbuè / Mwanza: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0242",
+        "timestamp": "2026-10-20T11:00:00+02:00",
+        "type": "delay",
+        "status": "delayed",
+        "location": "Zóbuè",
+        "note": "Fila prolongada na fronteira de Zóbuè e inspecção fitossanitária adicional à carga."
+      }
+    ],
+    "createdAt": "2026-10-17T10:00:00+02:00",
+    "updatedAt": "2026-10-20T11:00:00+02:00"
+  },
+  {
+    "id": "trp033",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0433",
+    "customerId": "c09",
+    "vehicleId": "v08",
+    "driverId": "d08",
+    "trailerId": "t08",
+    "routeId": "r-bei-jnb",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Joanesburgo",
+      "country": "ZA",
+      "site": "Germiston — Armazém Logístico"
+    },
+    "plannedDistanceKm": 1620,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 40' — embalagens",
+      "weightTonnes": 23.9,
+      "containerRef": "BEIU7601847",
+      "sealNumber": "SL250041"
+    },
+    "plannedDeparture": "2026-10-18T05:00:00+02:00",
+    "plannedArrival": "2026-10-19T21:00:00+02:00",
+    "actualDeparture": "2026-10-18T06:03:00+02:00",
+    "actualArrival": null,
+    "status": "delayed",
+    "revenue": {
+      "amount": 52850,
+      "currency": "ZAR"
+    },
+    "customerReference": "PO009-2864",
+    "delayReason": "Avaria no sistema de travagem perto de Xai-Xai; viatura aguarda peça de substituição.",
+    "notes": "Seguradora notificada. Cliente informado do novo prazo estimado.",
+    "timeline": [
+      {
+        "id": "ev0243",
+        "timestamp": "2026-10-13T11:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO009-2864."
+      },
+      {
+        "id": "ev0244",
+        "timestamp": "2026-10-18T00:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0245",
+        "timestamp": "2026-10-18T06:03:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0246",
+        "timestamp": "2026-10-18T11:43:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0247",
+        "timestamp": "2026-10-18T17:23:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Maxixe",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0248",
+        "timestamp": "2026-10-19T18:00:00+02:00",
+        "type": "delay",
+        "status": "delayed",
+        "location": "Maputo",
+        "note": "Avaria no sistema de travagem perto de Xai-Xai; viatura aguarda peça de substituição."
+      }
+    ],
+    "createdAt": "2026-10-13T11:00:00+02:00",
+    "updatedAt": "2026-10-19T18:00:00+02:00"
+  },
+  {
+    "id": "trp034",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0434",
+    "customerId": "c16",
+    "vehicleId": "v09",
+    "driverId": "d09",
+    "trailerId": "t09",
+    "routeId": "r-bei-mut",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Mutare",
+      "country": "ZW",
+      "site": "Mutare — Armazém Sakubva"
+    },
+    "plannedDistanceKm": 300,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "general",
+      "description": "Madeira serrada (retorno de contentor)",
+      "weightTonnes": 29.3,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-22T06:30:00+02:00",
+    "plannedArrival": "2026-10-22T21:30:00+02:00",
+    "actualDeparture": "2026-10-22T07:35:00+02:00",
+    "actualArrival": null,
+    "status": "delayed",
+    "revenue": {
+      "amount": 1050,
+      "currency": "USD"
+    },
+    "customerReference": "PO016-9733",
+    "delayReason": "Documento Único (DU) incompleto; carga retida pelas alfândegas em Machipanda.",
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0249",
+        "timestamp": "2026-10-19T18:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO016-9733."
+      },
+      {
+        "id": "ev0250",
+        "timestamp": "2026-10-22T01:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0251",
+        "timestamp": "2026-10-22T07:35:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0252",
+        "timestamp": "2026-10-22T09:50:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0253",
+        "timestamp": "2026-10-22T12:05:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Chimoio",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0254",
+        "timestamp": "2026-10-22T14:20:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Machipanda",
+        "note": "Fronteira Machipanda / Forbes: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0255",
+        "timestamp": "2026-10-22T18:30:00+02:00",
+        "type": "delay",
+        "status": "delayed",
+        "location": "Machipanda",
+        "note": "Documento Único (DU) incompleto; carga retida pelas alfândegas em Machipanda."
+      }
+    ],
+    "createdAt": "2026-10-19T18:30:00+02:00",
+    "updatedAt": "2026-10-22T18:30:00+02:00"
+  },
+  {
+    "id": "trp035",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0435",
+    "customerId": "c13",
+    "vehicleId": "v10",
+    "driverId": "d10",
+    "trailerId": "t10",
+    "routeId": "r-bei-tet",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "plannedDistanceKm": 590,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "general",
+      "description": "Perfis metálicos e vergalhão",
+      "weightTonnes": 31,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-24T16:00:00+02:00",
+    "plannedArrival": "2026-10-25T07:00:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "preparing",
+    "revenue": {
+      "amount": 1260,
+      "currency": "USD"
+    },
+    "customerReference": "PO013-3469",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0256",
+        "timestamp": "2026-10-22T03:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO013-3469."
+      },
+      {
+        "id": "ev0257",
+        "timestamp": "2026-10-24T11:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      }
+    ],
+    "createdAt": "2026-10-22T03:00:00+02:00",
+    "updatedAt": "2026-10-24T11:00:00+02:00"
+  },
+  {
+    "id": "trp036",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0436",
+    "customerId": "c23",
+    "vehicleId": "v11",
+    "driverId": "d11",
+    "trailerId": "t11",
+    "routeId": "r-bei-hre",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Harare",
+      "country": "ZW",
+      "site": "Harare — Workington"
+    },
+    "plannedDistanceKm": 560,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "refrigerated",
+      "description": "Pescado congelado",
+      "weightTonnes": 21.2,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-25T05:00:00+02:00",
+    "plannedArrival": "2026-10-26T04:00:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "preparing",
+    "revenue": {
+      "amount": 1710,
+      "currency": "USD"
+    },
+    "customerReference": "PO023-8734",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0258",
+        "timestamp": "2026-10-21T14:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO023-8734."
+      },
+      {
+        "id": "ev0259",
+        "timestamp": "2026-10-25T00:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      }
+    ],
+    "createdAt": "2026-10-21T14:00:00+02:00",
+    "updatedAt": "2026-10-25T00:00:00+02:00"
+  },
+  {
+    "id": "trp037",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0437",
+    "customerId": "c03",
+    "vehicleId": "v19",
+    "driverId": "d15",
+    "trailerId": null,
+    "routeId": "r-bei-don",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Dondo",
+      "country": "MZ",
+      "site": "Parque Industrial de Dondo"
+    },
+    "plannedDistanceKm": 32,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "general",
+      "description": "Paletes de sacos de cimento vazios",
+      "weightTonnes": 12.4,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-24T14:30:00+02:00",
+    "plannedArrival": "2026-10-24T17:00:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "preparing",
+    "revenue": {
+      "amount": 9200,
+      "currency": "MZN"
+    },
+    "customerReference": "PO003-2817",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0260",
+        "timestamp": "2026-10-22T22:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO003-2817."
+      },
+      {
+        "id": "ev0261",
+        "timestamp": "2026-10-24T09:30:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      }
+    ],
+    "createdAt": "2026-10-22T22:30:00+02:00",
+    "updatedAt": "2026-10-24T09:30:00+02:00"
+  },
+  {
+    "id": "trp038",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0438",
+    "customerId": "c15",
+    "vehicleId": "v12",
+    "driverId": "d12",
+    "trailerId": "t12",
+    "routeId": "r-bei-chi",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Chimoio",
+      "country": "MZ",
+      "site": "Zona Industrial de Chimoio"
+    },
+    "plannedDistanceKm": 200,
+    "actualDistanceKm": 206,
+    "cargo": {
+      "type": "general",
+      "description": "Fertilizante NPK ensacado",
+      "weightTonnes": 29.4,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-23T06:00:00+02:00",
+    "plannedArrival": "2026-10-23T11:30:00+02:00",
+    "actualDeparture": "2026-10-23T05:46:00+02:00",
+    "actualArrival": "2026-10-23T13:57:00+02:00",
+    "status": "delivered",
+    "revenue": {
+      "amount": 34100,
+      "currency": "MZN"
+    },
+    "customerReference": "PO015-9214",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0262",
+        "timestamp": "2026-10-19T12:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO015-9214."
+      },
+      {
+        "id": "ev0263",
+        "timestamp": "2026-10-23T01:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0264",
+        "timestamp": "2026-10-23T05:46:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0265",
+        "timestamp": "2026-10-23T06:53:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Dondo",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0266",
+        "timestamp": "2026-10-23T08:01:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Nhamatanda",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0267",
+        "timestamp": "2026-10-23T09:08:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0268",
+        "timestamp": "2026-10-23T13:57:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Zona Industrial de Chimoio",
+        "note": "Entrega confirmada com guia assinada."
+      }
+    ],
+    "createdAt": "2026-10-19T12:00:00+02:00",
+    "updatedAt": "2026-10-23T13:57:00+02:00"
+  },
+  {
+    "id": "trp039",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0439",
+    "customerId": "c02",
+    "vehicleId": "v13",
+    "driverId": "d13",
+    "trailerId": "t13",
+    "routeId": "r-chi-bei",
+    "origin": {
+      "city": "Chimoio",
+      "country": "MZ",
+      "site": "Zona Industrial de Chimoio"
+    },
+    "destination": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "plannedDistanceKm": 200,
+    "actualDistanceKm": 207,
+    "cargo": {
+      "type": "general",
+      "description": "Milho ensacado para exportação",
+      "weightTonnes": 33.1,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-21T07:00:00+02:00",
+    "plannedArrival": "2026-10-21T12:30:00+02:00",
+    "actualDeparture": "2026-10-21T07:13:00+02:00",
+    "actualArrival": "2026-10-21T11:24:00+02:00",
+    "status": "delivered",
+    "revenue": {
+      "amount": 31250,
+      "currency": "MZN"
+    },
+    "customerReference": "PO002-4422",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0269",
+        "timestamp": "2026-10-18T02:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Chimoio",
+        "note": "Pedido do cliente PO002-4422."
+      },
+      {
+        "id": "ev0270",
+        "timestamp": "2026-10-21T02:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Zona Industrial de Chimoio",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0271",
+        "timestamp": "2026-10-21T07:13:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Chimoio",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0272",
+        "timestamp": "2026-10-21T08:20:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0273",
+        "timestamp": "2026-10-21T09:28:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Nhamatanda",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0274",
+        "timestamp": "2026-10-21T10:35:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Dondo",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0275",
+        "timestamp": "2026-10-21T11:24:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Entrega confirmada com guia assinada."
+      }
+    ],
+    "createdAt": "2026-10-18T02:00:00+02:00",
+    "updatedAt": "2026-10-21T11:24:00+02:00"
+  },
+  {
+    "id": "trp040",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0440",
+    "customerId": "c22",
+    "vehicleId": "v06",
+    "driverId": "d06",
+    "trailerId": "t06",
+    "routeId": "r-bei-mut",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Mutare",
+      "country": "ZW",
+      "site": "Mutare — Armazém Sakubva"
+    },
+    "plannedDistanceKm": 300,
+    "actualDistanceKm": 307,
+    "cargo": {
+      "type": "container",
+      "description": "Contentor 20' — produtos hortícolas",
+      "weightTonnes": 17.1,
+      "containerRef": "CRDU3686253",
+      "sealNumber": "SL319439"
+    },
+    "plannedDeparture": "2026-10-19T06:00:00+02:00",
+    "plannedArrival": "2026-10-19T21:00:00+02:00",
+    "actualDeparture": "2026-10-19T07:33:00+02:00",
+    "actualArrival": "2026-10-19T20:43:00+02:00",
+    "status": "delivered",
+    "revenue": {
+      "amount": 1090,
+      "currency": "USD"
+    },
+    "customerReference": "PO022-4796",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0276",
+        "timestamp": "2026-10-17T02:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO022-4796."
+      },
+      {
+        "id": "ev0277",
+        "timestamp": "2026-10-19T01:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0278",
+        "timestamp": "2026-10-19T07:33:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0279",
+        "timestamp": "2026-10-19T09:48:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Inchope",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0280",
+        "timestamp": "2026-10-19T12:03:00+02:00",
+        "type": "checkpoint",
+        "status": null,
+        "location": "Chimoio",
+        "note": "Passagem registada."
+      },
+      {
+        "id": "ev0281",
+        "timestamp": "2026-10-19T14:18:00+02:00",
+        "type": "border_crossing",
+        "status": null,
+        "location": "Machipanda",
+        "note": "Fronteira Machipanda / Forbes: despacho aduaneiro concluído."
+      },
+      {
+        "id": "ev0282",
+        "timestamp": "2026-10-19T20:43:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Mutare — Armazém Sakubva",
+        "note": "Entrega confirmada com guia assinada."
+      }
+    ],
+    "createdAt": "2026-10-17T02:00:00+02:00",
+    "updatedAt": "2026-10-19T20:43:00+02:00"
+  },
+  {
+    "id": "trp041",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0441",
+    "customerId": "c21",
+    "vehicleId": "v21",
+    "driverId": "d18",
+    "trailerId": null,
+    "routeId": "r-bei-don",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Dondo",
+      "country": "MZ",
+      "site": "Parque Industrial de Dondo"
+    },
+    "plannedDistanceKm": 32,
+    "actualDistanceKm": 33,
+    "cargo": {
+      "type": "general",
+      "description": "Cilindros de gás industrial",
+      "weightTonnes": 8.9,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-23T08:00:00+02:00",
+    "plannedArrival": "2026-10-23T10:30:00+02:00",
+    "actualDeparture": "2026-10-23T09:28:00+02:00",
+    "actualArrival": "2026-10-23T12:50:00+02:00",
+    "status": "delivered",
+    "revenue": {
+      "amount": 9350,
+      "currency": "MZN"
+    },
+    "customerReference": "PO021-4399",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0283",
+        "timestamp": "2026-10-19T22:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO021-4399."
+      },
+      {
+        "id": "ev0284",
+        "timestamp": "2026-10-23T03:00:00+02:00",
+        "type": "status_change",
+        "status": "preparing",
+        "location": "Porto da Beira — Terminal de Carga",
+        "note": "Carregamento e verificação de documentos."
+      },
+      {
+        "id": "ev0285",
+        "timestamp": "2026-10-23T09:28:00+02:00",
+        "type": "status_change",
+        "status": "in_transit",
+        "location": "Beira",
+        "note": "Partida confirmada pelo despacho."
+      },
+      {
+        "id": "ev0286",
+        "timestamp": "2026-10-23T12:50:00+02:00",
+        "type": "status_change",
+        "status": "delivered",
+        "location": "Parque Industrial de Dondo",
+        "note": "Entrega confirmada com guia assinada."
+      }
+    ],
+    "createdAt": "2026-10-19T22:00:00+02:00",
+    "updatedAt": "2026-10-23T12:50:00+02:00"
+  },
+  {
+    "id": "trp042",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0442",
+    "customerId": "c24",
+    "vehicleId": "v06",
+    "driverId": "d06",
+    "trailerId": "t06",
+    "routeId": "r-bei-bly",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Blantyre",
+      "country": "MW",
+      "site": "Blantyre — Makata"
+    },
+    "plannedDistanceKm": 830,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "general",
+      "description": "Fertilizante ureia ensacado",
+      "weightTonnes": 28.6,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-27T05:00:00+02:00",
+    "plannedArrival": "2026-10-28T13:00:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "planned",
+    "revenue": {
+      "amount": 2780,
+      "currency": "USD"
+    },
+    "customerReference": "PO024-4473",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0287",
+        "timestamp": "2026-10-22T18:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO024-4473."
+      }
+    ],
+    "createdAt": "2026-10-22T18:00:00+02:00",
+    "updatedAt": "2026-10-22T18:00:00+02:00"
+  },
+  {
+    "id": "trp043",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0443",
+    "customerId": "c19",
+    "vehicleId": "v12",
+    "driverId": "d12",
+    "trailerId": "t12",
+    "routeId": "r-bei-mpm",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Maputo",
+      "country": "MZ",
+      "site": "Machava — Centro de Distribuição"
+    },
+    "plannedDistanceKm": 1190,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "general",
+      "description": "Bebidas paletizadas",
+      "weightTonnes": 31,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-28T04:30:00+02:00",
+    "plannedArrival": "2026-10-29T05:30:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "planned",
+    "revenue": {
+      "amount": 173150,
+      "currency": "MZN"
+    },
+    "customerReference": "PO019-7131",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0288",
+        "timestamp": "2026-10-26T22:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO019-7131."
+      }
+    ],
+    "createdAt": "2026-10-26T22:30:00+02:00",
+    "updatedAt": "2026-10-26T22:30:00+02:00"
+  },
+  {
+    "id": "trp044",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0444",
+    "customerId": "c17",
+    "vehicleId": "v18",
+    "driverId": "d14",
+    "trailerId": "t15",
+    "routeId": "r-bei-lun",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Lusaka",
+      "country": "ZM",
+      "site": "Lusaka — Zona Industrial"
+    },
+    "plannedDistanceKm": 1060,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "general",
+      "description": "Sementes e insumos agrícolas",
+      "weightTonnes": 29.6,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-30T05:00:00+02:00",
+    "plannedArrival": "2026-10-31T23:00:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "planned",
+    "revenue": {
+      "amount": 3200,
+      "currency": "USD"
+    },
+    "customerReference": "PO017-2426",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0289",
+        "timestamp": "2026-10-26T10:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO017-2426."
+      }
+    ],
+    "createdAt": "2026-10-26T10:00:00+02:00",
+    "updatedAt": "2026-10-26T10:00:00+02:00"
+  },
+  {
+    "id": "trp045",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0445",
+    "customerId": "c04",
+    "vehicleId": "v22",
+    "driverId": "d16",
+    "trailerId": null,
+    "routeId": "r-bei-tet",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Tete",
+      "country": "MZ",
+      "site": "Moatize — Terminal Mineiro"
+    },
+    "plannedDistanceKm": 590,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "fuel",
+      "description": "Gasóleo — 20 000 l",
+      "weightTonnes": 16.8,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-26T06:00:00+02:00",
+    "plannedArrival": "2026-10-26T21:00:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "planned",
+    "revenue": {
+      "amount": 1230,
+      "currency": "USD"
+    },
+    "customerReference": "PO004-6507",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0290",
+        "timestamp": "2026-10-23T16:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO004-6507."
+      }
+    ],
+    "createdAt": "2026-10-23T16:00:00+02:00",
+    "updatedAt": "2026-10-23T16:00:00+02:00"
+  },
+  {
+    "id": "trp046",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0446",
+    "customerId": "c03",
+    "vehicleId": "v24",
+    "driverId": "d19",
+    "trailerId": null,
+    "routeId": "r-bei-don",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Dondo",
+      "country": "MZ",
+      "site": "Parque Industrial de Dondo"
+    },
+    "plannedDistanceKm": 32,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "bulk",
+      "description": "Clínquer a granel",
+      "weightTonnes": 26,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-10-26T07:30:00+02:00",
+    "plannedArrival": "2026-10-26T10:00:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "planned",
+    "revenue": {
+      "amount": 10100,
+      "currency": "MZN"
+    },
+    "customerReference": "PO003-1665",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0291",
+        "timestamp": "2026-10-24T03:30:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO003-1665."
+      }
+    ],
+    "createdAt": "2026-10-24T03:30:00+02:00",
+    "updatedAt": "2026-10-24T03:30:00+02:00"
+  },
+  {
+    "id": "trp047",
+    "organizationId": "org-kuyenda",
+    "reference": "VG-2026-0447",
+    "customerId": "c11",
+    "vehicleId": "v01",
+    "driverId": "d01",
+    "trailerId": "t01",
+    "routeId": "r-bei-hre",
+    "origin": {
+      "city": "Beira",
+      "country": "MZ",
+      "site": "Porto da Beira — Terminal de Carga"
+    },
+    "destination": {
+      "city": "Harare",
+      "country": "ZW",
+      "site": "Harare — Workington"
+    },
+    "plannedDistanceKm": 560,
+    "actualDistanceKm": null,
+    "cargo": {
+      "type": "general",
+      "description": "Fertilizante ensacado",
+      "weightTonnes": 33.5,
+      "containerRef": null,
+      "sealNumber": null
+    },
+    "plannedDeparture": "2026-11-02T05:00:00+02:00",
+    "plannedArrival": "2026-11-03T04:00:00+02:00",
+    "actualDeparture": null,
+    "actualArrival": null,
+    "status": "planned",
+    "revenue": {
+      "amount": 1900,
+      "currency": "USD"
+    },
+    "customerReference": "PO011-1891",
+    "delayReason": null,
+    "notes": "",
+    "timeline": [
+      {
+        "id": "ev0292",
+        "timestamp": "2026-10-28T19:00:00+02:00",
+        "type": "created",
+        "status": "planned",
+        "location": "Beira",
+        "note": "Pedido do cliente PO011-1891."
+      }
+    ],
+    "createdAt": "2026-10-28T19:00:00+02:00",
+    "updatedAt": "2026-10-28T19:00:00+02:00"
+  }
+]

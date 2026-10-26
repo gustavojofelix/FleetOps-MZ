@@ -1,0 +1,90 @@
+@if (series().length > 1) {
+  <ul class="legend chart__legend">
+    @for (path of paths(); track path.key) {
+      <li class="legend__item">
+        <span class="legend__swatch legend__swatch--line" [style.background]="path.color"></span>
+        {{ path.label }}
+      </li>
+    }
+  </ul>
+}
+
+<div class="chart__frame">
+  <svg
+    class="chart__svg"
+    [attr.viewBox]="'0 0 ' + width() + ' ' + height()"
+    [attr.height]="height()"
+    role="img"
+    [attr.aria-label]="ariaLabel()"
+    [attr.aria-describedby]="id + '-table'"
+    tabindex="0"
+    (pointermove)="onPointerMove($event)"
+    (pointerleave)="active.set(null)"
+    (keydown)="onKeydown($event)"
+    (blur)="active.set(null)"
+  >
+    @for (tick of ticks(); track tick) {
+      <line class="chart__grid" [attr.x1]="pad.left" [attr.x2]="width() - pad.right" [attr.y1]="y(tick)" [attr.y2]="y(tick)" />
+      <text class="chart__axis-label" [attr.x]="pad.left - 8" [attr.y]="y(tick)" text-anchor="end" dominant-baseline="middle">
+        {{ tickLabel(tick) }}
+      </text>
+    }
+
+    @for (category of categories(); track $index) {
+      @if ($index % labelEvery() === 0 || $last) {
+        <text class="chart__axis-label" [attr.x]="x($index)" [attr.y]="height() - 8" text-anchor="middle">{{ category }}</text>
+      }
+    }
+
+    @for (path of paths(); track path.key) {
+      @if (area()) {
+        <path class="chart__area" [attr.d]="path.area" [style.fill]="path.color" />
+      }
+      <path class="chart__line" [attr.d]="path.line" [style.stroke]="path.color" />
+    }
+
+    @if (tooltip(); as tip) {
+      <line class="chart__crosshair" [attr.x1]="tip.left" [attr.x2]="tip.left" [attr.y1]="pad.top" [attr.y2]="height() - pad.bottom" />
+      @for (row of tip.rows; track row.label) {
+        <circle class="chart__dot" [attr.cx]="tip.left" [attr.cy]="row.y" r="4.5" [style.fill]="row.color" />
+      }
+    }
+  </svg>
+
+  @if (tooltip(); as tip) {
+    <div class="chart__tooltip" [class.chart__tooltip--flip]="tip.flip" [style.left.px]="tip.left" [style.top.px]="pad.top">
+      <p class="chart__tooltip-title">{{ tip.category }}</p>
+      @for (row of tip.rows; track row.label) {
+        <p class="chart__tooltip-row">
+          <span class="legend__swatch" [style.background]="row.color"></span>
+          <span class="chart__tooltip-label">{{ row.label }}</span>
+          <span class="chart__tooltip-value">{{ row.value }}</span>
+        </p>
+      }
+    </div>
+  }
+</div>
+
+<div class="visually-hidden">
+<table [id]="id + '-table'">
+  <caption>{{ ariaLabel() }}</caption>
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      @for (s of series(); track s.key) {
+        <th scope="col">{{ s.label }}</th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (category of categories(); track $index; let i = $index) {
+      <tr>
+        <th scope="row">{{ category }}</th>
+        @for (s of series(); track s.key) {
+          <td>{{ format()(s.values[i]) }}</td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>
+</div>

@@ -1,0 +1,168 @@
+<form class="stack stack--lg" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'vehicles.sections.identification' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="v-plate">{{ 'vehicles.fields.plateNumber' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="v-plate" class="input mono" formControlName="plateNumber" autocomplete="off" placeholder="ADF-482-SF" aria-describedby="v-plate-hint" />
+        <p class="field__hint" id="v-plate-hint">{{ 'vehicles.hints.plateNumber' | t }}</p>
+        <app-field-error [control]="form.controls.plateNumber" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-fleet">{{ 'vehicles.fields.fleetNumber' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="v-fleet" class="input mono" formControlName="fleetNumber" autocomplete="off" placeholder="KT-027" />
+        <app-field-error [control]="form.controls.fleetNumber" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-make">{{ 'vehicles.fields.make' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="v-make" class="input" formControlName="make" list="vehicle-makes" />
+        <datalist id="vehicle-makes">
+          <option value="Scania"></option>
+          <option value="Volvo"></option>
+          <option value="MAN"></option>
+          <option value="Mercedes-Benz"></option>
+          <option value="Sinotruk"></option>
+          <option value="FAW"></option>
+          <option value="Isuzu"></option>
+          <option value="Hino"></option>
+          <option value="Toyota"></option>
+        </datalist>
+        <app-field-error [control]="form.controls.make" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-model">{{ 'vehicles.fields.model' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="v-model" class="input" formControlName="model" />
+        <app-field-error [control]="form.controls.model" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-type">{{ 'vehicles.fields.type' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <select id="v-type" class="select" formControlName="type">
+          @for (type of types; track type) {
+            <option [value]="type">{{ 'vehicles.types.' + type | t }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-year">{{ 'vehicles.fields.year' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <input id="v-year" class="input" type="number" inputmode="numeric" formControlName="year" min="1990" [max]="maxYear" />
+        <app-field-error [control]="form.controls.year" />
+      </div>
+      @if (!isEditing()) {
+        <div class="field">
+          <label class="field__label" for="v-status">{{ 'vehicles.fields.status' | t }}</label>
+          <select id="v-status" class="select" formControlName="status">
+            @for (status of statuses; track status) {
+              @if (status !== 'in_transit') {
+                <option [value]="status">{{ 'vehicles.status.' + status | t }}</option>
+              }
+            }
+          </select>
+        </div>
+      }
+      <div class="field">
+        <label class="field__label" for="v-vin">{{ 'vehicles.fields.vin' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="v-vin" class="input mono" formControlName="vin" autocomplete="off" />
+        <app-field-error [control]="form.controls.vin" />
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'vehicles.sections.technical' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="v-odo">{{ 'vehicles.fields.odometer' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <div class="input-group">
+          <input id="v-odo" class="input" type="number" inputmode="numeric" formControlName="odometerKm" min="0" />
+          <span class="input-group__suffix">km</span>
+        </div>
+        <app-field-error [control]="form.controls.odometerKm" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-fuel">{{ 'vehicles.fields.fuelType' | t }}</label>
+        <select id="v-fuel" class="select" formControlName="fuelType">
+          @for (fuel of fuelTypes; track fuel) {
+            <option [value]="fuel">{{ 'vehicles.fuelTypes.' + fuel | t }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-tank">{{ 'vehicles.fields.tankCapacity' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <div class="input-group">
+          <input id="v-tank" class="input" type="number" inputmode="decimal" formControlName="tankCapacityL" min="1" />
+          <span class="input-group__suffix">l</span>
+        </div>
+        <app-field-error [control]="form.controls.tankCapacityL" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-cons">{{ 'vehicles.fields.expectedConsumption' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <div class="input-group">
+          <input id="v-cons" class="input" type="number" inputmode="decimal" step="0.1" formControlName="expectedConsumptionL100km" aria-describedby="v-cons-hint" />
+          <span class="input-group__suffix">{{ 'common.units.l100km' | t }}</span>
+        </div>
+        <p class="field__hint" id="v-cons-hint">{{ 'vehicles.hints.expectedConsumption' | t }}</p>
+        <app-field-error [control]="form.controls.expectedConsumptionL100km" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-payload">{{ 'vehicles.fields.payload' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <div class="input-group">
+          <input id="v-payload" class="input" type="number" inputmode="decimal" step="0.5" formControlName="payloadTonnes" />
+          <span class="input-group__suffix">{{ 'common.units.tonnes' | t }}</span>
+        </div>
+        <app-field-error [control]="form.controls.payloadTonnes" />
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-acq">{{ 'vehicles.fields.acquisitionDate' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <input id="v-acq" class="input" type="date" formControlName="acquisitionDate" />
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-section" [disabled]="saving()">
+    <legend class="form-section__title">{{ 'vehicles.sections.assignment' | t }}</legend>
+    <div class="form-grid">
+      <div class="field">
+        <label class="field__label" for="v-driver">{{ 'vehicles.fields.assignedDriver' | t }}</label>
+        <select id="v-driver" class="select" formControlName="assignedDriverId" aria-describedby="v-driver-hint">
+          <option value="">{{ 'vehicles.noAssignedDriver' | t }}</option>
+          @for (option of driverOptions(); track option.id) {
+            <option [value]="option.id">
+              {{ option.label }} {{ option.assignedTo ? ('vehicles.hints.alreadyAssigned' | t: { plate: option.assignedTo }) : '' }}
+            </option>
+          }
+        </select>
+        <p class="field__hint" id="v-driver-hint">{{ 'vehicles.hints.assignedDriver' | t }}</p>
+      </div>
+      <div class="field">
+        <label class="field__label" for="v-trailer">{{ 'vehicles.fields.linkedTrailer' | t }}</label>
+        @if (canLinkTrailer()) {
+          <select id="v-trailer" class="select" formControlName="linkedTrailerId">
+            <option value="">{{ 'vehicles.noTrailer' | t }}</option>
+            @for (option of trailerOptions(); track option.id) {
+              <option [value]="option.id">
+                {{ option.label }} {{ option.assignedTo ? ('vehicles.hints.alreadyAssigned' | t: { plate: option.assignedTo }) : '' }}
+              </option>
+            }
+          </select>
+        } @else {
+          <select id="v-trailer" class="select" disabled>
+            <option>{{ 'common.labels.notApplicable' | t }}</option>
+          </select>
+          <p class="field__hint">{{ 'vehicles.hints.linkedTrailer' | t }}</p>
+        }
+      </div>
+      <div class="field field--full">
+        <label class="field__label" for="v-notes">{{ 'vehicles.fields.notes' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
+        <textarea id="v-notes" class="textarea" formControlName="notes" rows="3"></textarea>
+        <app-field-error [control]="form.controls.notes" />
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="cancelled.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="submit" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()">
+      {{ (isEditing() ? 'common.actions.saveChanges' : 'vehicles.new') | t }}
+    </button>
+  </div>
+</form>

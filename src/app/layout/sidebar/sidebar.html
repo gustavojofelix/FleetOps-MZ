@@ -1,0 +1,91 @@
+@let collapsed = layout.sidebarCollapsed();
+<div class="sidebar__brand">
+  <a class="brand" routerLink="/dashboard" (click)="onNavigate()" [attr.aria-label]="'common.appName' | t">
+    <span class="brand__mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="32" height="32">
+        <rect width="32" height="32" rx="8" class="brand__mark-bg" />
+        <path d="M8 21.5V10.5h9.5M8 16h7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="22.5" cy="20" r="3.2" fill="none" stroke="currentColor" stroke-width="2.4" />
+      </svg>
+    </span>
+    @if (!collapsed) {
+      <span class="brand__text">
+        <span class="brand__name">FleetOps <span class="brand__suffix">MZ</span></span>
+        <span class="brand__org">{{ settings.organization()?.displayName }}</span>
+      </span>
+    }
+  </a>
+  @if (!layout.isDesktop()) {
+    <button type="button" class="btn btn--ghost btn--icon" [attr.aria-label]="'shell.closeMenu' | t" (click)="layout.mobileNavOpen.set(false)">
+      <app-icon name="x" />
+    </button>
+  }
+</div>
+
+<nav class="sidebar__nav" [attr.aria-label]="'navigation.mainNavigation' | t">
+  @for (section of sections; track section.labelKey) {
+    <div class="nav-section">
+      @if (!collapsed) {
+        <p class="nav-section__label">{{ section.labelKey | t }}</p>
+      } @else {
+        <span class="nav-section__divider" aria-hidden="true"></span>
+      }
+      <ul class="nav-list">
+        @for (item of section.items; track item.path) {
+          <li>
+            <a
+              class="nav-item"
+              [routerLink]="item.path"
+              routerLinkActive="is-active"
+              #rla="routerLinkActive"
+              [attr.aria-current]="rla.isActive ? 'page' : null"
+              [attr.aria-label]="collapsed ? (item.labelKey | t) : null"
+              [appTooltip]="item.labelKey | t"
+              tooltipPlacement="right"
+              [tooltipDisabled]="!collapsed"
+              (click)="onNavigate()"
+            >
+              <app-icon [name]="item.icon" [size]="18" />
+              @if (!collapsed) {
+                <span class="nav-item__label">{{ item.labelKey | t }}</span>
+              }
+              @if (item.path === '/notifications' && notifications.unreadCount() > 0) {
+                <span class="nav-item__count" [class.nav-item__count--dot]="collapsed">
+                  @if (!collapsed) {
+                    {{ notifications.unreadCount() }}
+                  }
+                  <span class="visually-hidden">{{ 'shell.notifications.unread' | t: { count: notifications.unreadCount() } }}</span>
+                </span>
+              }
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</nav>
+
+<div class="sidebar__footer">
+  @if (!collapsed) {
+    <p class="sidebar__demo">
+      <app-icon name="info" [size]="14" />
+      {{ 'common.demoNotice' | t }}
+    </p>
+  }
+  @if (layout.isDesktop()) {
+    <button
+      type="button"
+      class="nav-item nav-item--button"
+      [attr.aria-label]="(collapsed ? 'shell.expandSidebar' : 'shell.collapseSidebar') | t"
+      [appTooltip]="'shell.expandSidebar' | t"
+      tooltipPlacement="right"
+      [tooltipDisabled]="!collapsed"
+      (click)="layout.toggleSidebar()"
+    >
+      <app-icon [name]="collapsed ? 'panel-open' : 'panel-close'" [size]="18" />
+      @if (!collapsed) {
+        <span class="nav-item__label">{{ 'shell.collapseSidebar' | t }}</span>
+      }
+    </button>
+  }
+</div>

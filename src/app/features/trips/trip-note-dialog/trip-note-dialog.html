@@ -1,0 +1,55 @@
+@let target = trip();
+<app-modal
+  size="sm"
+  [open]="!!target"
+  [title]="'trips.noteDialog.title' | t"
+  [description]="target ? ('trips.noteDialog.description' | t: { reference: target.reference }) : null"
+  [dismissible]="!saving()"
+  (closed)="closed.emit()"
+>
+  @if (target) {
+    <div class="stack">
+      <div class="field">
+        <label class="field__label" for="trip-note-text">{{ 'trips.noteDialog.note' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+        <textarea
+          id="trip-note-text"
+          class="textarea"
+          rows="3"
+          maxlength="300"
+          required
+          [attr.aria-invalid]="attempted() && noteMissing()"
+          [attr.aria-describedby]="attempted() && noteMissing() ? 'trip-note-error' : null"
+          [placeholder]="'trips.noteDialog.placeholder' | t"
+          [value]="note()"
+          [disabled]="saving()"
+          (input)="note.set($any($event.target).value)"
+        ></textarea>
+        @if (attempted() && noteMissing()) {
+          <p class="field__error" id="trip-note-error" role="alert">
+            <app-icon name="circle-alert" [size]="14" />
+            {{ 'trips.validation.noteRequired' | t }}
+          </p>
+        }
+      </div>
+      <div class="field">
+        <label class="field__label" for="trip-note-location">
+          {{ 'trips.noteDialog.location' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span>
+        </label>
+        <input
+          id="trip-note-location"
+          class="input"
+          maxlength="80"
+          [value]="location()"
+          [disabled]="saving()"
+          (input)="location.set($any($event.target).value)"
+        />
+      </div>
+    </div>
+  }
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="closed.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button type="button" class="btn btn--primary" [class.btn--loading]="saving()" [disabled]="saving()" (click)="confirm()">
+      {{ 'trips.noteDialog.confirm' | t }}
+    </button>
+  </ng-container>
+</app-modal>

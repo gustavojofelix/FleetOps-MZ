@@ -1,0 +1,145 @@
+@use 'mixins' as *;
+
+.context-banner {
+  flex-wrap: wrap;
+  align-items: center;
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1 1 260px;
+    min-width: 0;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+}
+
+.summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.chart-skeleton {
+  height: 200px;
+  border-radius: var(--radius-md);
+}
+
+.breakdown-hint {
+  margin-top: var(--space-3);
+}
+
+.currency-line {
+  font-size: var(--text-md);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.cell-sub-inline {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+.status-tabs {
+  padding: 0 var(--space-3);
+
+  @include up(md) {
+    padding: 0 var(--space-4);
+  }
+}
+
+.bulk-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--color-divider);
+  background: var(--color-accent-soft);
+  font-size: var(--text-sm);
+
+  @include up(md) {
+    padding: var(--space-2) var(--space-5);
+  }
+
+  .toolbar__spacer {
+    flex: 1;
+  }
+}
+
+.expenses-table {
+  .select-cell {
+    width: 1%;
+    padding-right: 0;
+  }
+
+  .description-cell__text {
+    display: block;
+    max-width: 280px;
+    @include truncate;
+
+    @include down(md) {
+      max-width: none;
+      white-space: normal;
+    }
+  }
+
+  .cell-sub-link {
+    color: inherit;
+
+    &:hover {
+      color: var(--color-accent-text);
+    }
+  }
+}
+
+.select-checkbox {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+
+  &__approve {
+    color: var(--color-success-text);
+  }
+
+  &__reject {
+    color: var(--color-danger-text);
+  }
+}
+
+.receipt-indicator {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}

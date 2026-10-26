@@ -1,0 +1,267 @@
+<div class="page reports-print-root">
+  <app-page-header class="no-print" [title]="'reports.title' | t" [subtitle]="'reports.subtitle' | t">
+    <ng-container actions>
+      <button type="button" class="btn btn--secondary" [disabled]="loading() || view().empty" (click)="print()">
+        <app-icon name="file-text" [size]="16" />
+        {{ 'reports.actions.print' | t }}
+      </button>
+      <button type="button" class="btn btn--primary" [disabled]="loading() || view().empty" (click)="exportCsv()">
+        <app-icon name="download" [size]="16" />
+        {{ 'common.actions.exportCsv' | t }}
+      </button>
+    </ng-container>
+  </app-page-header>
+
+  <div class="reports-layout">
+    <nav class="report-nav no-print" [attr.aria-label]="'reports.library.label' | t">
+      <p class="report-nav__heading">{{ 'reports.library.label' | t }}</p>
+      <div class="report-nav__list" role="tablist" aria-orientation="vertical" [attr.aria-label]="'reports.library.label' | t">
+        @for (id of reports; track id; let i = $index) {
+          <button
+            type="button"
+            role="tab"
+            class="report-nav__item"
+            [id]="'report-tab-' + id"
+            [attr.aria-selected]="active() === id"
+            aria-controls="report-panel"
+            [tabindex]="active() === id ? 0 : -1"
+            (click)="select(id)"
+            (keydown)="onNavKeydown($event, i)"
+          >
+            <span class="report-nav__icon"><app-icon [name]="icons[id]" [size]="16" /></span>
+            <span class="report-nav__text">
+              <span class="report-nav__title">{{ 'reports.library.' + reportKeys[id] + '.title' | t }}</span>
+              <span class="report-nav__description">{{ 'reports.library.' + reportKeys[id] + '.short' | t }}</span>
+            </span>
+          </button>
+        }
+      </div>
+    </nav>
+
+    <section id="report-panel" class="report" role="tabpanel" [attr.aria-labelledby]="'report-tab-' + active()">
+      @let v = view();
+      <header class="card report__header">
+        <div class="report__heading">
+          <span class="report__icon" aria-hidden="true"><app-icon [name]="icons[active()]" [size]="20" /></span>
+          <div>
+            <h2 class="report__title">{{ 'reports.library.' + activeKey() + '.title' | t }}</h2>
+            <p class="report__description">{{ 'reports.library.' + activeKey() + '.description' | t }}</p>
+          </div>
+        </div>
+
+        <div class="report__toolbar no-print">
+          <div class="report__control">
+            <span class="report__label">{{ 'common.labels.period' | t }}</span>
+            <app-period-filter [period]="period()" (periodChange)="setPeriod($event)" />
+          </div>
+          <div class="report__control">
+            <label class="report__label" for="report-currency">{{ 'reports.viewer.currency' | t }}</label>
+            <select id="report-currency" class="select" [value]="reportCurrency()" (change)="setCurrency($event)">
+              @for (code of currencies; track code) {
+                <option [value]="code" [selected]="code === reportCurrency()">{{ code }} — {{ 'currencies.' + code | t }}</option>
+              }
+            </select>
+          </div>
+          @if (v.link; as link) {
+            <a class="btn btn--ghost btn--sm report__link" [routerLink]="link.path" [queryParams]="link.queryParams ?? null">
+              {{ link.label }}
+              <app-icon name="arrow-right" [size]="14" />
+            </a>
+          }
+        </div>
+
+        <div class="report__meta">
+          <span class="print-only">{{ 'common.labels.period' | t }}: {{ periodText() }} · {{ 'reports.csv.generated' | t }}: {{ generatedAt() }}</span>
+          <span class="text-sm muted">
+            {{ 'reports.viewer.valuesIn' | t: { currency: reportCurrency(), reporting: reportingCurrency() } }}
+          </span>
+          @if (conversion(); as c) {
+            <span class="sim-tag" tabindex="0" [appTooltip]="'common.money.simulatedHint' | t">
+              <app-icon name="info" [size]="12" />
+              {{ 'common.money.simulatedRate' | t: c }} · {{ 'reports.viewer.ratesOf' | t: { date: (ratesDate | fmtDate) } }}
+            </span>
+          } @else if (v.mixedCurrencies) {
+            <span class="sim-tag" tabindex="0" [appTooltip]="'common.money.simulatedHint' | t">
+              <app-icon name="info" [size]="12" />
+              {{ 'reports.viewer.mixedCurrencies' | t }}
+            </span>
+          }
+        </div>
+      </header>
+
+      @if (loading()) {
+        <div class="stat-cards">
+          @for (n of [1, 2, 3, 4]; track n) {
+            <div class="card stat-card"><span class="skeleton stat-card__skeleton"></span></div>
+          }
+        </div>
+        <section class="card"><app-table-skeleton [columns]="6" /></section>
+      } @else if (v.empty) {
+        <section class="card">
+          <app-empty-state icon="chart-column" [title]="'reports.viewer.emptyTitle' | t" [description]="'reports.viewer.emptyDescription' | t">
+            @if (period().preset !== 'allTime') {
+              <button type="button" class="btn btn--secondary" (click)="showAllTime()">{{ 'profitability.empty.showAll' | t }}</button>
+            }
+          </app-empty-state>
+        </section>
+      } @else {
+        <div class="stat-cards">
+          @for (stat of v.stats; track stat.label) {
+            <div class="card stat-card">
+              <span class="stat__label">{{ stat.label }}</span>
+              <span class="stat__value">
+                {{ formatValue(stat.value, stat.kind) }}
+              </span>
+              @if (stat.kind === 'margin') {
+                @let statTone = tone(stat.value);
+                <span [class]="statTone.cls">{{ statTone.label | t }}</span>
+              }
+              @if (stat.hint) {
+                <span class="stat__hint">{{ stat.hint }}</span>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="report-charts" [class.report-charts--two]="v.charts.length > 1">
+          @for (chart of v.charts; track chart.id) {
+            <section class="card report-chart">
+              <header class="card__header">
+                <div>
+                  <h3 class="card__title">{{ chart.title }}</h3>
+                  @if (chart.subtitle) {
+                    <p class="card__subtitle">{{ chart.subtitle }}</p>
+                  }
+                </div>
+              </header>
+              <div class="card__body">
+                @switch (chart.type) {
+                  @case ('bar') {
+                    <app-bar-chart
+                      [categories]="chart.categories"
+                      [series]="chart.series"
+                      [stacked]="!!chart.stacked"
+                      [format]="chartFormat(chart.kind)"
+                      [axisFormat]="axisFormat(chart.kind)"
+                      [ariaLabel]="chart.title"
+                    />
+                  }
+                  @case ('donut') {
+                    <app-donut-chart
+                      [slices]="chart.slices"
+                      [format]="chartFormat(chart.kind)"
+                      [percentFormat]="percentFormat()"
+                      [centerLabel]="chart.centerLabel ?? ''"
+                      [centerValue]="formatValue(chart.centerValue ?? null, 'money')"
+                      [ariaLabel]="chart.title"
+                    />
+                  }
+                  @case ('ranking') {
+                    <app-margin-ranking [items]="chart.items" [limit]="10" [ariaLabel]="chart.title" />
+                  }
+                }
+              </div>
+            </section>
+          }
+        </div>
+
+        @for (table of tables(); track table.id) {
+          <section class="card report-table">
+            <header class="card__header">
+              <div>
+                <h3 class="card__title">{{ table.title }}</h3>
+                @if (table.subtitle) {
+                  <p class="card__subtitle">{{ table.subtitle }}</p>
+                }
+              </div>
+              <div class="card__actions">
+                <span class="toolbar__summary">{{ 'common.table.results' | t: { count: table.rows.length } }}</span>
+              </div>
+            </header>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    @for (column of table.columns; track column.key) {
+                      <th scope="col" [class.num]="isNumeric(column.kind)" [attr.aria-sort]="ariaSort(table, column.key)">
+                        <button type="button" class="sort-button" [attr.data-active]="isSorted(table, column.key)" (click)="toggleSort(table, column)">
+                          {{ column.label }}
+                          <app-icon class="no-print" [name]="sortIcon(table, column.key)" [size]="14" />
+                        </button>
+                      </th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of table.rows; track row.id) {
+                    <tr>
+                      @for (column of table.columns; track column.key; let first = $first) {
+                        @let cell = row.cells[column.key];
+                        <td [class.data-table__primary]="first" [class.num]="isNumeric(column.kind)" [attr.data-label]="column.label">
+                          @switch (column.kind) {
+                            @case ('original') {
+                              @if (cell?.money) {
+                                <app-money [value]="cell!.money" [showConverted]="!hasRate(table)" />
+                              } @else {
+                                <span class="subtle">—</span>
+                              }
+                            }
+                            @case ('margin') {
+                              @let cellTone = tone(cell?.value ?? null);
+                              <span [class]="cellTone.cls" [appTooltip]="cellTone.label | t">{{ display(cell, column.kind) }}</span>
+                              <span class="visually-hidden">{{ cellTone.label | t }}</span>
+                            }
+                            @default {
+                              @if (cell?.link) {
+                                <a class="cell-link" [routerLink]="cell!.link">{{ display(cell, column.kind) }}</a>
+                              } @else if (first) {
+                                <span class="cell-strong">{{ display(cell, column.kind) }}</span>
+                              } @else {
+                                {{ display(cell, column.kind) }}
+                              }
+                            }
+                          }
+                          @if (cell?.sub) {
+                            <span class="cell-sub">{{ cell!.sub }}</span>
+                          }
+                        </td>
+                      }
+                    </tr>
+                  }
+                </tbody>
+                @if (table.totals; as totals) {
+                  <tfoot>
+                    <tr class="totals-row">
+                      @for (column of table.columns; track column.key) {
+                        <td [class.num]="isNumeric(column.kind)" [attr.data-label]="column.label">
+                          @if (column.kind === 'margin' || column.kind === 'original') {
+                            {{ totals[column.key] ? display(totals[column.key], column.kind === 'margin' ? 'percent' : 'money') : '' }}
+                          } @else {
+                            {{ totals[column.key] ? display(totals[column.key], column.kind) : '' }}
+                          }
+                        </td>
+                      }
+                    </tr>
+                  </tfoot>
+                }
+              </table>
+            </div>
+          </section>
+        }
+
+        @if (v.notes.length) {
+          <section class="card report-notes">
+            <div class="card__body">
+              <h3 class="report-notes__title">{{ 'reports.viewer.notes' | t }}</h3>
+              <ul class="report-notes__list">
+                @for (note of v.notes; track $index) {
+                  <li>{{ note }}</li>
+                }
+              </ul>
+            </div>
+          </section>
+        }
+      }
+    </section>
+  </div>
+</div>

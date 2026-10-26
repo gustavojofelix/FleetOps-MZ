@@ -1,0 +1,48 @@
+@let target = trailer();
+<app-modal
+  size="sm"
+  [open]="!!target"
+  [title]="'trailers.statusDialog.title' | t"
+  [description]="target ? ('trailers.statusDialog.description' | t: { plate: target.plateNumber }) : null"
+  [dismissible]="!saving()"
+  (closed)="closed.emit()"
+>
+  <div class="stack">
+    @if (activeTrip(); as trip) {
+      <p class="alert alert--warning">
+        <app-icon name="triangle-alert" [size]="16" />
+        <span>{{ 'trailers.statusDialog.activeTripWarning' | t: { trip: trip.reference } }}</span>
+      </p>
+    }
+    <fieldset class="form-reset" [disabled]="!!activeTrip()">
+      <legend class="field__label">{{ 'trailers.statusDialog.newStatus' | t }}</legend>
+      <div class="stack stack--sm">
+        @for (status of options; track status) {
+          <label class="radio">
+            <input
+              type="radio"
+              name="trailer-status"
+              [value]="status"
+              [checked]="selected() === status"
+              [disabled]="status === target?.status"
+              (change)="selected.set(status)"
+            />
+            {{ 'trailers.status.' + status | t }}
+          </label>
+        }
+      </div>
+    </fieldset>
+  </div>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" [disabled]="saving()" (click)="closed.emit()">{{ 'common.actions.cancel' | t }}</button>
+    <button
+      type="button"
+      class="btn btn--primary"
+      [class.btn--loading]="saving()"
+      [disabled]="saving() || selected() === target?.status || !!activeTrip()"
+      (click)="confirm()"
+    >
+      {{ 'trailers.statusDialog.confirm' | t }}
+    </button>
+  </ng-container>
+</app-modal>

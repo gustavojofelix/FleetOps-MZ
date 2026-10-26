@@ -1,0 +1,147 @@
+<div class="page">
+  <app-page-header [title]="'notifications.title' | t" [subtitle]="subtitle()">
+    <ng-container actions>
+      <a class="btn btn--ghost" routerLink="/settings" [queryParams]="{ tab: 'notifications' }">
+        <app-icon name="sliders" [size]="16" />
+        {{ 'notifications.preferencesLink' | t }}
+      </a>
+      @if (unreadCount() > 0) {
+        <button type="button" class="btn btn--secondary" [class.btn--loading]="markingAll()" [disabled]="markingAll()" (click)="markAllRead()">
+          <app-icon name="check" [size]="16" />
+          {{ 'notifications.markAllRead' | t }}
+        </button>
+      }
+    </ng-container>
+  </app-page-header>
+
+  <section class="card">
+    <div class="tabs category-tabs" role="tablist" [attr.aria-label]="'notifications.categoryFilter' | t">
+      <button type="button" class="tab" role="tab" [attr.aria-selected]="!categoryFilter()" (click)="setCategory(null)">
+        {{ 'notifications.allCategories' | t }}
+        <span class="tab__count">{{ counts().total }}</span>
+      </button>
+      @for (category of categories; track category) {
+        <button type="button" class="tab" role="tab" [attr.aria-selected]="categoryFilter() === category" (click)="setCategory(category)">
+          <app-icon [name]="icon(category)" [size]="14" />
+          {{ 'notifications.categories.' + category | t }}
+          <span class="tab__count">{{ counts().byCategory.get(category) ?? 0 }}</span>
+        </button>
+      }
+    </div>
+
+    <div class="toolbar">
+      <div class="segmented" role="group" [attr.aria-label]="'notifications.readFilter.label' | t">
+        <button type="button" [attr.aria-pressed]="readFilter() === 'all'" (click)="setReadFilter('all')">
+          {{ 'notifications.readFilter.all' | t }}
+        </button>
+        <button type="button" [attr.aria-pressed]="readFilter() === 'unread'" (click)="setReadFilter('unread')">
+          {{ 'notifications.readFilter.unread' | t }}
+          @if (unreadCount() > 0) {
+            <span class="unread-pill">{{ unreadCount() }}</span>
+          }
+        </button>
+      </div>
+      @if (hasFilters()) {
+        <button type="button" class="btn btn--ghost" (click)="clearFilters()">
+          <app-icon name="x" [size]="16" />
+          {{ 'common.actions.clearFilters' | t }}
+        </button>
+      }
+      <span class="toolbar__spacer"></span>
+      <span class="toolbar__summary" aria-live="polite">{{ 'common.table.results' | t: { count: visible().length } }}</span>
+    </div>
+
+    @if (query.initialLoading()) {
+      <ul class="notif-skeleton" [attr.aria-label]="'common.states.loading' | t">
+        @for (row of [1, 2, 3, 4, 5]; track row) {
+          <li>
+            <span class="skeleton notif-skeleton__icon"></span>
+            <span class="notif-skeleton__text">
+              <span class="skeleton skeleton--title"></span>
+              <span class="skeleton skeleton--text"></span>
+            </span>
+          </li>
+        }
+      </ul>
+    } @else if (query.error()) {
+      <app-empty-state tone="error" [title]="'common.states.errorTitle' | t" [description]="'common.states.errorDescription' | t">
+        <button type="button" class="btn btn--secondary" (click)="query.reload()">{{ 'common.actions.retry' | t }}</button>
+      </app-empty-state>
+    } @else if (!groups().length) {
+      @if (totalCount() === 0) {
+        <app-empty-state icon="bell" [title]="'notifications.empty.allTitle' | t" [description]="'notifications.empty.allDescription' | t" />
+      } @else if (readFilter() === 'unread') {
+        <app-empty-state icon="circle-check" [title]="'notifications.empty.unreadTitle' | t" [description]="'notifications.empty.unreadDescription' | t">
+          <button type="button" class="btn btn--secondary" (click)="setReadFilter('all')">{{ 'notifications.empty.showAll' | t }}</button>
+        </app-empty-state>
+      } @else {
+        <app-empty-state
+          [icon]="icon(categoryFilter() ?? 'system')"
+          [title]="'notifications.empty.categoryTitle' | t"
+          [description]="'notifications.empty.categoryDescription' | t: { category: ('notifications.categories.' + categoryFilter() | t) }"
+        >
+          <button type="button" class="btn btn--secondary" (click)="clearFilters()">{{ 'notifications.empty.showAll' | t }}</button>
+        </app-empty-state>
+      }
+    } @else {
+      <div class="notif-groups" [class.is-refreshing]="query.loading()">
+        @for (group of groups(); track group.date) {
+          <section class="notif-group" [attr.aria-labelledby]="'notif-group-' + group.date">
+            <h2 class="notif-group__title" [id]="'notif-group-' + group.date">
+              {{ group.label }}
+              <span class="notif-group__count">{{ 'notifications.groupCount' | t: { count: group.items.length } }}</span>
+            </h2>
+            <ul class="notif-list">
+              @for (item of group.items; track item.id) {
+                <li class="notif" [class.is-unread]="!item.read">
+                  <span class="notif__icon" [attr.data-severity]="item.severity" aria-hidden="true">
+                    <app-icon [name]="icon(item.category)" [size]="18" />
+                  </span>
+                  <div class="notif__body">
+                    <p class="notif__title">
+                      @if (!item.read) {
+                        <span class="notif__dot" aria-hidden="true"></span>
+                        <span class="visually-hidden">{{ 'notifications.unread' | t }}:</span>
+                      }
+                      {{ center.title(item) }}
+                    </p>
+                    <p class="notif__message">{{ center.message(item) }}</p>
+                    <p class="notif__meta">
+                      <app-status-badge kind="severity" [value]="item.severity" />
+                      <span>{{ 'notifications.categories.' + item.category | t }}</span>
+                      <span aria-hidden="true">·</span>
+                      <time [attr.datetime]="item.createdAt" [attr.title]="item.createdAt | fmtDate: 'datetime'">{{ item.createdAt | relativeTime }}</time>
+                    </p>
+                  </div>
+                  <div class="notif__actions">
+                    @if (item.link) {
+                      <button type="button" class="btn btn--secondary btn--sm" [attr.aria-label]="('notifications.openRecord' | t) + ' — ' + center.title(item)" (click)="open(item)">
+                        {{ 'notifications.open' | t }}
+                        <app-icon name="arrow-right" [size]="14" />
+                      </button>
+                    }
+                    <button
+                      type="button"
+                      class="btn btn--ghost btn--sm"
+                      [disabled]="isBusy(item.id)"
+                      [attr.aria-label]="((item.read ? 'common.actions.markAsUnread' : 'common.actions.markAsRead') | t) + ' — ' + center.title(item)"
+                      (click)="toggleRead(item)"
+                    >
+                      <app-icon [name]="item.read ? 'circle-dot' : 'check'" [size]="14" />
+                      <span>{{ (item.read ? 'common.actions.markAsUnread' : 'common.actions.markAsRead') | t }}</span>
+                    </button>
+                  </div>
+                </li>
+              }
+            </ul>
+          </section>
+        }
+      </div>
+    }
+
+    <p class="card__footer notif-footer">
+      <app-icon name="info" [size]="14" />
+      <span>{{ 'notifications.demoNote' | t }}</span>
+    </p>
+  </section>
+</div>
