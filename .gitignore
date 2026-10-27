@@ -42,3 +42,16 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment files and secrets (Supabase keys, etc.)
+.env
+.env.*
+!.env.example
+
+# Python virtual environments and caches
+.venv/
+__pycache__/
+*.pyc
+
+# Logs
+*.log
