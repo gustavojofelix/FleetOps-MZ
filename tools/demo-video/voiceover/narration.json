@@ -1,0 +1,73 @@
+{
+  "voice": "pt-PT-RaquelNeural",
+  "rate": "+8%",
+  "note": "Spoken text for text-to-speech. 'scene' is a scene id from output/timeline.json; 'offset' is seconds after that scene starts. Spelling follows how the voice should pronounce it (e.g. 'diretos'), so it differs slightly from NARRACAO_PT-MZ.md.",
+  "cues": [
+    {
+      "id": "00-intro",
+      "scene": "intro",
+      "offset": 0.3,
+      "text": "FleetOps MZ: frota, carga e rentabilidade, num só lugar."
+    },
+    {
+      "id": "01-dashboard",
+      "scene": "dashboard",
+      "offset": 0.4,
+      "text": "Ao abrir o FleetOps, o gestor vê o estado da operação: vinte e seis viaturas e doze viagens em curso, três delas atrasadas. Ao lado, a receita, a margem e os alertas do dia."
+    },
+    {
+      "id": "02-trips",
+      "scene": "trips",
+      "offset": 0.4,
+      "text": "Em Viagens, filtramos as viagens em curso. Em Viaturas, vemos as treze disponíveis para carregar, cada uma com o seu motorista e semi-reboque. Em Motoristas, a equipa aparece com o estado de cada um."
+    },
+    {
+      "id": "03-dispatch",
+      "scene": "dispatch",
+      "offset": 0.4,
+      "text": "O quadro de despacho organiza as viagens por estado. Em trânsito, a viagem Beira–Chimoio, com combustível, chega dentro de três horas."
+    },
+    {
+      "id": "04-trip-detail",
+      "scene": "trip-detail",
+      "offset": 0.4,
+      "text": "No detalhe, vemos a partida às dez e dezassete e a chegada prevista às quinze horas, dentro do previsto. O motorista é Armando Sumbana, com dezoito mil litros de gasóleo, e o histórico regista Dondo e Nhamatanda."
+    },
+    {
+      "id": "05a-alert",
+      "scene": "incident",
+      "offset": 0.5,
+      "text": "Chega um alerta crítico: a viagem Beira–Joanesburgo está atrasada, por avaria no sistema de travagem perto de Xai-Xai."
+    },
+    {
+      "id": "05b-resolution",
+      "scene": "incident",
+      "offset": 9.5,
+      "text": "Com a peça substituída, o gestor altera o estado para Em trânsito e regista o que foi feito: viatura inspecionada, viagem retomada, cliente informado. A nota fica no histórico da viagem."
+    },
+    {
+      "id": "05c-driver",
+      "scene": "incident",
+      "offset": 29.5,
+      "text": "No perfil do motorista Narciso Mazive, a avaria de dia vinte e um já está registada. O gestor acrescenta a ocorrência de entrega atrasada, ligada à mesma viagem. Assim, o histórico do motorista fica completo para futuras avaliações."
+    },
+    {
+      "id": "06-costs",
+      "scene": "costs",
+      "offset": 0.4,
+      "text": "Em Combustível acompanhamos o custo do período, o consumo médio de quarenta litros e meio aos cem quilómetros, e os abastecimentos que merecem verificação. Em Despesas ficam as portagens, as taxas fronteiriças e as ajudas de custo, e o que ainda aguarda aprovação."
+    },
+    {
+      "id": "07-profitability",
+      "scene": "profitability",
+      "offset": 0.4,
+      "text": "Vejamos uma viagem concluída, da Beira para Maputo. A receita foi de cento e setenta e um mil e quinhentos meticais. Os custos diretos registados, combustível, portagens e ajudas de custo, somam cento e quatro mil meticais. Fica uma margem de contribuição de sessenta e sete mil meticais: trinta e nove vírgula três por cento."
+    },
+    {
+      "id": "08-closing",
+      "scene": "closing",
+      "offset": 0.6,
+      "text": "Do despacho à margem de cada viagem, o FleetOps MZ dá-lhe mais controlo sobre cada viagem, cada custo e cada metical."
+    }
+  ]
+}
