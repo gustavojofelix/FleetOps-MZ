@@ -1,0 +1,350 @@
+@use 'mixins' as *;
+
+// Phase colours shared by map pins, route lines, legend dots and list avatars.
+:host {
+  display: block;
+  --phase-moving: var(--color-accent);
+  --phase-stopped: var(--color-danger);
+  --phase-loading: var(--color-warning);
+  --phase-arrived: var(--color-success);
+  --phase-idle: var(--color-text-muted);
+}
+
+$phases: moving, stopped, loading, arrived, idle;
+
+.fleet-map__controls {
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.fleet-map__clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 var(--space-2);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+// Map + list: stacked on small screens, side by side from 1024 px.
+.fleet-map__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-top: 1px solid var(--color-divider);
+
+  @include up(lg) {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+}
+
+.fleet-map__stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+// `isolation` keeps Leaflet's internal z-indexes below the sticky topbar, menus and dialogs.
+.fleet-map__canvas {
+  position: relative;
+  isolation: isolate;
+  z-index: 0;
+  height: 340px;
+  background: var(--color-surface-sunken);
+
+  @include up(md) {
+    height: 460px;
+  }
+}
+
+.fleet-map__overlay {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: 340px;
+  border-radius: 0;
+
+  @include up(md) {
+    height: 460px;
+  }
+
+  &--error {
+    display: grid;
+    place-items: center;
+    background: var(--color-surface);
+  }
+}
+
+// "Following <driver>" chip floating over the map.
+.fleet-map__follow {
+  position: absolute;
+  top: var(--space-3);
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: calc(100% - 120px);
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3);
+  transform: translateX(-50%);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-raised);
+  color: var(--color-accent-text);
+  box-shadow: var(--shadow-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.fleet-map__follow-text {
+  @include truncate;
+}
+
+.fleet-map__legend {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-divider);
+}
+
+.fleet-map__outside {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0 var(--space-4) var(--space-3);
+}
+
+.fleet-map__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  @each $phase in $phases {
+    &--#{$phase} {
+      background: var(--phase-#{$phase});
+    }
+  }
+}
+
+.fleet-map__list {
+  display: flex;
+  flex-direction: column;
+  max-height: 420px;
+  overflow-y: auto;
+  border-top: 1px solid var(--color-divider);
+
+  @include up(lg) {
+    max-height: 512px;
+    border-top: 0;
+    border-left: 1px solid var(--color-divider);
+  }
+}
+
+.fleet-map__item {
+  border-bottom: 1px solid var(--color-divider);
+
+  &.is-selected {
+    background: var(--color-surface-selected);
+  }
+}
+
+.fleet-map__unit {
+  @include reset-button;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+
+  &:hover {
+    background: var(--color-surface-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--focus-outline);
+    outline-offset: -2px;
+  }
+}
+
+.fleet-map__avatar {
+  color: var(--color-text-inverse);
+
+  @each $phase in $phases {
+    &--#{$phase} {
+      background: var(--phase-#{$phase});
+    }
+  }
+}
+
+.fleet-map__main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.fleet-map__name {
+  @include truncate;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: 500;
+}
+
+.fleet-map__meta {
+  @include truncate;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.fleet-map__skeleton-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+
+.fleet-map__skeleton-text {
+  flex: 1;
+}
+
+// ---------------------------------------------------------------- Leaflet content
+// Created by Leaflet outside Angular's view, hence ::ng-deep (scoped to this component).
+
+:host ::ng-deep {
+  .leaflet-container {
+    font-family: inherit;
+    background: var(--color-surface-sunken);
+  }
+
+  .leaflet-tile-pane {
+    transition: filter var(--duration-fast) var(--ease-standard);
+  }
+
+  .leaflet-tooltip {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    box-shadow: var(--shadow-md);
+    font-size: var(--text-xs);
+  }
+
+  .leaflet-bar a {
+    background: var(--color-surface-raised);
+    color: var(--color-text);
+    border-color: var(--color-border);
+  }
+
+  .leaflet-control-attribution {
+    background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+    color: var(--color-text-muted);
+
+    a {
+      color: var(--color-text-secondary);
+    }
+  }
+
+  .fleet-pin-host {
+    background: none;
+    border: 0;
+  }
+
+  .fleet-pin {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--color-surface);
+    background: var(--phase-idle);
+    color: var(--color-text-inverse);
+    font-size: 0.625rem;
+    font-weight: 700;
+    box-shadow: var(--shadow-md);
+    transition:
+      transform var(--duration-fast) var(--ease-standard),
+      opacity var(--duration-fast) var(--ease-standard);
+
+    @each $phase in $phases {
+      &--#{$phase} {
+        background: var(--phase-#{$phase});
+      }
+    }
+
+    &--moving::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid var(--phase-moving);
+      opacity: 0;
+      animation: fleet-pin-pulse 2s ease-out infinite;
+    }
+
+    &.is-selected {
+      transform: scale(1.25);
+      border-color: var(--color-text);
+    }
+
+    &.is-dimmed {
+      opacity: 0.45;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &--moving::after {
+        animation: none;
+      }
+    }
+  }
+
+  .fleet-route {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 3;
+    transition: opacity var(--duration-fast) var(--ease-standard);
+
+    &--ahead {
+      stroke: var(--color-text-muted);
+      stroke-dasharray: 4 6;
+      opacity: 0.6;
+    }
+
+    &--done {
+      opacity: 0.85;
+
+      @each $phase in $phases {
+        &.fleet-route--#{$phase} {
+          stroke: var(--phase-#{$phase});
+        }
+      }
+    }
+
+    &.is-selected {
+      stroke-width: 5;
+      opacity: 1;
+    }
+
+    &.is-dimmed {
+      opacity: 0.2;
+    }
+  }
+}
+
+:host-context([data-theme='dark']) ::ng-deep .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9) saturate(0.6);
+}
+
+@keyframes fleet-pin-pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}

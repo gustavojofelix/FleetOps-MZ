@@ -25,6 +25,7 @@ import { SimulatedNotice } from '../../../shared/ui/simulated-notice/simulated-n
 import { StatusBadge } from '../../../shared/ui/status-badge/status-badge';
 import { PeriodSelection, previousPeriod, resolvePeriod } from '../../../shared/utils/period';
 import { AlertView, DashboardAlerts } from '../dashboard-alerts/dashboard-alerts';
+import { FleetMap } from '../fleet-map/fleet-map';
 import {
   AlertKind,
   DashboardSource,
@@ -87,6 +88,7 @@ const ALERT_ICONS: Record<AlertKind, IconName> = {
     SimulatedNotice,
     StatusBadge,
     DashboardAlerts,
+    FleetMap,
   ],
   templateUrl: './dashboard-page.html',
   styleUrl: './dashboard-page.scss',

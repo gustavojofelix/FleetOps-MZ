@@ -52,4 +52,7 @@ distinguishes original amount, reporting amount and rate.
 - Notifications generation (expiring documents, overdue maintenance, delays, fuel anomalies) → scheduled
   database jobs (pg_cron / Edge Functions) writing to `notifications`.
 - Invitations and email digests → Supabase Auth invites + transactional email.
+- Dashboard fleet map (`features/dashboard/fleet-map`) simulates positions from active trips with
+  `core/domain/fleet-tracking.ts` → feed real GPS/telematics positions (e.g. a `vehicle_positions` table with
+  Supabase Realtime) and keep the corridor geometry only for drawing planned routes.
 - Demo data reset → remove (keep only for a sandbox tenant).

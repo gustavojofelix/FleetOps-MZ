@@ -1,0 +1,138 @@
+<section class="card fleet-map" aria-labelledby="fleet-map-title">
+  <header class="card__header">
+    <div>
+      <h2 class="card__title" id="fleet-map-title">
+        {{ 'dashboard.map.title' | t }}
+        <span class="sim-tag" tabindex="0" [appTooltip]="'dashboard.map.simulatedHint' | t">
+          <app-icon name="info" [size]="12" />
+          {{ 'dashboard.map.simulated' | t }}
+          <span class="visually-hidden">{{ 'dashboard.map.simulatedHint' | t }}</span>
+        </span>
+      </h2>
+      <p class="card__subtitle">{{ 'dashboard.map.subtitle' | t }}</p>
+    </div>
+    <div class="card__actions fleet-map__controls">
+      <span class="fleet-map__clock text-sm" aria-live="off">
+        <app-icon name="clock" [size]="14" />
+        <span class="visually-hidden">{{ 'dashboard.map.simTime' | t }}</span>
+        <span class="num">{{ simTime() | fmtDate: 'datetime' }}</span>
+      </span>
+      <button
+        type="button"
+        class="btn btn--secondary btn--sm btn--icon"
+        (click)="togglePlay()"
+        [attr.aria-label]="(playing() ? 'dashboard.map.pause' : 'dashboard.map.play') | t"
+        [appTooltip]="(playing() ? 'dashboard.map.pause' : 'dashboard.map.play') | t"
+      >
+        <app-icon [name]="playing() ? 'pause' : 'play'" [size]="16" />
+      </button>
+      <div class="segmented" role="group" [attr.aria-label]="'dashboard.map.speed' | t">
+        @for (option of speeds; track option) {
+          <button type="button" [attr.aria-pressed]="speed() === option" (click)="speed.set(option)">{{ speedLabel(option) }}</button>
+        }
+      </div>
+      <button
+        type="button"
+        class="btn btn--ghost btn--sm btn--icon"
+        (click)="reset()"
+        [attr.aria-label]="'dashboard.map.reset' | t"
+        [appTooltip]="'dashboard.map.reset' | t"
+      >
+        <app-icon name="rotate-ccw" [size]="16" />
+      </button>
+      <button
+        type="button"
+        class="btn btn--ghost btn--sm btn--icon"
+        (click)="fitAll()"
+        [attr.aria-label]="'dashboard.map.fitAll' | t"
+        [appTooltip]="'dashboard.map.fitAll' | t"
+      >
+        <app-icon name="map-pinned" [size]="16" />
+      </button>
+    </div>
+  </header>
+
+  <div class="fleet-map__body">
+    <div class="fleet-map__stage">
+      <div #canvas class="fleet-map__canvas" role="region" [attr.aria-label]="'dashboard.map.mapAria' | t"></div>
+      @if (mapState() === 'loading' || loading()) {
+        <span class="skeleton fleet-map__overlay" aria-hidden="true"></span>
+      } @else if (mapState() === 'error') {
+        <div class="fleet-map__overlay fleet-map__overlay--error">
+          <app-empty-state compact tone="error" icon="map-pin" [title]="'dashboard.map.errorTitle' | t" [description]="'dashboard.map.errorDescription' | t" />
+        </div>
+      }
+      @if (followedView(); as followed) {
+        <div class="fleet-map__follow" role="status">
+          <app-icon name="locate-fixed" [size]="14" />
+          <span class="fleet-map__follow-text">{{ 'dashboard.map.following' | t: { name: followed.name } }}</span>
+          <button type="button" class="btn btn--ghost btn--sm" (click)="stopFollowing()">{{ 'dashboard.map.popup.stopFollowing' | t }}</button>
+        </div>
+      }
+      <ul class="legend fleet-map__legend">
+        @for (phase of phases; track phase) {
+          <li class="legend__item">
+            <span class="fleet-map__dot fleet-map__dot--{{ phase }}"></span>
+            {{ phaseLabel(phase) }} · <span class="num">{{ counts()[phase] }}</span>
+          </li>
+        }
+      </ul>
+      @if (!loading() && outsideRegion().length) {
+        <p class="fleet-map__outside text-sm muted">
+          <app-icon name="info" [size]="14" />
+          <span>
+            {{ 'dashboard.map.outsideRegion' | t: { count: outsideRegion().length } }}
+            <a class="cell-link" routerLink="/trips" [queryParams]="activeTripsQuery">{{ 'common.actions.viewAll' | t }}</a>
+          </span>
+        </p>
+      }
+    </div>
+
+    <div class="fleet-map__list" role="list" [attr.aria-label]="'dashboard.map.listAria' | t">
+      @if (loading()) {
+        @for (row of [0, 1, 2, 3, 4]; track row) {
+          <div class="fleet-map__unit" role="listitem" aria-hidden="true">
+            <span class="skeleton fleet-map__skeleton-avatar"></span>
+            <span class="skeleton skeleton--text fleet-map__skeleton-text"></span>
+          </div>
+        }
+      } @else if (!units().length) {
+        <app-empty-state compact icon="users" [title]="'dashboard.map.empty' | t" />
+      } @else {
+        @for (view of units(); track view.unit.driverId) {
+          @let unit = view.unit;
+          @let selected = selectedId() === unit.driverId;
+          <div class="fleet-map__item" role="listitem" [class.is-selected]="selected">
+            <button
+              type="button"
+              class="fleet-map__unit"
+              aria-haspopup="dialog"
+              [attr.aria-label]="('dashboard.map.openDriver' | t: { name: view.name }) + ' · ' + phaseLabel(unit.phase)"
+              (click)="open(unit.driverId)"
+            >
+              <span class="avatar avatar--sm fleet-map__avatar fleet-map__avatar--{{ unit.phase }}">{{ view.initials }}</span>
+              <span class="fleet-map__main">
+                <span class="fleet-map__name">
+                  {{ view.name }}
+                  @if (followId() === unit.driverId) {
+                    <app-icon name="locate-fixed" [size]="12" [label]="'dashboard.map.popup.follow' | t" />
+                  }
+                </span>
+                <span class="fleet-map__meta">{{ view.plate }} · {{ view.place }}</span>
+              </span>
+              <span class="badge {{ view.badge }}"><span class="badge__dot"></span>{{ phaseLabel(unit.phase) }}</span>
+            </button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</section>
+
+<app-driver-popup
+  [view]="popupView()"
+  [nowMs]="simMs()"
+  [following]="!!popupView() && followId() === popupView()!.unit.driverId"
+  (closed)="closePopup()"
+  (follow)="toggleFollow($event)"
+/>

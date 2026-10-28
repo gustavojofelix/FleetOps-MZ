@@ -1,0 +1,175 @@
+<app-modal [open]="!!view()" (closed)="closed.emit()" [title]="view()?.name ?? ''" [description]="view() ? view()!.plate + ' · ' + view()!.place : null">
+  @if (view(); as v) {
+    @let unit = v.unit;
+    @let d = driver();
+    <div class="driver-popup">
+      <!-- Who and where -->
+      <section class="driver-popup__summary">
+        <span class="avatar avatar--lg driver-popup__avatar driver-popup__avatar--{{ unit.phase }}">{{ v.initials }}</span>
+        <div class="driver-popup__who">
+          <div class="cluster">
+            <span class="badge {{ v.badge }}"><span class="badge__dot"></span>{{ 'dashboard.map.phases.' + unit.phase | t }}</span>
+            @if (d?.crossBorderAuthorized) {
+              <span class="badge badge--info"><app-icon name="globe" [size]="12" />{{ 'dashboard.map.popup.crossBorder' | t }}</span>
+            }
+          </div>
+          <span class="driver-popup__location">
+            <app-icon name="map-pin" [size]="14" />
+            {{ location() }}
+          </span>
+          @if (d) {
+            <span class="driver-popup__licence text-sm muted">
+              {{ 'dashboard.map.popup.licence' | t: { category: d.licenceCategory } }}
+              <app-expiry-badge [date]="d.licenceExpiry" relative />
+            </span>
+          }
+        </div>
+      </section>
+
+      <!-- Contact -->
+      @if (d) {
+        <section class="driver-popup__section" aria-labelledby="driver-popup-contact">
+          <h3 class="driver-popup__heading" id="driver-popup-contact">{{ 'dashboard.map.popup.contact' | t }}</h3>
+          <div class="driver-popup__contact">
+            <a class="btn btn--primary" [href]="'tel:' + d.phone">
+              <app-icon name="phone" [size]="16" />
+              {{ 'dashboard.map.popup.call' | t }}
+            </a>
+            <a class="btn btn--secondary" [href]="whatsappUrl()" target="_blank" rel="noopener">
+              <app-icon name="message-circle" [size]="16" />
+              WhatsApp
+            </a>
+            <a class="btn btn--secondary" [href]="'sms:' + phoneDigits()">
+              <app-icon name="message-square" [size]="16" />
+              SMS
+            </a>
+          </div>
+          <div class="driver-popup__phone">
+            <span class="mono">{{ d.phone }}</span>
+            <button type="button" class="btn btn--ghost btn--sm" (click)="copyPhone()">
+              <app-icon name="copy" [size]="14" />
+              {{ 'common.actions.copy' | t }}
+            </button>
+          </div>
+        </section>
+
+        <!-- Quick messages -->
+        <section class="driver-popup__section" aria-labelledby="driver-popup-messages">
+          <h3 class="driver-popup__heading" id="driver-popup-messages">{{ 'dashboard.map.popup.quickMessages' | t }}</h3>
+          <p class="text-xs subtle driver-popup__hint">{{ 'dashboard.map.popup.quickMessagesHint' | t }}</p>
+          <ul class="driver-popup__messages">
+            @for (message of quickMessages(); track message.key) {
+              <li>
+                <a class="driver-popup__message" [href]="message.url" target="_blank" rel="noopener">
+                  <span class="driver-popup__message-icon"><app-icon [name]="message.icon" [size]="16" /></span>
+                  <span class="driver-popup__message-main">
+                    <span class="driver-popup__message-label">{{ message.label }}</span>
+                    <span class="driver-popup__message-text">{{ message.text }}</span>
+                  </span>
+                  <app-icon name="send" [size]="14" />
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      <!-- Current trip -->
+      @if (trip(); as t) {
+        <section class="driver-popup__section" aria-labelledby="driver-popup-trip">
+          <h3 class="driver-popup__heading" id="driver-popup-trip">
+            {{ 'dashboard.map.popup.currentTrip' | t }} · <a class="cell-link" [routerLink]="['/trips', t.id]">{{ t.reference }}</a>
+          </h3>
+          <p class="text-sm muted driver-popup__cargo">{{ customer() }} · {{ t.cargo.description }}</p>
+          <div
+            class="meter"
+            role="meter"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-valuenow]="unit.progress * 100 | num"
+            [attr.aria-label]="'dashboard.map.progress' | t"
+            [class.meter--warning]="unit.phase === 'stopped'"
+            [style.--value]="unit.progress * 100"
+          ></div>
+          <dl class="driver-popup__facts">
+            <div>
+              <dt>{{ 'dashboard.map.progress' | t }}</dt>
+              <dd class="num">{{ unit.progress | pct: 0 }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'dashboard.map.remaining' | t }}</dt>
+              <dd class="num">{{ unit.remainingKm | distance }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'dashboard.map.eta' | t }}</dt>
+              <dd class="num">{{ eta() ? (eta() | fmtDate: 'datetime') : '—' }}</dd>
+            </div>
+            <div>
+              <dt>{{ 'dashboard.map.popup.onRoad' | t }}</dt>
+              <dd class="num">{{ hoursOnRoad() === null ? '—' : ('dashboard.map.popup.hours' | t: { hours: (hoursOnRoad() | num) }) }}</dd>
+            </div>
+          </dl>
+          @if (unit.phase === 'stopped' && t.delayReason) {
+            <p class="alert alert--danger driver-popup__alert">
+              <app-icon name="triangle-alert" [size]="16" />
+              <span>{{ t.delayReason }}</span>
+            </p>
+          }
+        </section>
+      }
+
+      <!-- More actions -->
+      <section class="driver-popup__section" aria-labelledby="driver-popup-actions">
+        <h3 class="driver-popup__heading" id="driver-popup-actions">{{ 'dashboard.map.popup.moreActions' | t }}</h3>
+        <div class="driver-popup__actions">
+          <button type="button" class="driver-popup__action" [attr.aria-pressed]="following()" (click)="toggleFollow()">
+            <app-icon name="locate-fixed" [size]="18" />
+            {{ (following() ? 'dashboard.map.popup.stopFollowing' : 'dashboard.map.popup.follow') | t }}
+          </button>
+          <button type="button" class="driver-popup__action" (click)="shareLocation()">
+            <app-icon name="navigation" [size]="18" />
+            {{ 'dashboard.map.popup.shareLocation' | t }}
+          </button>
+          @if (trip(); as t) {
+            <a class="driver-popup__action" [routerLink]="['/trips', t.id]">
+              <app-icon name="route" [size]="18" />
+              {{ 'dashboard.map.popup.openTrip' | t }}
+            </a>
+          } @else {
+            <a class="driver-popup__action" routerLink="/trips/new" [queryParams]="{ driverId: unit.driverId, vehicleId: unit.vehicleId }">
+              <app-icon name="plus" [size]="18" />
+              {{ 'dashboard.map.newTrip' | t }}
+            </a>
+          }
+          <a class="driver-popup__action" [routerLink]="['/drivers', unit.driverId]">
+            <app-icon name="user" [size]="18" />
+            {{ 'dashboard.map.popup.profile' | t }}
+          </a>
+          @if (unit.vehicleId) {
+            <a class="driver-popup__action" [routerLink]="['/vehicles', unit.vehicleId]">
+              <app-icon name="truck" [size]="18" />
+              {{ 'dashboard.map.popup.vehicle' | t: { plate: v.plate } }}
+            </a>
+          }
+          <a class="driver-popup__action" [routerLink]="['/drivers', unit.driverId]" [queryParams]="{ tab: 'incidents' }">
+            <app-icon name="flag" [size]="18" />
+            {{ 'dashboard.map.popup.incident' | t }}
+          </a>
+          @if (d?.emergencyContactPhone) {
+            <a class="driver-popup__action driver-popup__action--danger" [href]="'tel:' + d!.emergencyContactPhone">
+              <app-icon name="siren" [size]="18" />
+              <span>
+                {{ 'dashboard.map.popup.emergency' | t }}
+                <span class="driver-popup__action-sub">{{ d!.emergencyContactName }}</span>
+              </span>
+            </a>
+          }
+        </div>
+      </section>
+    </div>
+  }
+
+  <ng-container modal-footer>
+    <button type="button" class="btn btn--secondary" (click)="closed.emit()">{{ 'common.actions.close' | t }}</button>
+  </ng-container>
+</app-modal>
