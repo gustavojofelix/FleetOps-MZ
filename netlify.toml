@@ -1,0 +1,31 @@
+[build]
+  command = "npm run build"
+  publish = "dist/fleetops-mz/browser"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# Angular SPA: every unknown path serves index.html so deep links (/vehicles/123) and reloads work.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Hashed bundles never change: cache them for a year. index.html stays revalidated.
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
