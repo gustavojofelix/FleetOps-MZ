@@ -1,7 +1,7 @@
 import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { TitleStrategy, provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
-import { provideMockDataAccess } from './core/data-access/provide-data-access';
+import { provideBackend } from './core/backend/backend';
 import { TranslatedTitleStrategy } from './core/i18n/translated-title.strategy';
 import { TranslationService } from './core/i18n/translation.service';
 import { CompanySettingsService } from './core/state/company-settings.service';
@@ -11,8 +11,8 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding(), withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })),
-    // Swap for a Supabase-backed provider once the backend exists.
-    provideMockDataAccess(),
+    // Demo (mock) or Supabase, chosen at build time: see core/backend/backend.ts.
+    provideBackend(),
     { provide: TitleStrategy, useClass: TranslatedTitleStrategy },
     provideAppInitializer(async () => {
       inject(ThemeService);

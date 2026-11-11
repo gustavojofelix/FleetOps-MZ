@@ -1,11 +1,15 @@
 import { Routes } from '@angular/router';
+import { authRoutes, shellGuards } from './core/backend/backend';
 import { Shell } from './layout/shell/shell';
 
 /** Every feature is lazy-loaded; `data.titleKey` drives the top bar and the document title. */
 export const routes: Routes = [
+  // Sign-in / onboarding (Supabase build only; empty in the demo).
+  ...authRoutes,
   {
     path: '',
     component: Shell,
+    canActivate: shellGuards,
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       { path: 'dashboard', data: { titleKey: 'navigation.dashboard' }, loadChildren: () => import('./features/dashboard/dashboard.routes') },

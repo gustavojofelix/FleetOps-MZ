@@ -1,0 +1,77 @@
+@let signUp = mode() === 'signUp';
+<main class="auth">
+  <div class="auth__brand">
+    <span class="auth__mark" aria-hidden="true"><app-icon name="truck" [size]="22" /></span>
+    <div>
+      <div class="auth__name">{{ 'common.appName' | t }}</div>
+      <p class="auth__tagline">{{ 'auth.tagline' | t }}</p>
+    </div>
+  </div>
+
+  <section class="auth__card" aria-labelledby="auth-heading">
+    <h1 class="auth__heading" id="auth-heading">{{ (signUp ? 'auth.signUp.heading' : 'auth.login.heading') | t }}</h1>
+    <p class="auth__subtitle">{{ (signUp ? 'auth.signUp.subtitle' : 'auth.login.subtitle') | t }}</p>
+
+    @if (confirmationSentTo(); as email) {
+      <div class="alert alert--success" role="status">{{ 'auth.signUp.checkEmail' | t: { email } }}</div>
+    }
+    @if (visibleError(); as key) {
+      <div class="alert alert--danger" role="alert">{{ key | t }}</div>
+    }
+
+    <form class="stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <fieldset class="stack" [disabled]="busy()">
+        @if (signUp) {
+          <div class="field">
+            <label class="field__label" for="auth-name">{{ 'auth.fields.fullName' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+            <input id="auth-name" class="input" formControlName="fullName" autocomplete="name" />
+            <app-field-error [control]="form.controls.fullName" />
+          </div>
+        }
+        <div class="field">
+          <label class="field__label" for="auth-email">{{ 'auth.fields.email' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="auth-email" class="input" type="email" formControlName="email" autocomplete="email" inputmode="email" />
+          <app-field-error [control]="form.controls.email" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="auth-password">{{ 'auth.fields.password' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input
+            id="auth-password"
+            class="input"
+            type="password"
+            formControlName="password"
+            [attr.autocomplete]="signUp ? 'new-password' : 'current-password'"
+            aria-describedby="auth-password-hint"
+          />
+          @if (signUp) {
+            <p class="field__hint" id="auth-password-hint">{{ 'auth.hints.password' | t }}</p>
+          }
+          <app-field-error [control]="form.controls.password" />
+        </div>
+        <button type="submit" class="btn btn--primary btn--block" [class.btn--loading]="busy()">
+          {{ (signUp ? 'auth.signUp.submit' : 'auth.login.submit') | t }}
+        </button>
+      </fieldset>
+    </form>
+
+    <p class="auth__switch">
+      @if (signUp) {
+        {{ 'auth.signUp.hasAccount' | t }}
+        <button type="button" class="link-button" (click)="switchMode('signIn')">{{ 'auth.signUp.switchToSignIn' | t }}</button>
+      } @else {
+        {{ 'auth.login.noAccount' | t }}
+        <button type="button" class="link-button" (click)="switchMode('signUp')">{{ 'auth.login.switchToSignUp' | t }}</button>
+      }
+    </p>
+  </section>
+
+  <div class="auth__languages">
+    <div class="segmented" role="group" [attr.aria-label]="'shell.language.label' | t">
+      @for (language of i18n.languages; track language.code) {
+        <button type="button" [attr.aria-pressed]="i18n.language() === language.code" (click)="setLanguage(language.code)">
+          {{ language.nativeName }}
+        </button>
+      }
+    </div>
+  </div>
+</main>

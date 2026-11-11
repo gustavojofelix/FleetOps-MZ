@@ -1,0 +1,83 @@
+@use 'mixins' as *;
+
+// Full-screen centred card shared by the sign-in and onboarding pages (outside the shell).
+:host {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-bg);
+}
+
+.auth {
+  width: 100%;
+  max-width: 26rem;
+}
+
+.auth__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  color: var(--color-text);
+}
+
+.auth__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.auth__name {
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+.auth__tagline {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.auth__card {
+  @include surface-card;
+  padding: var(--space-6);
+}
+
+.auth__heading {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-xl);
+}
+
+.auth__subtitle {
+  margin: 0 0 var(--space-5);
+  color: var(--color-text-secondary);
+}
+
+.auth__card fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.auth__card .alert {
+  margin-bottom: var(--space-4);
+}
+
+.auth__switch {
+  margin: var(--space-5) 0 0;
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.auth__languages {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-5);
+}

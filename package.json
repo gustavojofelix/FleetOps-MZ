@@ -8,7 +8,9 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --watch=false",
-    "mock-data": "node tools/generate-mock-data.mjs"
+    "mock-data": "node tools/generate-mock-data.mjs",
+    "start:supabase": "ng serve --configuration supabase",
+    "build:supabase": "ng build --configuration production,supabase"
   },
   "private": true,
   "packageManager": "npm@11.19.1",
@@ -19,6 +21,7 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "@supabase/supabase-js": "^2.119.0",
     "leaflet": "^1.9.4",
     "lucide-angular": "^1.0.0",
     "rxjs": "~7.8.0",

@@ -1,5 +1,6 @@
 import type { SourceTranslations } from '../pt-MZ';
 import { TranslationOf } from '../../translation.types';
+import { auth } from './auth';
 import { common } from './common';
 import { customers } from './customers';
 import { dashboard } from './dashboard';
@@ -24,6 +25,7 @@ import { vehicles } from './vehicles';
 
 export const translations: TranslationOf<SourceTranslations> = {
   common,
+  auth,
   navigation,
   shell,
   search,

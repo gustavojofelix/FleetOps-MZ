@@ -1,3 +1,4 @@
+import { auth } from './auth';
 import { common } from './common';
 import { customers } from './customers';
 import { dashboard } from './dashboard';
@@ -23,6 +24,7 @@ import { vehicles } from './vehicles';
 /** Source dictionary: Portuguese (Mozambique). Every other language is typed against it. */
 export const translations = {
   common,
+  auth,
   navigation,
   shell,
   search,

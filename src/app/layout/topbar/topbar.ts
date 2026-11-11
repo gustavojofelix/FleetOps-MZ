@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, map } from 'rxjs';
+import { AuthSession } from '../../core/backend/auth-session';
 import { UserRepository } from '../../core/data-access/repositories';
 import { CURRENCIES } from '../../core/formatting/currency';
 import { CurrencyService } from '../../core/formatting/currency.service';
@@ -51,6 +52,7 @@ export class Topbar {
   private readonly confirm = inject(ConfirmService);
   private readonly toast = inject(ToastService);
   private readonly demo = inject(DemoDataService);
+  private readonly session = inject(AuthSession);
 
   protected readonly currencies = this.currency.activeCurrencies;
   protected readonly currencyMeta = CURRENCIES;
@@ -97,8 +99,17 @@ export class Topbar {
     if (link) void this.router.navigate(link);
   }
 
-  protected signOut(): void {
-    this.toast.info(this.i18n.t('shell.profile.signOut'), this.i18n.t('shell.profile.signOutDemo'));
+  protected async signOut(): Promise<void> {
+    if (!this.session.enabled) {
+      this.toast.info(this.i18n.t('shell.profile.signOut'), this.i18n.t('shell.profile.signOutDemo'));
+      return;
+    }
+    try {
+      await this.session.signOut();
+    } catch (error) {
+      console.error(error);
+      this.toast.error(this.i18n.t('auth.errors.generic'));
+    }
   }
 
   protected async resetDemo(): Promise<void> {

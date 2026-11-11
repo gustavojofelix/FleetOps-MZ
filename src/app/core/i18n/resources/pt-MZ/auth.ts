@@ -1,0 +1,46 @@
+export const auth = {
+  tagline: 'Gestão de frota, cargas e rentabilidade para transportadoras moçambicanas.',
+  fields: {
+    email: 'E-mail',
+    password: 'Palavra-passe',
+    fullName: 'Nome completo',
+    companyName: 'Nome da empresa',
+  },
+  hints: {
+    password: 'Pelo menos 8 caracteres.',
+    companyName: 'Nome comercial, como os clientes o conhecem. Pode alterá-lo depois nas definições.',
+  },
+  login: {
+    title: 'Entrar',
+    heading: 'Entrar no FleetOps MZ',
+    subtitle: 'Use o e-mail e a palavra-passe da sua conta.',
+    submit: 'Entrar',
+    noAccount: 'Ainda não tem conta?',
+    switchToSignUp: 'Criar conta',
+  },
+  signUp: {
+    heading: 'Criar conta',
+    subtitle: 'Crie o seu acesso. A seguir regista a sua empresa.',
+    submit: 'Criar conta',
+    hasAccount: 'Já tem conta?',
+    switchToSignIn: 'Entrar',
+    checkEmail: 'Conta criada. Enviámos um e-mail de confirmação para {email}. Abra o link e depois entre aqui.',
+  },
+  onboarding: {
+    title: 'Registar empresa',
+    heading: 'Registe a sua empresa',
+    subtitle: 'Será o proprietário da conta e poderá convidar a sua equipa a seguir.',
+    submit: 'Criar empresa',
+    created: 'Empresa criada. Bem-vindo ao FleetOps MZ!',
+    signOut: 'Entrar com outra conta',
+  },
+  errors: {
+    invalidCredentials: 'E-mail ou palavra-passe incorrectos.',
+    emailNotConfirmed: 'Confirme primeiro o seu e-mail (veja a caixa de entrada) e tente de novo.',
+    alreadyRegistered: 'Já existe uma conta com este e-mail. Entre em vez de criar uma nova.',
+    weakPassword: 'A palavra-passe é demasiado fraca. Use pelo menos 8 caracteres, misturando letras e números.',
+    rateLimited: 'Demasiadas tentativas. Aguarde alguns minutos e tente de novo.',
+    membership: 'Não foi possível carregar a sua empresa. Verifique a ligação e entre de novo.',
+    generic: 'Não foi possível concluir a operação. Verifique a ligação e tente de novo.',
+  },
+};

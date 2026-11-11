@@ -1,0 +1,40 @@
+<main class="auth">
+  <div class="auth__brand">
+    <span class="auth__mark" aria-hidden="true"><app-icon name="truck" [size]="22" /></span>
+    <div>
+      <div class="auth__name">{{ 'common.appName' | t }}</div>
+      <p class="auth__tagline">{{ 'auth.tagline' | t }}</p>
+    </div>
+  </div>
+
+  <section class="auth__card" aria-labelledby="onboarding-heading">
+    <h1 class="auth__heading" id="onboarding-heading">{{ 'auth.onboarding.heading' | t }}</h1>
+    <p class="auth__subtitle">{{ 'auth.onboarding.subtitle' | t }}</p>
+
+    @if (errorKey(); as key) {
+      <div class="alert alert--danger" role="alert">{{ key | t }}</div>
+    }
+
+    <form class="stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <fieldset class="stack" [disabled]="busy()">
+        <div class="field">
+          <label class="field__label" for="onb-company">{{ 'auth.fields.companyName' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="onb-company" class="input" formControlName="companyName" autocomplete="organization" aria-describedby="onb-company-hint" />
+          <p class="field__hint" id="onb-company-hint">{{ 'auth.hints.companyName' | t }}</p>
+          <app-field-error [control]="form.controls.companyName" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="onb-name">{{ 'auth.fields.fullName' | t }}<span class="field__required" aria-hidden="true">*</span></label>
+          <input id="onb-name" class="input" formControlName="fullName" autocomplete="name" />
+          <app-field-error [control]="form.controls.fullName" />
+        </div>
+        <button type="submit" class="btn btn--primary btn--block" [class.btn--loading]="busy()">{{ 'auth.onboarding.submit' | t }}</button>
+      </fieldset>
+    </form>
+
+    <p class="auth__switch">
+      {{ email }} ·
+      <button type="button" class="link-button" (click)="signOut()">{{ 'auth.onboarding.signOut' | t }}</button>
+    </p>
+  </section>
+</main>
