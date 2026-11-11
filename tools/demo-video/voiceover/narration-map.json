@@ -1,0 +1,79 @@
+{
+  "voice": "pt-PT-RaquelNeural",
+  "rate": "+8%",
+  "note": "Voice-over for the fleet-map video (record-map-demo.mjs). 'scene' is a scene id from output/timeline-map.json; 'offset' is seconds after that scene starts. Spelling follows how the voice should pronounce it (e.g. 'atual').",
+  "cues": [
+    {
+      "id": "00-intro",
+      "scene": "intro",
+      "offset": 0.4,
+      "text": "Localização da frota: onde está cada motorista, num só mapa."
+    },
+    {
+      "id": "01-overview",
+      "scene": "overview",
+      "offset": 0.4,
+      "text": "No painel, o mapa mostra o corredor da Beira: de Sofala e Tete até ao Zimbabué, ao Malawi e à Zâmbia. Cada círculo é um motorista, com a cor do seu estado. Ao lado, a lista de quem está em serviço."
+    },
+    {
+      "id": "02-simulation",
+      "scene": "simulation",
+      "offset": 0.4,
+      "text": "As posições são simuladas a partir das viagens e do horário previsto. A três mil e seiscentas vezes, cada segundo vale uma hora, e vemos os camiões avançar pelos corredores. Podemos pausar e voltar à hora atual a qualquer momento."
+    },
+    {
+      "id": "03-zoom",
+      "scene": "zoom",
+      "offset": 0.4,
+      "text": "O zoom aproxima qualquer zona, sem nunca sair da região. Ver toda a frota volta ao mapa completo."
+    },
+    {
+      "id": "04-popup",
+      "scene": "popup",
+      "offset": 0.6,
+      "text": "Ao clicar num motorista, abre-se o seu cartão: o estado, onde está agora e a validade da carta. Pode ligar, abrir o WhatsApp ou enviar um SMS."
+    },
+    {
+      "id": "04b-messages",
+      "scene": "popup",
+      "offset": 12,
+      "text": "As mensagens rápidas já vêm escritas para a situação: pedir a localização, confirmar a hora de chegada ou lembrar uma pausa para descanso. Em baixo, o progresso da viagem, a distância em falta e a chegada estimada."
+    },
+    {
+      "id": "05-follow",
+      "scene": "follow",
+      "offset": 0.4,
+      "text": "Com Seguir no mapa, o mapa acompanha o camião enquanto anda. Acelerando a simulação, vemos o Celso aproximar-se de Tete. Deixar de seguir devolve o controlo do mapa."
+    },
+    {
+      "id": "06-delayed",
+      "scene": "delayed",
+      "offset": 0.4,
+      "text": "Um motorista parado aparece a vermelho, e as mensagens mudam: pedir o ponto de situação, fotos dos documentos, ou avisar que o apoio está a caminho. O motivo do atraso aparece no cartão."
+    },
+    {
+      "id": "06b-share",
+      "scene": "delayed",
+      "offset": 14.5,
+      "text": "Partilhar localização copia um link do mapa, pronto a colar numa conversa. E o contacto de emergência está sempre à mão."
+    },
+    {
+      "id": "07-idle",
+      "scene": "idle",
+      "offset": 0.6,
+      "text": "Para um motorista disponível, as mensagens servem para confirmar a disponibilidade ou chamá-lo ao parque. O atalho Nova viagem abre a atribuição com o motorista e a viatura já escolhidos."
+    },
+    {
+      "id": "08-dark",
+      "scene": "dark",
+      "offset": 0.6,
+      "text": "E o mapa acompanha o tema escuro da aplicação."
+    },
+    {
+      "id": "09-closing",
+      "scene": "closing",
+      "offset": 0.6,
+      "text": "FleetOps MZ: cada motorista no mapa, a um clique de distância."
+    }
+  ]
+}

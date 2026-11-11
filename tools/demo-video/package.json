@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "record": "node record-demo.mjs",
-    "voiceover": "node make-voiceover.mjs"
+    "voiceover": "node make-voiceover.mjs",
+    "record:map": "node record-map-demo.mjs",
+    "voiceover:map": "node make-voiceover.mjs map"
   },
   "devDependencies": {
     "ffmpeg-static": "5.2.0",

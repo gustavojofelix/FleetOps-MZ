@@ -1,5 +1,6 @@
 // Adds a Portuguese text-to-speech voice-over and a soft classical music bed to the recorded demo.
 // Usage (after `npm run record`): npm run voiceover. See README.md → "Voice-over and music".
+// `npm run voiceover:map` (argument `map`) voices the fleet-map video instead of the product demo.
 import ffmpegPath from 'ffmpeg-static';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync } from 'node:fs';
@@ -8,14 +9,21 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, 'output');
-const CLIPS = join(OUT, 'voice-clips');
-const VIDEO = join(OUT, 'fleetops-mz-demo-1080p.mp4');
-const FINAL = join(OUT, 'fleetops-mz-demo-pt.mp4');
+const DEMOS = {
+  product: { video: 'fleetops-mz-demo-1080p.mp4', final: 'fleetops-mz-demo-pt.mp4', narration: 'narration.json', timeline: 'timeline.json' },
+  map: { video: 'fleetops-mz-mapa-1080p.mp4', final: 'fleetops-mz-mapa-pt.mp4', narration: 'narration-map.json', timeline: 'timeline-map.json' },
+};
+const DEMO = process.argv[2] ?? 'product';
+const demo = DEMOS[DEMO];
+if (!demo) throw new Error(`Unknown demo "${DEMO}". Use one of: ${Object.keys(DEMOS).join(', ')}`);
+const CLIPS = join(OUT, DEMO === 'product' ? 'voice-clips' : `voice-clips-${DEMO}`);
+const VIDEO = join(OUT, demo.video);
+const FINAL = join(OUT, demo.final);
 const MUSIC = join(HERE, 'music', 'satie-gymnopedie-1-alciatore.ogg');
 const EDGE_TTS = join(HERE, '.venv', process.platform === 'win32' ? 'Scripts/edge-tts.exe' : 'bin/edge-tts');
 
-const narration = JSON.parse(readFileSync(join(HERE, 'voiceover', 'narration.json'), 'utf8'));
-const timeline = JSON.parse(readFileSync(join(OUT, 'timeline.json'), 'utf8'));
+const narration = JSON.parse(readFileSync(join(HERE, 'voiceover', demo.narration), 'utf8'));
+const timeline = JSON.parse(readFileSync(join(OUT, demo.timeline), 'utf8'));
 const sceneStart = Object.fromEntries(timeline.scenes.map((s) => [s.id, s.at]));
 const VIDEO_DURATION = timeline.duration;
 const GAP = 0.35; // minimum silence between consecutive clips

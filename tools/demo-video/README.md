@@ -5,6 +5,8 @@ A Playwright script that records a 2:49 walkthrough of the real FleetOps MZ web 
 | File | Contents |
 |---|---|
 | `record-demo.mjs` | Recording script: scenes, interaction helpers and the MP4 encode |
+| `demo-kit.mjs` | Cursor, click ripple and brand title cards shared by both recorders |
+| `record-map-demo.mjs` · `voiceover/narration-map.json` | Fleet-map video (see below) |
 | `RECORDING_SCRIPT.md` | Scene-by-scene script with timestamps |
 | `NARRACAO_PT-MZ.md` | Voice-over script in Portuguese (Mozambique), timed to the scenes |
 | `make-voiceover.mjs` · `voiceover/narration.json` | Text-to-speech voice-over and music mix |
@@ -13,6 +15,7 @@ A Playwright script that records a 2:49 walkthrough of the real FleetOps MZ web 
 | `output/fleetops-mz-demo-1080p.mp4` | Same video without sound |
 | `output/fleetops-mz-demo-raw.webm` | Untrimmed Playwright capture |
 | `output/timeline.json` | Scene start times measured during the run, plus any browser console errors (none in the last run) |
+| `output/fleetops-mz-mapa-pt.mp4` | **Fleet-map video with voice-over and music** (2:52) |
 
 ## Reproducing the recording
 
@@ -49,6 +52,22 @@ These are injected into the browser by the script. None of them changes data, fi
 3. **Simulated latency removed.** The mock repositories wait 180 ms (`MOCK_LATENCY_MS`) on each read to imitate a network. The script runs that one timer immediately, so navigation never shows loading skeletons. No other app timer uses 180 ms.
 4. **Scrollbars hidden.**
 
+## Fleet-map video
+
+A second, shorter video (2:52) shows only the dashboard's **Localização da frota** card: the Beira-corridor map, the simulated clock (play, pause, speed, reset), zoom within the region, the driver popup (call, WhatsApp, SMS, quick messages, trip progress), follow-on-map, a delayed driver (delay reason, share location, emergency contact), an available driver (new trip) and the dark theme.
+
+```bash
+npm run record:map       # → output/fleetops-mz-mapa-1080p.mp4 and output/timeline-map.json
+npm run voiceover:map    # → output/fleetops-mz-mapa-pt.mp4 (narration from voiceover/narration-map.json)
+```
+
+Differences from the product recording:
+
+- The browser clock starts at the same demo instant but keeps running (`page.clock.install`), because Leaflet's fly-to animation measures elapsed time with `Date.now()`.
+- Map tiles come live from OpenStreetMap, so the recording needs internet access. A tile that fails to load shows as a short blank square during zoom; re-record if one stays visible.
+- The quick-message, WhatsApp, SMS and call buttons are only hovered, never clicked, so nothing leaves the browser. "Partilhar localização" is clicked; it copies to the recording browser's clipboard.
+- Positions are simulated from trip schedules (see `src/app/core/domain/fleet-tracking.ts`); the closing card says so.
+
 ## Voice-over and music
 
 `npm run voiceover` takes the silent recording and produces `output/fleetops-mz-demo-pt.mp4`:
@@ -80,6 +99,6 @@ To change the voice, set `"voice"` in `narration.json` (`pt-PT-DuarteNeural` is 
 
 Other observations, not blocking:
 - The voice is synthetic, European Portuguese (`pt-PT`). As far as I know, no text-to-speech provider offers a Mozambican Portuguese voice. For a more local sound, record a Mozambican speaker reading `NARRACAO_PT-MZ.md`.
-- No live GPS or map view. Trip progress comes from recorded checkpoints in the trip history.
+- No live GPS. The product video predates the dashboard fleet map; the map has its own video (above), and its positions are simulated from trip schedules.
 - When a delayed trip goes back to *Em trânsito*, the dialog's hint reads "A partida real é registada agora". The stored actual departure is kept (`mock-trips.service.ts` only sets it when it is empty), so the data is correct, but the copy is misleading for a resumed trip.
 - After the trip resumes, the delay indicator still shows the accumulated 111 h. This is expected.
