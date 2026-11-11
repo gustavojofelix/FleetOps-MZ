@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { ToastService } from '../../../shared/ui/toast/toast.service';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FORMAT_PIPES } from '../../../core/formatting/format.pipes';
 import { FormatService } from '../../../core/formatting/format.service';
@@ -11,7 +12,7 @@ import { Icon } from '../../../shared/ui/icon/icon';
 import { Modal } from '../../../shared/ui/modal/modal';
 import { DocumentsFacade } from '../documents.facade';
 
-/** Read-only preview: a mock page (nothing real is stored) next to the document metadata. */
+/** Read-only preview of the document metadata, with a link to the stored file when there is one. */
 @Component({
   selector: 'app-document-preview',
   imports: [Modal, RouterLink, TranslatePipe, ...FORMAT_PIPES, ExpiryBadge, Icon],
@@ -30,6 +31,29 @@ export class DocumentPreview {
   private readonly format = inject(FormatService);
   private readonly i18n = inject(TranslationService);
   protected readonly directory = inject(EntityDirectory);
+  private readonly toast = inject(ToastService);
+
+  protected readonly opening = signal(false);
+  /** A real stored file exists (Supabase build). */
+  protected readonly canOpenFile = computed(() => this.facade.filesEnabled && !!this.document()?.fileName);
+
+  protected async openFile(document: FleetDocument): Promise<void> {
+    this.opening.set(true);
+    // Open the tab synchronously (popup blockers), then point it at the signed URL.
+    const tab = window.open('', '_blank');
+    try {
+      const url = await this.facade.fileUrl(document);
+      if (!url) throw new Error('No stored file');
+      if (tab) tab.location.href = url;
+      else window.location.href = url;
+    } catch (error) {
+      console.error(error);
+      tab?.close();
+      this.toast.error(this.i18n.t('common.toasts.openFailed'));
+    } finally {
+      this.opening.set(false);
+    }
+  }
 
   protected readonly status = computed(() => {
     const document = this.document();

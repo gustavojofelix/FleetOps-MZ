@@ -2,6 +2,7 @@ import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { CanActivateFn, Routes } from '@angular/router';
 import { provideMockDataAccess } from '../data-access/provide-data-access';
 import { AuthSession, DemoAuthSession } from './auth-session';
+import { DemoFileStorage, FileStorage } from './file-storage';
 
 /*
  * Backend selection — DEMO build (default).
@@ -14,7 +15,11 @@ import { AuthSession, DemoAuthSession } from './auth-session';
 export const BACKEND_KIND: 'mock' | 'supabase' = 'mock';
 
 export function provideBackend(): EnvironmentProviders {
-  return makeEnvironmentProviders([provideMockDataAccess(), { provide: AuthSession, useClass: DemoAuthSession }]);
+  return makeEnvironmentProviders([
+    provideMockDataAccess(),
+    { provide: AuthSession, useClass: DemoAuthSession },
+    { provide: FileStorage, useClass: DemoFileStorage },
+  ]);
 }
 
 /** Routes outside the application shell (sign-in, onboarding). None in the demo. */

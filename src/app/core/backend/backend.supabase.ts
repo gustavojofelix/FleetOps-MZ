@@ -2,10 +2,12 @@ import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { CanActivateFn, Routes } from '@angular/router';
 import {
   CustomerRepository,
+  DocumentRepository,
   DriverRepository,
   ExpenseRepository,
   FuelRepository,
   MaintenanceRepository,
+  NotificationRepository,
   OrganizationRepository,
   RouteRepository,
   TrailerRepository,
@@ -23,10 +25,13 @@ import {
   SupabaseTrailerRepository,
   SupabaseVehicleRepository,
 } from '../supabase/repositories/master-data.repositories';
+import { SupabaseDocumentRepository, SupabaseNotificationRepository } from '../supabase/repositories/admin.repositories';
+import { SupabaseFileStorage } from '../supabase/supabase-file-storage';
 import { SupabaseExpenseRepository, SupabaseFuelRepository, SupabaseMaintenanceRepository } from '../supabase/repositories/cost.repositories';
 import { SupabaseTripRepository } from '../supabase/repositories/trip.repository';
 import { SupabaseOrganizationRepository, SupabaseUserRepository } from '../supabase/repositories/organization.repositories';
 import { AuthSession } from './auth-session';
+import { FileStorage } from './file-storage';
 
 /*
  * Backend selection — SUPABASE build. Replaces `backend.ts` via angular.json `fileReplacements`.
@@ -52,6 +57,9 @@ export function provideBackend(): EnvironmentProviders {
     { provide: FuelRepository, useClass: SupabaseFuelRepository },
     { provide: ExpenseRepository, useClass: SupabaseExpenseRepository },
     { provide: MaintenanceRepository, useClass: SupabaseMaintenanceRepository },
+    { provide: DocumentRepository, useClass: SupabaseDocumentRepository },
+    { provide: NotificationRepository, useClass: SupabaseNotificationRepository },
+    { provide: FileStorage, useClass: SupabaseFileStorage },
     { provide: AuthSession, useExisting: SupabaseAuthService },
   ]);
 }

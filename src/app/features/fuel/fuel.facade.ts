@@ -1,3 +1,4 @@
+import { FileStorage } from '../../core/backend/file-storage';
 import { Injectable, inject } from '@angular/core';
 import { EntityInput } from '../../core/data-access/query.model';
 import { FuelRepository, VehicleRepository } from '../../core/data-access/repositories';
@@ -14,6 +15,7 @@ const REFERENCE_PREFIX = 'ABS';
  */
 @Injectable({ providedIn: 'root' })
 export class FuelFacade {
+  private readonly files = inject(FileStorage);
   private readonly fuel = inject(FuelRepository);
   private readonly vehicles = inject(VehicleRepository);
 
@@ -28,8 +30,10 @@ export class FuelFacade {
     return saved;
   }
 
-  delete(id: string): Promise<void> {
-    return this.fuel.delete(id);
+  async delete(id: string): Promise<void> {
+    await this.fuel.delete(id);
+    // Best effort: an orphaned receipt is harmless and must not hide a successful delete.
+    await this.files.removeAll('fuel', id).catch((error) => console.error(error));
   }
 
   private async nextReference(): Promise<string> {

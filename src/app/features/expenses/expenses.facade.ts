@@ -1,3 +1,4 @@
+import { FileStorage } from '../../core/backend/file-storage';
 import { Injectable, inject } from '@angular/core';
 import { EntityInput } from '../../core/data-access/query.model';
 import { ExpenseRepository } from '../../core/data-access/repositories';
@@ -14,6 +15,7 @@ const REFERENCE_PREFIX = 'DSP';
  */
 @Injectable({ providedIn: 'root' })
 export class ExpensesFacade {
+  private readonly files = inject(FileStorage);
   private readonly expenses = inject(ExpenseRepository);
 
   async save(id: string | null, input: ExpenseInput): Promise<Expense> {
@@ -42,7 +44,8 @@ export class ExpensesFacade {
     return approved;
   }
 
-  delete(id: string): Promise<void> {
-    return this.expenses.delete(id);
+  async delete(id: string): Promise<void> {
+    await this.expenses.delete(id);
+    await this.files.removeAll('expenses', id).catch((error) => console.error(error));
   }
 }

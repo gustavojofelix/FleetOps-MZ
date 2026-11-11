@@ -6,6 +6,7 @@ import { UserRepository } from '../../../core/data-access/repositories';
 import { ACTIVE_CURRENCIES } from '../../../core/formatting/currency';
 import { FORMAT_PIPES } from '../../../core/formatting/format.pipes';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+import { FileStorage } from '../../../core/backend/file-storage';
 import { TranslationService } from '../../../core/i18n/translation.service';
 import {
   APPROVAL_STATUSES,
@@ -59,6 +60,9 @@ export class ExpenseForm {
   private readonly i18n = inject(TranslationService);
   private readonly clock = inject(ClockService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly files = inject(FileStorage);
+  /** Receipt chosen in this session; uploaded after the record is saved. */
+  private receiptFile: File | null = null;
   protected readonly directory = inject(EntityDirectory);
 
   protected readonly categories = EXPENSE_CATEGORIES;
@@ -155,14 +159,15 @@ export class ExpenseForm {
     const inputElement = event.target as HTMLInputElement;
     const file = inputElement.files?.[0];
     if (file) {
+      this.receiptFile = file;
       this.form.controls.receiptFileName.setValue(file.name);
       this.form.controls.receiptFileName.markAsDirty();
     }
-    // The file itself is never read or uploaded (demo).
     inputElement.value = '';
   }
 
   protected clearReceipt(): void {
+    this.receiptFile = null;
     this.form.controls.receiptFileName.setValue('');
     this.form.controls.receiptFileName.markAsDirty();
   }
@@ -194,11 +199,22 @@ export class ExpenseForm {
         receiptFileName: emptyToNull(value.receiptFileName.trim()),
         notes: value.notes.trim(),
       });
+      await this.attachReceipt(expense.id, value.receiptFileName);
       this.saved.emit({ expense, created: !existing });
     } catch {
       this.toast.error(this.i18n.t('common.toasts.error'));
     } finally {
       this.saving.set(false);
+    }
+  }
+
+  /** Uploads the chosen receipt (or removes a cleared one); the record itself is already saved. */
+  private async attachReceipt(id: string, fileName: string): Promise<void> {
+    try {
+      await this.files.sync('expenses', id, this.receiptFile, !fileName.trim());
+    } catch (error) {
+      console.error(error);
+      this.toast.warning(this.i18n.t('common.toasts.uploadFailed'));
     }
   }
 

@@ -128,6 +128,8 @@ export const common: TranslationOf<typeof source> = {
     error: 'The operation could not be completed.',
     copied: 'Copied to clipboard.',
     exported: 'CSV file exported.',
+    uploadFailed: 'The record was saved, but the file could not be uploaded. Try attaching it again.',
+    openFailed: 'The file could not be opened.',
   },
   confirm: {
     deleteTitle: 'Delete record?',

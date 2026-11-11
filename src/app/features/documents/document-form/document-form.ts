@@ -12,6 +12,7 @@ import { Icon } from '../../../shared/ui/icon/icon';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { dateOrder, revealErrors } from '../../../shared/utils/form-utils';
 import { DocumentsFacade } from '../documents.facade';
+import { FileStorage } from '../../../core/backend/file-storage';
 
 export type DocumentFormMode = 'create' | 'edit' | 'renew';
 
@@ -25,11 +26,13 @@ export interface DocumentPreset {
 interface SelectedFile {
   name: string;
   sizeKb: number;
+  /** Set when the user picked a new file in this session (uploaded after saving). */
+  blob?: File;
 }
 
 const MAX_FILE_KB = 10 * 1024;
 
-/** Create / edit / renew a document, with a simulated (local-only) file selection. */
+/** Create / edit / renew a document; the chosen file is uploaded to storage after saving. */
 @Component({
   selector: 'app-document-form',
   imports: [ReactiveFormsModule, TranslatePipe, ...FORMAT_PIPES, FieldError, Icon],
@@ -51,6 +54,7 @@ export class DocumentForm {
   private readonly format = inject(FormatService);
   private readonly clock = inject(ClockService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly files = inject(FileStorage);
 
   protected readonly types = DOCUMENT_TYPES;
   protected readonly entityTypes = ENTITY_TYPES;
@@ -169,6 +173,12 @@ export class DocumentForm {
         fileSizeKb: file?.sizeKb ?? null,
         notes: value.notes.trim(),
       });
+      try {
+        await this.files.sync('documents', saved.id, file?.blob ?? null, !file);
+      } catch (error) {
+        console.error(error);
+        this.toast.warning(this.i18n.t('common.toasts.uploadFailed'));
+      }
       this.saved.emit(saved);
     } catch {
       this.toast.error(this.i18n.t('common.toasts.error'));
@@ -185,8 +195,7 @@ export class DocumentForm {
       return;
     }
     this.fileError.set(null);
-    // Only metadata is kept; the file content never leaves (or is read by) the browser.
-    this.file.set({ name: file.name, sizeKb });
+    this.file.set({ name: file.name, sizeKb, blob: file });
   }
 
   private applySuggestion(): void {

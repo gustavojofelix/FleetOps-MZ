@@ -1,3 +1,4 @@
+import { FileStorage } from '../../core/backend/file-storage';
 import { Injectable, inject } from '@angular/core';
 import { EntityInput } from '../../core/data-access/query.model';
 import { DocumentRepository } from '../../core/data-access/repositories';
@@ -21,6 +22,7 @@ const DEFAULT_VALIDITY_DAYS = 365;
 /** Document register workflows (references, renewal proposals, entity look-ups). */
 @Injectable({ providedIn: 'root' })
 export class DocumentsFacade {
+  private readonly files = inject(FileStorage);
   private readonly repository = inject(DocumentRepository);
   private readonly directory = inject(EntityDirectory);
   private readonly settings = inject(CompanySettingsService);
@@ -36,8 +38,18 @@ export class DocumentsFacade {
     return id ? this.repository.update(id, input) : this.repository.create(input);
   }
 
-  delete(document: FleetDocument): Promise<void> {
-    return this.repository.delete(document.id);
+  async delete(document: FleetDocument): Promise<void> {
+    await this.repository.delete(document.id);
+    await this.files.removeAll('documents', document.id).catch((error) => console.error(error));
+  }
+
+  /** Short-lived link to the stored file (null in the demo or when there is no file). */
+  fileUrl(document: FleetDocument): Promise<string | null> {
+    return document.fileName ? this.files.openUrl('documents', document.id) : Promise.resolve(null);
+  }
+
+  get filesEnabled(): boolean {
+    return this.files.enabled;
   }
 
   /** Next reference above the highest existing one: DOC-00912. */

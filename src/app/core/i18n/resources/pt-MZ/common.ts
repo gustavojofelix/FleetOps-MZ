@@ -125,6 +125,8 @@ export const common = {
     error: 'Não foi possível concluir a operação.',
     copied: 'Copiado para a área de transferência.',
     exported: 'Ficheiro CSV exportado.',
+    uploadFailed: 'O registo foi guardado, mas não foi possível carregar o ficheiro. Tente anexá-lo de novo.',
+    openFailed: 'Não foi possível abrir o ficheiro.',
   },
   confirm: {
     deleteTitle: 'Eliminar registo?',

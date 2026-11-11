@@ -6,7 +6,9 @@ import { SupabaseCustomerRepository, SupabaseVehicleRepository } from './reposit
 import { DriverRepository, TrailerRepository, VehicleRepository } from '../data-access/repositories';
 import { exchangeRate, exchangeRatesInUse, setExchangeRates, SIMULATED_RATES_EFFECTIVE_DATE, SIMULATED_RATES_TO_MZN } from '../formatting/currency';
 import { ClockService } from '../services/clock.service';
+import { SupabaseDocumentRepository, SupabaseNotificationRepository } from './repositories/admin.repositories';
 import { SupabaseExpenseRepository, SupabaseMaintenanceRepository } from './repositories/cost.repositories';
+import { storageName } from './supabase-file-storage';
 import { SupabaseTripRepository } from './repositories/trip.repository';
 import { SUPABASE } from './supabase-client';
 import { sanitizeSearch, toCamel, toSnake } from './supabase-collection';
@@ -75,6 +77,11 @@ describe('snake/camel conversion', () => {
       expect(toCamel(toSnake(field))).toBe(field);
     }
     expect(toSnake('expectedConsumptionL100km')).toBe('expected_consumption_l100km');
+  });
+
+  it('makes storage-safe file names (accents, spaces, symbols)', () => {
+    expect(storageName('Apólice seguro (2026) nº1.pdf')).toBe('Apolice_seguro_2026_no1.pdf');
+    expect(storageName('???')).toBe('_');
   });
 
   it('drops PostgREST filter syntax from search terms', () => {
@@ -189,6 +196,28 @@ describe('SupabaseCollection', () => {
     const [expense] = (await repo.list()).items;
     expect(expense.amount).toEqual({ amount: 450, currency: 'ZAR' });
     expect(expense.submittedByUserId).toBe('');
+  });
+
+  it('filters documents by derived expiry status like expiryStatus()', async () => {
+    const { repo, calls } = setup(SupabaseDocumentRepository, { data: [], count: 0 });
+    TestBed.inject(ClockService).today = () => '2026-11-11';
+    await repo.list({ status: 'expiring' });
+    expect(calls).toContainEqual(['gte', 'expiry_date', '2026-11-11']);
+    expect(calls).toContainEqual(['lte', 'expiry_date', '2026-12-11']);
+  });
+
+  it('reads notifications from the feed view and stores read state per user', async () => {
+    const { repo, calls } = setup(SupabaseNotificationRepository, {
+      data: [{ id: 'n1', title_key: 't', message_key: 'm', params: { trip: 'VG-1' }, link: ['/trips', 'x'], read: false }],
+      count: 1,
+    });
+    const [notification] = (await repo.list({ unreadOnly: true })).items;
+    expect(calls).toContainEqual(['from', 'notifications_feed']);
+    expect(calls).toContainEqual(['eq', 'read', false]);
+    expect(notification).toMatchObject({ titleKey: 't', messageKey: 'm', link: ['/trips', 'x'], read: false });
+    await repo.markRead('n1', false);
+    expect(calls).toContainEqual(['from', 'notification_reads']);
+    expect(calls).toContainEqual(['eq', 'notification_id', 'n1']);
   });
 
   it('does not query the database for non-uuid ids', async () => {
