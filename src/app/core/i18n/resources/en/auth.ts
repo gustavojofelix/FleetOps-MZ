@@ -36,6 +36,11 @@ export const auth: TranslationOf<typeof source> = {
     submit: 'Create company',
     created: 'Company created. Welcome to FleetOps MZ!',
     signOut: 'Use another account',
+    demoData: 'Load demo data',
+    demoDataHint:
+      'Fills the company with a fictional Beira Corridor scenario (vehicles, drivers, trips, costs, documents and users of every role) to explore the app.',
+    demoLoaded: 'Demo data loaded.',
+    demoFailed: 'The company was created, but the demo data could not be loaded.',
   },
   errors: {
     invalidCredentials: 'Incorrect email or password.',

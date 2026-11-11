@@ -28,6 +28,13 @@
           <input id="onb-name" class="input" formControlName="fullName" autocomplete="name" />
           <app-field-error [control]="form.controls.fullName" />
         </div>
+        <div class="field">
+          <label class="checkbox" for="onb-demo">
+            <input id="onb-demo" type="checkbox" formControlName="demoData" aria-describedby="onb-demo-hint" />
+            {{ 'auth.onboarding.demoData' | t }}
+          </label>
+          <p class="field__hint" id="onb-demo-hint">{{ 'auth.onboarding.demoDataHint' | t }}</p>
+        </div>
         <button type="submit" class="btn btn--primary btn--block" [class.btn--loading]="busy()">{{ 'auth.onboarding.submit' | t }}</button>
       </fieldset>
     </form>

@@ -14,6 +14,7 @@ the contracts in `src/app/core/data-access/repositories.ts`; `provideBackend()`
 | `…180000_costs` | `fuel_records`, `expenses` (approval guarded by role, stamped), `maintenance_records`, `exchange_rates` |
 | `…210000_documents_files_notifications` | `documents`, bucket `files` + storage policies, `notifications`, `notification_reads`, `notifications_feed` view, `refresh_my_notifications()` |
 | `20261112090000_invitations_and_logo` | `claim_invitations()`, company logo in storage |
+| `20261112120000_demo_seed` | **generated** by `tools/build-demo-seed.mjs`: demo scenario template (`private.demo_template`) and `seed_demo_data()` |
 
 Rules for new migrations:
 
@@ -44,6 +45,15 @@ Every active member reads all data of their organization.
 
 Private bucket `files`: `{organization_id}/{documents|fuel|expenses|company}/{record_id}/{file}`.
 Records keep the file name; `FileStorage` uploads, removes and opens files with signed URLs.
+
+## Demo data
+
+`seed_demo_data()` (owner / admin, only for an organization without data — offered by the onboarding
+checkbox) copies the Beira Corridor scenario from `tools/demo-data` into the organization: fresh ids,
+dates shifted so the scenario's reference day (24 Oct 2026) becomes today, the scenario's owner replaced
+by the caller and the other users added as members without login. To change the scenario: edit
+`tools/generate-mock-data.mjs`, run `npm run demo-data`, then generate a **new** migration with
+`node tools/build-demo-seed.mjs supabase/migrations/<timestamp>_demo_seed.sql` (it replaces the template).
 
 ## Notifications
 

@@ -33,6 +33,11 @@ export const auth = {
     submit: 'Criar empresa',
     created: 'Empresa criada. Bem-vindo ao FleetOps MZ!',
     signOut: 'Entrar com outra conta',
+    demoData: 'Carregar dados de demonstração',
+    demoDataHint:
+      'Preenche a empresa com um cenário fictício do Corredor da Beira (viaturas, motoristas, viagens, custos, documentos e utilizadores de todas as funções) para explorar a aplicação.',
+    demoLoaded: 'Dados de demonstração carregados.',
+    demoFailed: 'A empresa foi criada, mas não foi possível carregar os dados de demonstração.',
   },
   errors: {
     invalidCredentials: 'E-mail ou palavra-passe incorrectos.',

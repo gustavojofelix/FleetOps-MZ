@@ -33,6 +33,7 @@ export class OnboardingPage {
   protected readonly form = this.fb.group({
     companyName: ['', [Validators.required, Validators.maxLength(120)]],
     fullName: [String(this.auth.user()?.user_metadata['full_name'] ?? ''), [Validators.required, Validators.maxLength(120)]],
+    demoData: [false],
   });
 
   protected async submit(): Promise<void> {
@@ -40,18 +41,30 @@ export class OnboardingPage {
       this.form.markAllAsTouched();
       return;
     }
-    const { companyName, fullName } = this.form.getRawValue();
+    const { companyName, fullName, demoData } = this.form.getRawValue();
     this.busy.set(true);
     this.errorKey.set(null);
     try {
       await this.organization.create(companyName.trim(), fullName.trim());
       this.toast.success(this.i18n.t('auth.onboarding.created'));
+      if (demoData) await this.loadDemoData();
       await this.router.navigateByUrl('/dashboard');
     } catch (error) {
       console.error(error);
       this.errorKey.set(authErrorKey(error));
     } finally {
       this.busy.set(false);
+    }
+  }
+
+  /** The company already exists: a failure here must not block entering the app. */
+  private async loadDemoData(): Promise<void> {
+    try {
+      await this.organization.seedDemoData();
+      this.toast.success(this.i18n.t('auth.onboarding.demoLoaded'));
+    } catch (error) {
+      console.error(error);
+      this.toast.warning(this.i18n.t('auth.onboarding.demoFailed'));
     }
   }
 

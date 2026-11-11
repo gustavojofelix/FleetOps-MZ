@@ -66,6 +66,16 @@ export class CurrentOrganization {
     return membership.organizationId;
   }
 
+  /**
+   * Fills the (empty) active organization with the demo scenario (owner / admin only).
+   * Returns the number of records created.
+   */
+  async seedDemoData(): Promise<number> {
+    const { data, error } = await this.client.rpc('seed_demo_data');
+    if (error) throw toError(error);
+    return data as number;
+  }
+
   /** Onboarding: creates the organization with the signed-in user as owner (one transaction). */
   async create(displayName: string, fullName: string): Promise<Membership> {
     const { error } = await this.client.rpc('create_organization', { p_display_name: displayName, p_full_name: fullName });

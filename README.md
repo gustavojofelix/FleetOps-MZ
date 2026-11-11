@@ -33,7 +33,7 @@ npx supabase db push --remote      # CLI v3: without --remote it targets a local
 | Fleet costs | Fuel (consistency checks), Expenses (approval by owner / admin / finance), Maintenance work orders, Trip profitability, Financial reports (CSV export) |
 | Administration | Documents (expiry tracking, file storage), Notifications, Users & permissions (invitations, roles), Company settings |
 
-Cross-cutting: sign-in and company onboarding, role-based actions, global search (Ctrl/⌘ K),
+Cross-cutting: sign-in and company onboarding (optionally with a complete demo scenario), role-based actions, global search (Ctrl/⌘ K),
 light/dark/system themes, Portuguese (Mozambique) and English, locale-aware formatting,
 multi-currency (MZN, USD, ZAR, historical ZWL) with indicative exchange rates, responsive layouts.
 

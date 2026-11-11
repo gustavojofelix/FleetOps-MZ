@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), 'demo-data');
 const ORG_ID = 'org-kuyenda';
-/** Must match DEMO_REFERENCE_DATE in src/app/core/services/clock.service.ts */
+/** Reference "today" of the scenario; seed_demo_data() shifts every date so this becomes the seed day. Must match REFERENCE_DATE in build-demo-seed.mjs. */
 const TODAY = '2026-10-24';
 const TZ = '+02:00';
 
