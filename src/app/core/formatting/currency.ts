@@ -26,13 +26,31 @@ export const SIMULATED_RATES_TO_MZN: Readonly<Record<CurrencyCode, number>> = {
 
 export const SIMULATED_RATES_EFFECTIVE_DATE = '2026-10-01';
 
+/** Rates in use: the demo values until the backend supplies dated rates (setExchangeRates). */
+let activeRates: Record<CurrencyCode, number> = { ...SIMULATED_RATES_TO_MZN };
+let activeEffectiveDate = SIMULATED_RATES_EFFECTIVE_DATE;
+
+/**
+ * Replaces the rates used by every conversion (called once after sign-in with the latest rows of
+ * `exchange_rates`). Converted figures stay labelled as simulated until a market source exists.
+ */
+export function setExchangeRates(ratesToMzn: Partial<Record<CurrencyCode, number>>, effectiveDate: string): void {
+  activeRates = { ...activeRates, ...ratesToMzn, MZN: 1 };
+  activeEffectiveDate = effectiveDate;
+}
+
+/** The rates currently used for conversions (MZN per unit) and their effective date. */
+export function exchangeRatesInUse(): { ratesToMzn: Readonly<Record<CurrencyCode, number>>; effectiveDate: string } {
+  return { ratesToMzn: activeRates, effectiveDate: activeEffectiveDate };
+}
+
 export function exchangeRate(from: CurrencyCode, to: CurrencyCode): ExchangeRate {
   return {
     from,
     to,
-    rate: from === to ? 1 : SIMULATED_RATES_TO_MZN[from] / SIMULATED_RATES_TO_MZN[to],
+    rate: from === to ? 1 : activeRates[from] / activeRates[to],
     source: 'simulated',
-    effectiveDate: SIMULATED_RATES_EFFECTIVE_DATE,
+    effectiveDate: activeEffectiveDate,
   };
 }
 

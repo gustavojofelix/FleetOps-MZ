@@ -3,6 +3,9 @@ import { CanActivateFn, Routes } from '@angular/router';
 import {
   CustomerRepository,
   DriverRepository,
+  ExpenseRepository,
+  FuelRepository,
+  MaintenanceRepository,
   OrganizationRepository,
   RouteRepository,
   TrailerRepository,
@@ -20,6 +23,7 @@ import {
   SupabaseTrailerRepository,
   SupabaseVehicleRepository,
 } from '../supabase/repositories/master-data.repositories';
+import { SupabaseExpenseRepository, SupabaseFuelRepository, SupabaseMaintenanceRepository } from '../supabase/repositories/cost.repositories';
 import { SupabaseTripRepository } from '../supabase/repositories/trip.repository';
 import { SupabaseOrganizationRepository, SupabaseUserRepository } from '../supabase/repositories/organization.repositories';
 import { AuthSession } from './auth-session';
@@ -45,6 +49,9 @@ export function provideBackend(): EnvironmentProviders {
     { provide: OrganizationRepository, useClass: SupabaseOrganizationRepository },
     { provide: UserRepository, useClass: SupabaseUserRepository },
     { provide: TripRepository, useClass: SupabaseTripRepository },
+    { provide: FuelRepository, useClass: SupabaseFuelRepository },
+    { provide: ExpenseRepository, useClass: SupabaseExpenseRepository },
+    { provide: MaintenanceRepository, useClass: SupabaseMaintenanceRepository },
     { provide: AuthSession, useExisting: SupabaseAuthService },
   ]);
 }

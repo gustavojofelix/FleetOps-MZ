@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DOCUMENT, computed, inject, input, linkedSignal, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CURRENCIES, convertMoney, exchangeRate, SIMULATED_RATES_EFFECTIVE_DATE } from '../../../core/formatting/currency';
+import { CURRENCIES, convertMoney, exchangeRate, exchangeRatesInUse } from '../../../core/formatting/currency';
 import { CurrencyService } from '../../../core/formatting/currency.service';
 import { FORMAT_PIPES } from '../../../core/formatting/format.pipes';
 import { FormatService } from '../../../core/formatting/format.service';
@@ -78,7 +78,7 @@ export class ReportsPage {
   protected readonly currencies = this.currency.activeCurrencies;
   protected readonly loading = this.facade.loading;
   protected readonly reportingCurrency = this.currency.reporting;
-  protected readonly ratesDate = SIMULATED_RATES_EFFECTIVE_DATE;
+  protected readonly ratesDate = exchangeRatesInUse().effectiveDate;
 
   protected readonly active = linkedSignal<ReportId>(() => (REPORT_IDS.includes(this.report() as ReportId) ? (this.report() as ReportId) : 'revenue'));
   protected readonly period = signal<PeriodSelection>(resolvePeriod('last6Months', this.clock.today()));

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
-import { CURRENCIES, SIMULATED_RATES_EFFECTIVE_DATE, SIMULATED_RATES_TO_MZN } from '../../../core/formatting/currency';
+import { CURRENCIES, exchangeRatesInUse } from '../../../core/formatting/currency';
 import { CurrencyService } from '../../../core/formatting/currency.service';
 import { FORMAT_PIPES } from '../../../core/formatting/format.pipes';
 import { LanguageCode, findLanguage } from '../../../core/i18n/languages';
@@ -35,10 +35,10 @@ export class MyPreferencesPanel {
     { value: 'system', icon: 'monitor' },
   ];
   protected readonly currencyMeta = CURRENCIES;
-  protected readonly ratesEffectiveDate = SIMULATED_RATES_EFFECTIVE_DATE;
+  protected readonly ratesEffectiveDate = exchangeRatesInUse().effectiveDate;
   protected readonly rates = this.currency.activeCurrencies
     .filter((code) => code !== 'MZN')
-    .map((code) => ({ code, rate: SIMULATED_RATES_TO_MZN[code] }));
+    .map((code) => ({ code, rate: exchangeRatesInUse().ratesToMzn[code] }));
 
   /** Announced politely after each change, since there is no explicit save. */
   protected readonly status = signal('');

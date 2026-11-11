@@ -4,6 +4,9 @@ import { Customer, Vehicle } from '../models';
 import { CurrentOrganization } from './current-organization.service';
 import { SupabaseCustomerRepository, SupabaseVehicleRepository } from './repositories/master-data.repositories';
 import { DriverRepository, TrailerRepository, VehicleRepository } from '../data-access/repositories';
+import { exchangeRate, exchangeRatesInUse, setExchangeRates, SIMULATED_RATES_EFFECTIVE_DATE, SIMULATED_RATES_TO_MZN } from '../formatting/currency';
+import { ClockService } from '../services/clock.service';
+import { SupabaseExpenseRepository, SupabaseMaintenanceRepository } from './repositories/cost.repositories';
 import { SupabaseTripRepository } from './repositories/trip.repository';
 import { SUPABASE } from './supabase-client';
 import { sanitizeSearch, toCamel, toSnake } from './supabase-collection';
@@ -76,6 +79,20 @@ describe('snake/camel conversion', () => {
 
   it('drops PostgREST filter syntax from search terms', () => {
     expect(sanitizeSearch(' ab,c(d)*%" ')).toBe('ab c d');
+  });
+});
+
+describe('exchange rates loaded from the backend', () => {
+  it('replace the demo rates for every conversion and report their date', () => {
+    try {
+      setExchangeRates({ USD: 70, ZAR: 4 }, '2026-11-01');
+      expect(exchangeRate('USD', 'MZN').rate).toBe(70);
+      expect(exchangeRate('USD', 'ZAR').rate).toBe(17.5);
+      expect(exchangeRate('USD', 'MZN').effectiveDate).toBe('2026-11-01');
+      expect(exchangeRatesInUse().ratesToMzn.MZN).toBe(1);
+    } finally {
+      setExchangeRates(SIMULATED_RATES_TO_MZN, SIMULATED_RATES_EFFECTIVE_DATE);
+    }
   });
 });
 
@@ -154,6 +171,24 @@ describe('SupabaseCollection', () => {
       'create_trip',
       { p_trip: { reference: 'VG-1', revenue_amount: 5, revenue_currency: 'MZN', organization_id: 'org-1' }, p_note: 'Criada por Ana' },
     ]);
+  });
+
+  it('filters maintenance "overdue" as scheduled work planned before today', async () => {
+    const { repo, calls } = setup(SupabaseMaintenanceRepository, { data: [], count: 0 });
+    TestBed.inject(ClockService).today = () => '2026-11-11';
+    await repo.list({ displayStatus: 'overdue' });
+    expect(calls).toContainEqual(['eq', 'status', 'scheduled']);
+    expect(calls).toContainEqual(['lt', 'planned_date', '2026-11-11']);
+  });
+
+  it('maps expense amounts and keeps a cleared submitter as an empty id', async () => {
+    const { repo } = setup(SupabaseExpenseRepository, {
+      data: [{ id: 'e', amount_amount: 450, amount_currency: 'ZAR', submitted_by_user_id: null }],
+      count: 1,
+    });
+    const [expense] = (await repo.list()).items;
+    expect(expense.amount).toEqual({ amount: 450, currency: 'ZAR' });
+    expect(expense.submittedByUserId).toBe('');
   });
 
   it('does not query the database for non-uuid ids', async () => {
