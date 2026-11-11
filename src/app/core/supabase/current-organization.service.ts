@@ -37,6 +37,10 @@ export class CurrentOrganization {
     }
     if (this.loadedFor === userId) return this.state();
 
+    // Pending invitations for this (confirmed) e-mail become memberships first.
+    const claimed = await this.client.rpc('claim_invitations');
+    if (claimed.error) console.error(toError(claimed.error));
+
     const { data, error } = await this.client
       .from('organization_members')
       .select('id, organization_id, role, full_name, email')

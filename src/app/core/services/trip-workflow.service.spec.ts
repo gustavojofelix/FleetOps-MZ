@@ -1,102 +1,68 @@
 import { TestBed } from '@angular/core/testing';
-import { MOCK_LATENCY_MS } from '../data-access/mock-collection';
-import { provideMockDataAccess } from '../data-access/provide-data-access';
-import { DriverRepository, ExpenseRepository, TripRepository, VehicleRepository } from '../data-access/repositories';
+import { OrganizationRepository, TripRepository } from '../data-access/repositories';
 import { CurrencyService } from '../formatting/currency.service';
-import { CompanySettingsService } from '../state/company-settings.service';
 import { PreferencesService } from '../state/preferences.service';
-import { TripWorkflowService } from './trip-workflow.service';
+import { Trip, TripStatus } from '../models';
+import { TripWorkflowService, TripInput } from './trip-workflow.service';
 
-describe('TripWorkflowService (mock data layer)', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    TestBed.configureTestingModule({
-      providers: [provideMockDataAccess(), { provide: MOCK_LATENCY_MS, useValue: 0 }],
-    });
+/** Minimal in-memory TripRepository: the workflow only validates and delegates. */
+function fakeTrips(initial: Partial<Trip>[]) {
+  const store = new Map(initial.map((t) => [t.id!, { timeline: [], ...t } as Trip]));
+  const calls: unknown[][] = [];
+  const repository = {
+    getById: async (id: string) => store.get(id),
+    changeStatus: async (id: string, status: TripStatus, note: string, delayReason: string | null) => {
+      calls.push(['changeStatus', id, status, note, delayReason]);
+      const trip = { ...store.get(id)!, status };
+      store.set(id, trip);
+      return trip;
+    },
+    create: async (input: Omit<Trip, 'id'>) => {
+      calls.push(['create', input]);
+      return { ...input, id: 'new' } as Trip;
+    },
+    update: async (id: string, changes: Partial<Trip>) => ({ ...store.get(id)!, ...changes }),
+    delete: async (id: string) => void calls.push(['delete', id]),
+  };
+  return { repository, calls };
+}
+
+describe('TripWorkflowService', () => {
+  function setup(trips: Partial<Trip>[]) {
+    const fake = fakeTrips(trips);
+    TestBed.configureTestingModule({ providers: [{ provide: TripRepository, useValue: fake.repository }] });
+    return { workflow: TestBed.inject(TripWorkflowService), calls: fake.calls };
+  }
+
+  it('delegates allowed transitions to the repository (the database syncs resources)', async () => {
+    const { workflow, calls } = setup([{ id: 't1', status: 'in_transit' }]);
+    await workflow.changeStatus('t1', 'delayed', '', 'Fronteira');
+    expect(calls).toEqual([['changeStatus', 't1', 'delayed', '', 'Fronteira']]);
   });
 
-  it('commits vehicle and driver when a planned trip goes in transit, and releases them on delivery', async () => {
-    const workflow = TestBed.inject(TripWorkflowService);
-    const trips = TestBed.inject(TripRepository);
-    const vehicles = TestBed.inject(VehicleRepository);
-    const drivers = TestBed.inject(DriverRepository);
-
-    const planned = (await trips.all()).find((t) => t.status === 'planned' && t.vehicleId === 'v24')!;
-    expect(planned).toBeTruthy();
-
-    await workflow.changeStatus(planned.id, 'preparing');
-    const inTransit = await workflow.changeStatus(planned.id, 'in_transit', 'Partida');
-    expect(inTransit.actualDeparture).not.toBeNull();
-    expect((await vehicles.getById(planned.vehicleId))?.status).toBe('in_transit');
-    expect((await drivers.getById(planned.driverId))?.status).toBe('on_trip');
-
-    const delivered = await workflow.changeStatus(planned.id, 'delivered', 'Entregue');
-    expect(delivered.actualArrival).not.toBeNull();
-    expect(delivered.timeline.at(-1)?.status).toBe('delivered');
-    expect((await vehicles.getById(planned.vehicleId))?.status).toBe('available');
-    expect((await drivers.getById(planned.driverId))?.status).toBe('active');
+  it('rejects transitions that are not allowed without calling the backend', async () => {
+    const { workflow, calls } = setup([{ id: 't1', status: 'completed' }]);
+    await expect(workflow.changeStatus('t1', 'in_transit')).rejects.toThrow('Invalid transition');
+    expect(calls).toEqual([]);
   });
 
-  it('rejects transitions that are not allowed', async () => {
-    const workflow = TestBed.inject(TripWorkflowService);
-    const completed = (await TestBed.inject(TripRepository).all()).find((t) => t.status === 'completed')!;
-    await expect(workflow.changeStatus(completed.id, 'in_transit')).rejects.toThrow();
-  });
-
-  it('creates trips with a "created" timeline event and persists them locally', async () => {
-    const workflow = TestBed.inject(TripWorkflowService);
-    const trips = TestBed.inject(TripRepository);
-    const template = (await trips.all())[0];
-    const before = (await trips.all()).length;
-    const created = await workflow.create(
-      {
-        reference: 'VG-2026-9999',
-        customerId: template.customerId,
-        vehicleId: template.vehicleId,
-        driverId: template.driverId,
-        trailerId: template.trailerId,
-        routeId: template.routeId,
-        origin: template.origin,
-        destination: template.destination,
-        plannedDistanceKm: template.plannedDistanceKm,
-        cargo: template.cargo,
-        plannedDeparture: '2026-11-20T06:00:00+02:00',
-        plannedArrival: '2026-11-20T20:00:00+02:00',
-        revenue: { amount: 1200, currency: 'USD' },
-        customerReference: 'PO-1',
-        notes: '',
-      },
-      'Teste',
-    );
-    expect(created.status).toBe('planned');
-    expect(created.timeline[0].type).toBe('created');
-    expect((await trips.all()).length).toBe(before + 1);
-    expect(localStorage.getItem('fleetops.demo.v1.trips')).toContain('VG-2026-9999');
+  it('creates planned trips with a "created" timeline event carrying the note', async () => {
+    const { workflow, calls } = setup([]);
+    await workflow.create({ origin: { city: 'Beira', country: 'MZ', site: '' } } as TripInput, 'Criada por Ana');
+    const input = calls[0][1] as Trip;
+    expect(input.status).toBe('planned');
+    expect(input.timeline[0]).toMatchObject({ type: 'created', status: 'planned', location: 'Beira', note: 'Criada por Ana' });
   });
 });
 
 describe('display currency', () => {
-  beforeEach(() => {
-    localStorage.clear();
-    TestBed.configureTestingModule({
-      providers: [provideMockDataAccess(), { provide: MOCK_LATENCY_MS, useValue: 0 }],
-    });
-  });
-
-  it('changing the display currency never alters stored transaction amounts', async () => {
-    await TestBed.inject(CompanySettingsService).load();
-    const expenses = TestBed.inject(ExpenseRepository);
+  it('is a personal preference that converts only what is displayed', () => {
+    TestBed.configureTestingModule({ providers: [{ provide: OrganizationRepository, useValue: {} }] });
     const currency = TestBed.inject(CurrencyService);
-    const before = await expenses.all();
-
     currency.setDisplayCurrency('USD');
     expect(currency.display()).toBe('USD');
     expect(currency.displayIsConverted()).toBe(true);
     expect(TestBed.inject(PreferencesService).displayCurrency()).toBe('USD');
-
-    const after = await expenses.all();
-    expect(after.map((e) => e.amount)).toEqual(before.map((e) => e.amount));
-
     currency.setDisplayCurrency('MZN');
     expect(currency.displayIsConverted()).toBe(false);
   });

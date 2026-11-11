@@ -28,7 +28,7 @@ export const notifications: TranslationOf<typeof source> = {
     other: '{count} notifications',
   },
   preferencesLink: 'Notification preferences',
-  demoNote: 'Notifications are generated from the demo data. Read state is stored in this browser only.',
+  generatedNote: 'Alerts generated automatically from the company data. Read status is personal.',
   empty: {
     allTitle: 'No notifications',
     allDescription: 'Maintenance, document, trip and expense alerts will appear here.',

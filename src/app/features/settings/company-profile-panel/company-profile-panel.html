@@ -32,10 +32,6 @@
             <span class="text-xs">{{ 'settings.company.logoFormats' | t }}</span>
             <input type="file" class="visually-hidden" accept="image/*" (change)="onFileInput($event)" />
           </label>
-          <p class="field__hint logo-row__demo">
-            <span class="sim-tag">{{ 'common.labels.demo' | t }}</span>
-            {{ 'settings.company.logoDemo' | t }}
-          </p>
           @if (logoName(); as name) {
             <div class="cluster">
               <span class="chip">

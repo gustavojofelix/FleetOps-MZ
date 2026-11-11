@@ -105,7 +105,6 @@
           type="file"
           class="visually-hidden"
           accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/*"
-          aria-describedby="d-file-demo"
           (change)="onFileInput($event)"
         />
         <app-icon name="upload" [size]="24" />
@@ -116,10 +115,6 @@
     @if (fileError(); as error) {
       <p class="field__error" role="alert"><app-icon name="circle-alert" [size]="14" /> {{ error }}</p>
     }
-    <p class="alert alert--info" id="d-file-demo">
-      <app-icon name="info" [size]="16" />
-      <span>{{ 'documents.file.demoNotice' | t }}</span>
-    </p>
     <div class="field">
       <label class="field__label" for="d-notes">{{ 'documents.fields.notes' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>
       <textarea id="d-notes" class="textarea" rows="3" formControlName="notes"></textarea>

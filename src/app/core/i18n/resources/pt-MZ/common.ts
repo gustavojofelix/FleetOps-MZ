@@ -88,7 +88,6 @@ export const common = {
     days: 'dias',
     hours: 'horas',
     today: 'Hoje',
-    demo: 'Demonstração',
   },
   pagination: {
     summary: '{from}–{to} de {total}',
@@ -130,7 +129,7 @@ export const common = {
   },
   confirm: {
     deleteTitle: 'Eliminar registo?',
-    deleteMessage: 'Esta acção remove o registo dos dados de demonstração. Pode repor os dados originais nas definições.',
+    deleteMessage: 'Esta acção elimina o registo de forma permanente.',
     discardTitle: 'Descartar alterações?',
     discardMessage: 'Existem alterações não guardadas que serão perdidas.',
     discard: 'Descartar',
@@ -147,9 +146,9 @@ export const common = {
     allTime: 'Todo o período',
   },
   money: {
-    simulated: 'Conversão simulada',
-    simulatedRate: 'Taxa simulada: 1 {from} = {rate} {to}',
-    simulatedHint: 'Valores convertidos com taxas de demonstração fixas (não são taxas de mercado).',
+    simulated: 'Conversão indicativa',
+    simulatedRate: 'Taxa indicativa: 1 {from} = {rate} {to}',
+    simulatedHint: 'Valores convertidos com as taxas de câmbio registadas na aplicação (indicativas, não são taxas de mercado em tempo real).',
     original: 'Valor original',
     reporting: 'Moeda de relato',
     converted: 'Valor convertido',
@@ -163,5 +162,4 @@ export const common = {
     litres: 'litros',
     kmh: 'km/h',
   },
-  demoNotice: 'Dados fictícios de demonstração',
 };

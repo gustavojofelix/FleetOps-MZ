@@ -7,7 +7,7 @@ export const trailers: TranslationOf<typeof source> = {
   subtitle: '{total} trailers · {inUse} in use · {maintenance} in maintenance',
   new: 'New trailer',
   edit: 'Edit trailer',
-  newDescription: 'Register a fleet trailer. Data is stored only in this browser.',
+  newDescription: 'Register a fleet trailer.',
   editDescription: 'Update the details of trailer {plate}.',
   searchPlaceholder: 'Search plate, fleet no., make…',
   allStatuses: 'All',
@@ -80,7 +80,7 @@ export const trailers: TranslationOf<typeof source> = {
   },
   confirmDelete: {
     title: 'Delete trailer {plate}?',
-    message: 'The trailer will be removed from the demo data.',
+    message: 'The trailer will be permanently deleted.',
   },
   detail: {
     backToList: 'Trailers',

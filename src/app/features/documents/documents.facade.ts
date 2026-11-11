@@ -43,14 +43,11 @@ export class DocumentsFacade {
     await this.files.removeAll('documents', document.id).catch((error) => console.error(error));
   }
 
-  /** Short-lived link to the stored file (null in the demo or when there is no file). */
+  /** Short-lived link to the stored file (null when there is no file). */
   fileUrl(document: FleetDocument): Promise<string | null> {
     return document.fileName ? this.files.openUrl('documents', document.id) : Promise.resolve(null);
   }
 
-  get filesEnabled(): boolean {
-    return this.files.enabled;
-  }
 
   /** Next reference above the highest existing one: DOC-00912. */
   async nextReference(): Promise<string> {

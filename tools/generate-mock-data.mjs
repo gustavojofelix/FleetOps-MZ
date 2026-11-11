@@ -10,7 +10,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'app', 'core', 'mock-data');
+const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), 'demo-data');
 const ORG_ID = 'org-kuyenda';
 /** Must match DEMO_REFERENCE_DATE in src/app/core/services/clock.service.ts */
 const TODAY = '2026-10-24';

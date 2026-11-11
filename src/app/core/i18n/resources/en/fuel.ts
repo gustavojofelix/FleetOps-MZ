@@ -7,7 +7,7 @@ export const fuel: TranslationOf<typeof source> = {
   subtitle: 'Fleet fuel fills, consumption and readings to review.',
   new: 'New fuel record',
   edit: 'Edit fuel record',
-  newDescription: 'Record a fuel fill. Data is stored in this browser only.',
+  newDescription: 'Record a refuelling.',
   editDescription: 'Update fuel record {reference}.',
   searchPlaceholder: 'Search reference, station, location…',
   allVehicles: 'All vehicles',
@@ -124,7 +124,6 @@ export const fuel: TranslationOf<typeof source> = {
   receipt: {
     choose: 'Choose receipt file',
     formats: 'Image or PDF',
-    demo: 'Demo — the file is not uploaded; only its name is stored.',
     remove: 'Remove receipt',
     attached: 'Receipt: {name}',
     none: 'No receipt',

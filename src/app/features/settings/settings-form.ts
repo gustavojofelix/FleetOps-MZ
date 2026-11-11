@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup } from '@angular/forms';
 import { map } from 'rxjs';
 
-export const SETTINGS_TABS = ['company', 'regional', 'notifications', 'preferences', 'data'] as const;
+export const SETTINGS_TABS = ['company', 'regional', 'notifications', 'preferences'] as const;
 export type SettingsTab = (typeof SETTINGS_TABS)[number];
 
 /** Unsaved-changes flag of the active company settings panel (provided by SettingsPage). */

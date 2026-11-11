@@ -10,7 +10,6 @@ export interface SignUpResult {
 
 @Injectable({ providedIn: 'root' })
 export class SupabaseAuthService extends AuthSession {
-  readonly enabled = true;
 
   private readonly client = inject(SUPABASE);
   private readonly state = signal<Session | null>(null);

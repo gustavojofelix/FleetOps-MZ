@@ -152,7 +152,7 @@
         }
         <div class="alert alert--info">
           <app-icon name="info" [size]="16" />
-          <span>{{ 'expenses.demoWorkflow' | t }}</span>
+          <span>{{ 'expenses.approvalRule' | t }}</span>
         </div>
       </div>
     </section>
@@ -217,7 +217,6 @@
     @if (selectedIds().length) {
       <div class="bulk-bar" role="region" [attr.aria-label]="'expenses.selection.approveSelected' | t">
         <span class="strong" aria-live="polite">{{ 'expenses.selection.selected' | t: { count: selectedIds().length } }}</span>
-        <span class="sim-tag">{{ 'common.labels.demo' | t }}</span>
         <span class="toolbar__spacer"></span>
         <button type="button" class="btn btn--ghost btn--sm" [disabled]="busy()" (click)="clearSelection()">{{ 'expenses.selection.clear' | t }}</button>
         <button *appCan="'costs.approve'" type="button" class="btn btn--primary btn--sm" [class.btn--loading]="busy()" [disabled]="busy()" (click)="approveSelected()">

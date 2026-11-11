@@ -7,7 +7,7 @@ export const customers: TranslationOf<typeof source> = {
   subtitle: '{total} customers · {active} active',
   new: 'New customer',
   edit: 'Edit customer',
-  newDescription: 'Register a customer. Data is stored in this browser only.',
+  newDescription: 'Register a customer.',
   editDescription: 'Update the details of {name}.',
   searchPlaceholder: 'Search name, code, city, contact…',
   allStatuses: 'All',
@@ -17,8 +17,8 @@ export const customers: TranslationOf<typeof source> = {
   newTrip: 'New trip',
   activate: 'Activate',
   deactivate: 'Deactivate',
-  demoFigure: 'Demo figure',
-  demoFigureHint: 'There is no invoicing module yet: the outstanding balance is a fictitious demo figure.',
+  demoFigure: 'No invoicing yet',
+  demoFigureHint: 'There is no invoicing module yet: the outstanding balance is not calculated.',
   periodLabel: 'Period',
   status: {
     active: 'Active',
@@ -60,7 +60,7 @@ export const customers: TranslationOf<typeof source> = {
     code: 'Suggested automatically; must be unique.',
     taxId: 'Mozambican taxpayer number (NUIT, 9 digits).',
     creditLimit: 'Expressed in the customer’s preferred currency.',
-    outstandingBalance: 'Calculated by invoicing (outside the scope of this demo). Not editable.',
+    outstandingBalance: 'Will be calculated by the invoicing module (not available yet). Not editable.',
     suggestCode: 'Suggest code',
     paymentTerms: 'Days after the invoice is issued.',
   },
@@ -99,7 +99,7 @@ export const customers: TranslationOf<typeof source> = {
   },
   confirmDelete: {
     title: 'Delete customer {name}?',
-    message: 'The customer will be removed from the demo data.',
+    message: 'The customer will be permanently deleted.',
   },
   confirmDeactivate: {
     title: 'Deactivate customer {name}?',
@@ -159,6 +159,6 @@ export const customers: TranslationOf<typeof source> = {
     tripsTotal: 'Trips all time',
     revenuePeriod: 'Revenue in period ({currency})',
     revenueTotal: 'Revenue all time ({currency})',
-    outstanding: 'Outstanding balance (demo)',
+    outstanding: 'Outstanding balance (no invoicing yet)',
   },
 };

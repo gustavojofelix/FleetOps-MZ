@@ -7,7 +7,7 @@ export const expenses: TranslationOf<typeof source> = {
   subtitle: 'Tolls, border fees, driver allowances and other operating expenses.',
   new: 'New expense',
   edit: 'Edit expense',
-  newDescription: 'Record an expense in the currency it was paid in. Data is stored in this browser only.',
+  newDescription: 'Record an expense in the currency it was paid in.',
   editDescription: 'Update expense {reference}.',
   searchPlaceholder: 'Search reference, vendor, description…',
   allStatuses: 'All',
@@ -19,7 +19,7 @@ export const expenses: TranslationOf<typeof source> = {
   noTrip: 'No linked trip',
   noDriver: 'No driver',
   summaryScope: 'Summary for the period, with the category, currency, vehicle and trip filters applied.',
-  demoWorkflow: 'Approval is a demo workflow: any user can approve or reject and there are no real permissions.',
+  approvalRule: 'Only the owner, administrators and finance can approve or reject expenses.',
   kpis: {
     recorded: 'Total recorded',
     recordedHint: {
@@ -89,7 +89,7 @@ export const expenses: TranslationOf<typeof source> = {
     currency: 'The amount is stored in the currency it was paid in and is never converted.',
     trip: 'Choosing a trip fills in its vehicle and driver.',
     tripFiltered: 'Only trips of the selected vehicle, most recent first.',
-    approval: 'Demo workflow: there are no real permissions.',
+    approval: 'Only the owner, administrators and finance can approve or reject.',
     submittedBy: 'Submitted by {name}.',
   },
   sections: {
@@ -100,7 +100,6 @@ export const expenses: TranslationOf<typeof source> = {
   receipt: {
     choose: 'Choose receipt file',
     formats: 'Image or PDF',
-    demo: 'Demo — the file is not uploaded; only its name is stored.',
     remove: 'Remove receipt',
     attached: 'Receipt: {name}',
     none: 'No receipt',
@@ -127,18 +126,18 @@ export const expenses: TranslationOf<typeof source> = {
   },
   confirmDelete: {
     title: 'Delete expense {reference}?',
-    message: 'The expense is removed from the demo data. You can restore the original data in settings.',
+    message: 'The expense will be permanently deleted.',
   },
   toasts: {
     created: 'Expense {reference} created.',
     updated: 'Expense {reference} updated.',
     deleted: 'Expense {reference} deleted.',
-    approved: 'Expense {reference} approved (demo).',
-    rejected: 'Expense {reference} rejected (demo).',
+    approved: 'Expense {reference} approved.',
+    rejected: 'Expense {reference} rejected.',
     pending: 'Expense {reference} set back to pending.',
     bulkApproved: {
-      one: '{count} expense approved (demo).',
-      other: '{count} expenses approved (demo).',
+      one: '{count} expense approved.',
+      other: '{count} expenses approved.',
     },
   },
   csv: {

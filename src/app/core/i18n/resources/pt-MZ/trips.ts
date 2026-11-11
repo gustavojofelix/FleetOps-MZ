@@ -126,7 +126,7 @@ export const trips = {
   },
   form: {
     newTitle: 'Nova viagem',
-    newSubtitle: 'Planeie uma viagem: rota, carga, atribuição e horário. Os dados ficam guardados apenas neste navegador.',
+    newSubtitle: 'Planeie uma viagem: rota, carga, atribuição e horário.',
     editTitle: 'Editar {reference}',
     editSubtitle: 'Actualize o planeamento da viagem.',
     duplicateSubtitle: 'Nova viagem baseada em {reference}. Defina o horário e as referências da carga.',
@@ -246,7 +246,7 @@ export const trips = {
   },
   confirmDelete: {
     title: 'Eliminar a viagem {reference}?',
-    message: 'A viagem e o respectivo histórico são removidos dos dados de demonstração.',
+    message: 'A viagem e o respectivo histórico serão eliminados de forma permanente.',
   },
   toasts: {
     created: 'Viagem {reference} criada.',

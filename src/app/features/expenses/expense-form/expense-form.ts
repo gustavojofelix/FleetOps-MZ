@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, inject, input, output, signal } from '@angular/core';
+import { PermissionService } from '../../../core/services/permission.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { map } from 'rxjs';
@@ -86,6 +87,14 @@ export class ExpenseForm {
     approvalStatus: ['pending' as ApprovalStatus, Validators.required],
     receiptFileName: [''],
     notes: ['', Validators.maxLength(500)],
+  });
+
+  private readonly permissions = inject(PermissionService);
+  /** Only owner / admin / finance decide approvals (also enforced by the database). */
+  protected readonly approvalAccess = effect(() => {
+    const control = this.form.controls.approvalStatus;
+    if (this.permissions.can('costs.approve')) control.enable({ emitEvent: false });
+    else control.disable({ emitEvent: false });
   });
 
   protected readonly value = toSignal(this.form.valueChanges.pipe(map(() => this.form.getRawValue())), {

@@ -172,7 +172,7 @@
             <div class="profile-card__text">
               <p class="profile-card__name">{{ u.fullName }}</p>
               <p class="profile-card__email">{{ u.email }}</p>
-              <span class="badge badge--accent">{{ 'users.roles.' + u.role | t }} · {{ 'common.labels.demo' | t }}</span>
+              <span class="badge badge--accent">{{ 'users.roles.' + u.role | t }}</span>
             </div>
           </div>
         }
@@ -185,10 +185,6 @@
           <app-icon name="building" [size]="16" />
           {{ 'shell.profile.companySettings' | t }}
         </a>
-        <button type="button" class="menu__item" (click)="resetDemo()">
-          <app-icon name="rotate-ccw" [size]="16" />
-          {{ 'shell.profile.resetDemo' | t }}
-        </button>
         <div class="menu__separator"></div>
         <button type="button" class="menu__item" (click)="signOut()">
           <app-icon name="log-out" [size]="16" />

@@ -35,8 +35,7 @@ export class DocumentPreview {
   private readonly toast = inject(ToastService);
 
   protected readonly opening = signal(false);
-  /** A real stored file exists (Supabase build). */
-  protected readonly canOpenFile = computed(() => this.facade.filesEnabled && !!this.document()?.fileName);
+  protected readonly canOpenFile = computed(() => !!this.document()?.fileName);
 
   protected async openFile(document: FleetDocument): Promise<void> {
     this.opening.set(true);

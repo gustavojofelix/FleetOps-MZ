@@ -4,7 +4,7 @@ export const expenses = {
   subtitle: 'Portagens, taxas fronteiriças, ajudas de custo e outras despesas operacionais.',
   new: 'Nova despesa',
   edit: 'Editar despesa',
-  newDescription: 'Registe uma despesa na moeda em que foi paga. Os dados ficam guardados apenas neste navegador.',
+  newDescription: 'Registe uma despesa na moeda em que foi paga.',
   editDescription: 'Actualize a despesa {reference}.',
   searchPlaceholder: 'Pesquisar referência, fornecedor, descrição…',
   allStatuses: 'Todas',
@@ -16,7 +16,7 @@ export const expenses = {
   noTrip: 'Sem viagem associada',
   noDriver: 'Sem motorista',
   summaryScope: 'Resumo do período, com os filtros de categoria, moeda, viatura e viagem aplicados.',
-  demoWorkflow: 'A aprovação é um fluxo de demonstração: qualquer utilizador pode aprovar ou rejeitar e não existem permissões reais.',
+  approvalRule: 'Só o proprietário, os administradores e o financeiro podem aprovar ou rejeitar despesas.',
   kpis: {
     recorded: 'Total registado',
     recordedHint: {
@@ -86,7 +86,7 @@ export const expenses = {
     currency: 'O valor é guardado na moeda em que foi pago e nunca é convertido.',
     trip: 'Ao escolher uma viagem, a viatura e o motorista são preenchidos.',
     tripFiltered: 'Apenas viagens da viatura seleccionada, das mais recentes para as mais antigas.',
-    approval: 'Fluxo de demonstração: não existem permissões reais.',
+    approval: 'Só o proprietário, os administradores e o financeiro podem aprovar ou rejeitar.',
     submittedBy: 'Submetida por {name}.',
   },
   sections: {
@@ -97,7 +97,6 @@ export const expenses = {
   receipt: {
     choose: 'Seleccionar ficheiro do recibo',
     formats: 'Imagem ou PDF',
-    demo: 'Demonstração — o ficheiro não é carregado; guarda-se apenas o nome.',
     remove: 'Remover recibo',
     attached: 'Recibo: {name}',
     none: 'Sem recibo',
@@ -124,18 +123,18 @@ export const expenses = {
   },
   confirmDelete: {
     title: 'Eliminar a despesa {reference}?',
-    message: 'A despesa é removida dos dados de demonstração. Pode repor os dados originais nas definições.',
+    message: 'A despesa será eliminada de forma permanente.',
   },
   toasts: {
     created: 'Despesa {reference} registada.',
     updated: 'Despesa {reference} actualizada.',
     deleted: 'Despesa {reference} eliminada.',
-    approved: 'Despesa {reference} aprovada (demonstração).',
-    rejected: 'Despesa {reference} rejeitada (demonstração).',
+    approved: 'Despesa {reference} aprovada.',
+    rejected: 'Despesa {reference} rejeitada.',
     pending: 'Despesa {reference} voltou a pendente.',
     bulkApproved: {
-      one: '{count} despesa aprovada (demonstração).',
-      other: '{count} despesas aprovadas (demonstração).',
+      one: '{count} despesa aprovada.',
+      other: '{count} despesas aprovadas.',
     },
   },
   csv: {

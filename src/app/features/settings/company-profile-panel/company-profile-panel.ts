@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import { FileStorage } from '../../../core/backend/file-storage';
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { TranslationService } from '../../../core/i18n/translation.service';
@@ -39,11 +40,12 @@ export class CompanyProfilePanel {
   private readonly i18n = inject(TranslationService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly permissions = inject(PermissionService);
+  private readonly files = inject(FileStorage);
 
   protected readonly countries = COUNTRIES;
   protected readonly saving = signal(false);
   protected readonly canManage = computed(() => this.permissions.can('settings.manage'));
-  /** Demo: object URL of a locally chosen logo, kept only for this session. */
+  /** Stored logo (short-lived signed URL) or a local preview while it uploads. */
   protected readonly logoUrl = signal<string | null>(null);
   protected readonly logoName = signal<string | null>(null);
   protected readonly dragging = signal(false);
@@ -86,6 +88,11 @@ export class CompanyProfilePanel {
 
   constructor() {
     inject(DestroyRef).onDestroy(() => this.revokeLogo());
+    // The logo lives in storage under the organization id.
+    effect(() => {
+      const id = this.organization().id;
+      untracked(() => void this.loadLogo(id));
+    });
   }
 
   protected async save(): Promise<void> {
@@ -122,7 +129,7 @@ export class CompanyProfilePanel {
 
   protected onFileInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.previewLogo(input.files?.[0] ?? null);
+    void this.previewLogo(input.files?.[0] ?? null);
     input.value = '';
   }
 
@@ -134,16 +141,23 @@ export class CompanyProfilePanel {
   protected onDrop(event: DragEvent): void {
     event.preventDefault();
     this.dragging.set(false);
-    this.previewLogo(event.dataTransfer?.files?.[0] ?? null);
+    void this.previewLogo(event.dataTransfer?.files?.[0] ?? null);
   }
 
-  protected removeLogo(): void {
-    this.revokeLogo();
-    this.logoUrl.set(null);
-    this.logoName.set(null);
+  protected async removeLogo(): Promise<void> {
+    try {
+      await this.files.removeAll('company', this.organization().id);
+      this.revokeLogo();
+      this.logoUrl.set(null);
+      this.logoName.set(null);
+    } catch (error) {
+      console.error(error);
+      this.toast.error(this.i18n.t('common.toasts.error'));
+    }
   }
 
-  private previewLogo(file: File | null): void {
+  /** Validates, shows a local preview immediately and uploads the logo. */
+  private async previewLogo(file: File | null): Promise<void> {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
       this.toast.error(this.i18n.t('settings.company.logoInvalid'));
@@ -153,13 +167,35 @@ export class CompanyProfilePanel {
       this.toast.error(this.i18n.t('settings.company.logoTooLarge'));
       return;
     }
+    const previous = { url: this.logoUrl(), name: this.logoName() };
     this.revokeLogo();
     this.logoUrl.set(URL.createObjectURL(file));
     this.logoName.set(file.name);
+    try {
+      await this.files.sync('company', this.organization().id, file, false);
+      this.toast.success(this.i18n.t('common.toasts.saved'));
+    } catch (error) {
+      console.error(error);
+      this.revokeLogo();
+      this.logoUrl.set(previous.url);
+      this.logoName.set(previous.name);
+      this.toast.error(this.i18n.t('common.toasts.error'));
+    }
   }
 
+  private async loadLogo(organizationId: string): Promise<void> {
+    try {
+      const url = await this.files.openUrl('company', organizationId);
+      this.logoUrl.set(url);
+      this.logoName.set(url ? decodeURIComponent(new URL(url).pathname.split('/').pop() ?? '') : null);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /** Only local previews (blob: URLs) need releasing. */
   private revokeLogo(): void {
     const url = this.logoUrl();
-    if (url) URL.revokeObjectURL(url);
+    if (url?.startsWith('blob:')) URL.revokeObjectURL(url);
   }
 }

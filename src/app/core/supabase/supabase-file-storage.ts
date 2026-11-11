@@ -12,8 +12,6 @@ const SIGNED_URL_SECONDS = 10 * 60;
  */
 @Injectable()
 export class SupabaseFileStorage extends FileStorage {
-  readonly enabled = true;
-
   private readonly client = inject(SUPABASE);
   private readonly organization = inject(CurrentOrganization);
 

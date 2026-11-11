@@ -91,7 +91,6 @@ export const common: TranslationOf<typeof source> = {
     days: 'days',
     hours: 'hours',
     today: 'Today',
-    demo: 'Demo',
   },
   pagination: {
     summary: '{from}–{to} of {total}',
@@ -133,7 +132,7 @@ export const common: TranslationOf<typeof source> = {
   },
   confirm: {
     deleteTitle: 'Delete record?',
-    deleteMessage: 'This removes the record from the demo data. You can restore the original data in settings.',
+    deleteMessage: 'This permanently deletes the record.',
     discardTitle: 'Discard changes?',
     discardMessage: 'Unsaved changes will be lost.',
     discard: 'Discard',
@@ -150,9 +149,9 @@ export const common: TranslationOf<typeof source> = {
     allTime: 'All time',
   },
   money: {
-    simulated: 'Simulated conversion',
-    simulatedRate: 'Simulated rate: 1 {from} = {rate} {to}',
-    simulatedHint: 'Amounts converted with fixed demo rates (not market rates).',
+    simulated: 'Indicative conversion',
+    simulatedRate: 'Indicative rate: 1 {from} = {rate} {to}',
+    simulatedHint: 'Converted with the exchange rates recorded in the app (indicative, not live market rates).',
     original: 'Original amount',
     reporting: 'Reporting currency',
     converted: 'Converted amount',
@@ -166,5 +165,4 @@ export const common: TranslationOf<typeof source> = {
     litres: 'litres',
     kmh: 'km/h',
   },
-  demoNotice: 'Fictional demo data',
 };

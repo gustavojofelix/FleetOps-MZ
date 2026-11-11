@@ -11,12 +11,10 @@ import { LanguageCode } from '../../core/i18n/languages';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { TranslationService } from '../../core/i18n/translation.service';
 import { CurrencyCode } from '../../core/models';
-import { DemoDataService } from '../../core/services/demo-data.service';
 import { EntityDirectory } from '../../core/services/entity-directory.service';
 import { NotificationCenterService } from '../../core/services/notification-center.service';
 import { ThemePreference } from '../../core/state/preferences.service';
 import { ThemeService } from '../../core/state/theme.service';
-import { ConfirmService } from '../../shared/ui/confirm-dialog/confirm.service';
 import { Dropdown, DropdownTrigger } from '../../shared/ui/dropdown/dropdown';
 import { Icon } from '../../shared/ui/icon/icon';
 import { IconName } from '../../shared/ui/icon/icon-registry';
@@ -49,9 +47,7 @@ export class Topbar {
   private readonly router = inject(Router);
   private readonly directory = inject(EntityDirectory);
   private readonly users = inject(UserRepository);
-  private readonly confirm = inject(ConfirmService);
   private readonly toast = inject(ToastService);
-  private readonly demo = inject(DemoDataService);
   private readonly session = inject(AuthSession);
 
   protected readonly currencies = this.currency.activeCurrencies;
@@ -100,27 +96,12 @@ export class Topbar {
   }
 
   protected async signOut(): Promise<void> {
-    if (!this.session.enabled) {
-      this.toast.info(this.i18n.t('shell.profile.signOut'), this.i18n.t('shell.profile.signOutDemo'));
-      return;
-    }
     try {
       await this.session.signOut();
     } catch (error) {
       console.error(error);
       this.toast.error(this.i18n.t('auth.errors.generic'));
     }
-  }
-
-  protected async resetDemo(): Promise<void> {
-    const confirmed = await this.confirm.ask({
-      title: this.i18n.t('shell.resetDemo.title'),
-      message: this.i18n.t('shell.resetDemo.message'),
-      confirmLabel: this.i18n.t('shell.resetDemo.confirm'),
-    });
-    if (!confirmed) return;
-    await this.demo.resetAll();
-    this.toast.success(this.i18n.t('shell.resetDemo.done'));
   }
 
   private deepestTitleKey(route: ActivatedRouteSnapshot): string | null {

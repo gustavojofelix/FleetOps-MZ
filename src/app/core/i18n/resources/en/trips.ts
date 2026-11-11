@@ -129,7 +129,7 @@ export const trips: TranslationOf<typeof source> = {
   },
   form: {
     newTitle: 'New trip',
-    newSubtitle: 'Plan a trip: route, cargo, assignment and schedule. Data is stored in this browser only.',
+    newSubtitle: 'Plan a trip: route, cargo, assignment and schedule.',
     editTitle: 'Edit {reference}',
     editSubtitle: 'Update the trip plan.',
     duplicateSubtitle: 'New trip based on {reference}. Set the schedule and the cargo references.',
@@ -249,7 +249,7 @@ export const trips: TranslationOf<typeof source> = {
   },
   confirmDelete: {
     title: 'Delete trip {reference}?',
-    message: 'The trip and its history are removed from the demo data.',
+    message: 'The trip and its history will be permanently deleted.',
   },
   toasts: {
     created: 'Trip {reference} created.',

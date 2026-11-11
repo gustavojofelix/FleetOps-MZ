@@ -1,58 +1,63 @@
-# Backend integration plan (Supabase)
+# Backend (Supabase)
 
-The frontend was structured so the mock layer can be replaced without rewriting pages.
-This note lists what is mocked today and what the backend must provide.
+The app runs on Supabase: Postgres with Row Level Security, Auth and Storage. Pages depend only on
+the contracts in `src/app/core/data-access/repositories.ts`; `provideBackend()`
+(`src/app/core/backend/backend.ts`) binds them to the classes in `src/app/core/supabase`.
 
-## Swap point
+## Migrations (`supabase/migrations`)
 
-`src/app/app.config.ts` calls `provideMockDataAccess()` (`core/data-access/provide-data-access.ts`),
-which binds each abstract repository to a `Mock*Service`. Create `provideSupabaseDataAccess()` binding
-the same tokens to Supabase-backed classes that implement the same contracts:
-
-| Contract | Notes for the Supabase implementation |
+| Migration | Contents |
 |---|---|
-| `VehicleRepository`, `DriverRepository`, `TrailerRepository`, `CustomerRepository` | Tables per entity; `list()` maps `ListQuery` (search, filters, sort, page/pageSize) to PostgREST filters + `range()` with `count: 'exact'`. |
-| `TripRepository` | `trips` + `trip_events` (timeline as its own table). `changeStatus()` → RPC. |
-| `FuelRepository`, `ExpenseRepository`, `MaintenanceRepository`, `DocumentRepository` | Money stored as `amount numeric(14,2)` + `currency char(3)`; never convert on write. |
-| `NotificationRepository` | Per-user read state (`notification_reads`), realtime channel for new items. |
-| `UserRepository` | `organization_members` joined with `auth.users`; `currentUserId()` from the session. |
-| `OrganizationRepository` | `organizations` row of the active tenant. |
-| `RouteRepository` | Reference table per organization. |
+| `…090000_tenancy_and_vehicles` | `organizations`, `organization_members`, `private.is_member/has_role`, `create_organization()`, `vehicles` + `vehicle_status_changes`, `change_vehicle_status()` |
+| `…120000_master_data` | `drivers`, `trailers`, `customers`, `routes`; tenant-safe composite foreign keys; `private.apply_tenant_policies()` |
+| `…150000_trips` | `trips`, `trip_events`; transition check; trigger deriving vehicle / driver / trailer status from active trips; `create_trip()`, `change_trip_status()` |
+| `…180000_costs` | `fuel_records`, `expenses` (approval guarded by role, stamped), `maintenance_records`, `exchange_rates` |
+| `…210000_documents_files_notifications` | `documents`, bucket `files` + storage policies, `notifications`, `notification_reads`, `notifications_feed` view, `refresh_my_notifications()` |
+| `20261112090000_invitations_and_logo` | `claim_invitations()`, company logo in storage |
 
-`changes` signals can be driven by Supabase Realtime subscriptions (bump on insert/update/delete).
+Rules for new migrations:
 
-## Multi-tenancy and security
+- Never edit a migration that has been applied; add a new one (`create or replace` for functions).
+- Every tenant table: `organization_id`, `unique (organization_id, id)`, composite foreign keys to other
+  tenant tables, and `select private.apply_tenant_policies('<table>', array[<write roles>])`.
+- `SECURITY DEFINER` functions live in schema `private` (not exposed by the API) or check membership
+  themselves, and always `set search_path = ''`.
+- Test RLS before pushing: the PGlite harness used so far runs each migration with a stubbed `auth`
+  and `storage` schema and checks cross-tenant and per-role access.
 
-- Every tenant table carries `organization_id` (already present on all models: `TenantScoped`).
-- Membership + role in `organization_members (organization_id, user_id, role)`; roles match `UserRole`.
-- **Row Level Security** on every table: `organization_id in (select organization_id from organization_members where user_id = auth.uid())`,
-  plus role-based policies for writes (e.g. only `finance`/`admin`/`owner` approve expenses).
-- The demo role → permission matrix in the Users module documents intent only; enforcement must live in RLS/RPCs.
-- Privileged multi-record operations become `security definer` RPCs executed transactionally:
-  `TripWorkflowService` (status + vehicle/driver/trailer status), `VehiclesFacade` (symmetric assignments),
-  maintenance start/complete (vehicle status), expense approval.
-- Audit trail: `audit_log (organization_id, actor, entity, entity_id, action, diff, created_at)` via triggers.
-- Server-side validation mirrors `core/domain/trip-rules.ts` (assignment conflicts, licence expiry, ISO 6346 container numbers).
+## Roles and permissions
+
+`core/domain/permissions.ts` maps roles to permissions for the UI. The database enforces the same:
+
+| Data | Write roles |
+|---|---|
+| vehicles, drivers, trailers, maintenance | owner, admin, fleet_manager |
+| trips, trip events, routes | owner, admin, fleet_manager, dispatcher |
+| customers | everyone except viewer |
+| fuel, expenses | owner, admin, fleet_manager, finance — approving / rejecting: owner, admin, finance |
+| documents | owner, admin, fleet_manager |
+| members, company settings, logo | owner, admin |
+
+Every active member reads all data of their organization.
 
 ## Storage
 
-Receipts, documents and logos → Supabase Storage buckets per organization (`{org_id}/documents/...`),
-private, signed URLs; the models already reserve `receiptFileName` / `fileName` / `fileSizeKb` for the object key.
+Private bucket `files`: `{organization_id}/{documents|fuel|expenses|company}/{record_id}/{file}`.
+Records keep the file name; `FileStorage` uploads, removes and opens files with signed URLs.
 
-## Currency
+## Notifications
 
-Replace `SIMULATED_RATES_TO_MZN` with a dated `exchange_rates` table (source, effective date). Store the
-rate used on aggregation/report snapshots if historical reproducibility is needed. The UI already
-distinguishes original amount, reporting amount and rate.
+`refresh_my_notifications()` (called when a member opens the app) and, if the `pg_cron` extension
+is enabled, a daily job generate one notification per fact (delays, expiring documents and licences,
+maintenance due/overdue, pending expenses, impossible fuel readings), honouring the company settings.
+Read state is per user (`notification_reads`).
 
-## Other mocked behaviour to replace
+## Still to do
 
-- `ClockService` demo date → real time (keep the service as the single source of "now").
-- Authentication (top-bar profile menu "Sign out" is a demo toast) → Supabase Auth, route guards.
-- Notifications generation (expiring documents, overdue maintenance, delays, fuel anomalies) → scheduled
-  database jobs (pg_cron / Edge Functions) writing to `notifications`.
-- Invitations and email digests → Supabase Auth invites + transactional email.
-- Dashboard fleet map (`features/dashboard/fleet-map`) simulates positions from active trips with
-  `core/domain/fleet-tracking.ts` → feed real GPS/telematics positions (e.g. a `vehicle_positions` table with
-  Supabase Realtime) and keep the corridor geometry only for drawing planned routes.
-- Demo data reset → remove (keep only for a sandbox tenant).
+- E-mail: invitations and digests (Supabase Auth invites or a transactional e-mail provider).
+- Exchange rates: a market-rate source writing to `exchange_rates`.
+- Telematics: real vehicle positions for the fleet map.
+- Aggregates: the dashboard, reports and global search still load every collection of the organization
+  into the browser (`EntityDirectory`, `FleetAnalytics`). Move them to SQL views / RPCs before
+  organizations grow to years of data.
+- Audit log of changes (`audit_log` via triggers).

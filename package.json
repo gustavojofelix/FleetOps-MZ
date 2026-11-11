@@ -8,9 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --watch=false",
-    "mock-data": "node tools/generate-mock-data.mjs",
-    "start:supabase": "ng serve --configuration supabase",
-    "build:supabase": "ng build --configuration production,supabase"
+    "demo-data": "node tools/generate-mock-data.mjs"
   },
   "private": true,
   "packageManager": "npm@11.19.1",

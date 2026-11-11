@@ -4,7 +4,7 @@ export const vehicles = {
   subtitle: '{total} viaturas na frota · {inTransit} em viagem · {maintenance} em manutenção',
   new: 'Nova viatura',
   edit: 'Editar viatura',
-  newDescription: 'Registe uma viatura da frota. Os dados ficam guardados apenas neste navegador.',
+  newDescription: 'Registe uma viatura da frota.',
   editDescription: 'Actualize os dados da viatura {plate}.',
   searchPlaceholder: 'Pesquisar matrícula, n.º de frota, marca…',
   allTypes: 'Todos os tipos',
@@ -87,7 +87,7 @@ export const vehicles = {
   },
   confirmDelete: {
     title: 'Eliminar a viatura {plate}?',
-    message: 'A viatura será removida dos dados de demonstração.',
+    message: 'A viatura será eliminada de forma permanente.',
   },
   detail: {
     backToList: 'Viaturas',

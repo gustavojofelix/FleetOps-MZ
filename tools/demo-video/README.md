@@ -1,5 +1,9 @@
 # FleetOps MZ — Product demo video
 
+> **Needs updating (2026-11-12):** the app now runs on Supabase and requires signing in. These scripts were
+> written for the former local demo build (fixed date 24 Oct 2026, data in the browser). Until they are
+> adapted to sign in to an account seeded with demo data, recording will stop at the login page.
+
 A Playwright script that records a 2:49 walkthrough of the real FleetOps MZ web app, for transport-company owners and fleet managers in Mozambique. The recording uses Portuguese (Mozambique), 1920×1080 and fictional demo data. This folder has its own `package.json`, so it adds nothing to the app's dependencies or build.
 
 | File | Contents |

@@ -33,8 +33,8 @@ export const users: TranslationOf<typeof source> = {
     inactive: 'Inactive',
   },
   banner: {
-    title: 'Demonstration roles',
-    body: 'The roles and permissions shown here are illustrative and do not restrict access in this version. Real access control will be enforced by the backend (Supabase Auth with Row Level Security).',
+    title: 'Roles and permissions',
+    body: 'Each role grants a set of actions. Permissions are enforced by the server: each user only sees and does what their role allows.',
   },
   views: {
     label: 'User sections',
@@ -67,7 +67,7 @@ export const users: TranslationOf<typeof source> = {
   hints: {
     email: 'Will be the sign-in address once authentication is available.',
     role: 'You can change the role later. The “Owner” role cannot be assigned by invitation.',
-    noEmail: 'Demo: no email is sent. The invitation is only recorded in this browser.',
+    noEmail: 'No email is sent yet: ask the person to create a FleetOps MZ account with this address. The invitation is accepted automatically when they sign in.',
   },
   actions: {
     changeRole: 'Change role',
@@ -83,7 +83,7 @@ export const users: TranslationOf<typeof source> = {
     description: 'Choose the new role for {name}.',
     current: 'Current',
     confirm: 'Save role',
-    demoNote: 'Demo: the role only changes what is displayed; real permissions will be enforced by the backend.',
+    effectNote: 'The change applies immediately: permissions are enforced by the server.',
   },
   confirm: {
     deactivateTitle: 'Deactivate {name}?',
@@ -91,13 +91,13 @@ export const users: TranslationOf<typeof source> = {
     reactivateTitle: 'Reactivate {name}?',
     reactivateMessage: 'The user becomes active again with the {role} role.',
     deleteInviteTitle: 'Delete the invitation for {name}?',
-    deleteInviteMessage: 'The pending invitation is removed from the demo data.',
+    deleteInviteMessage: 'The pending invitation will be deleted.',
   },
   toasts: {
     invited: 'Invitation recorded for {name}.',
-    invitedDetail: 'No email was sent — this is a demo version.',
-    resent: 'Invitation resent to {email} (demo).',
-    resentDetail: 'No email is sent in this version; the invitation date was updated.',
+    invitedDetail: 'Ask the person to create an account with this email; the invitation is accepted automatically when they sign in.',
+    resent: 'Invitation date updated ({email}).',
+    resentDetail: 'No email is sent yet; the invitation date was updated.',
     roleChanged: '{name} is now {role}.',
     deactivated: '{name} was deactivated.',
     reactivated: '{name} was reactivated.',
@@ -112,7 +112,7 @@ export const users: TranslationOf<typeof source> = {
   },
   matrix: {
     title: 'Roles & permissions matrix',
-    subtitle: 'Illustrative, read-only mapping. It will be enforced by the backend security policies.',
+    subtitle: 'Mapping enforced by the server and used by the interface to show only the allowed actions.',
     permission: 'Permission',
     allowed: 'Allowed',
     denied: 'Not allowed',

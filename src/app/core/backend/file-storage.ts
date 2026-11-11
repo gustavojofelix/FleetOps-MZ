@@ -1,16 +1,11 @@
-import { Injectable } from '@angular/core';
-
 /** What a stored file belongs to; also the folder in the bucket. */
-export type FileKind = 'documents' | 'fuel' | 'expenses';
+export type FileKind = 'documents' | 'fuel' | 'expenses' | 'company';
 
 /**
  * Files attached to records (document scans, fuel and expense receipts). Records keep only the
- * file name; the content lives in the backend's storage. The demo build stores nothing.
+ * file name; the content lives in the backend's storage (SupabaseFileStorage).
  */
 export abstract class FileStorage {
-  /** False in the demo build: files are not stored and cannot be opened. */
-  abstract readonly enabled: boolean;
-
   /**
    * Brings the record's stored file in line with the form: uploads `file` (replacing any previous
    * one), or removes the stored file when `cleared` is true and no new file was chosen.
@@ -24,19 +19,3 @@ export abstract class FileStorage {
   abstract removeAll(kind: FileKind, recordId: string): Promise<void>;
 }
 
-@Injectable()
-export class DemoFileStorage extends FileStorage {
-  readonly enabled = false;
-
-  sync(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  openUrl(): Promise<string | null> {
-    return Promise.resolve(null);
-  }
-
-  removeAll(): Promise<void> {
-    return Promise.resolve();
-  }
-}

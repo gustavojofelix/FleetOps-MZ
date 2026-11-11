@@ -18,7 +18,7 @@ export const shell = {
   },
   currency: {
     label: 'Moeda de apresentação',
-    hint: 'Os totais são calculados em {reporting}. Outras moedas usam taxas simuladas.',
+    hint: 'Os totais são calculados em {reporting}. Outras moedas usam taxas indicativas.',
     reportingBadge: 'Relato',
   },
   notifications: {
@@ -35,17 +35,7 @@ export const shell = {
     menu: 'Menu do perfil',
     myPreferences: 'As minhas preferências',
     companySettings: 'Definições da empresa',
-    resetDemo: 'Repor dados de demonstração',
     signOut: 'Terminar sessão',
-    signOutDemo: 'A autenticação ainda não está implementada nesta versão de demonstração.',
-    demoRole: 'Função de demonstração',
-  },
-  demoBanner: 'Versão de demonstração — todos os dados são fictícios e ficam guardados apenas neste navegador.',
-  resetDemo: {
-    title: 'Repor dados de demonstração?',
-    message: 'Todas as alterações feitas neste navegador (viagens, despesas, definições…) serão substituídas pelos dados originais.',
-    confirm: 'Repor dados',
-    done: 'Dados de demonstração repostos.',
   },
   notFound: {
     title: 'Página não encontrada',

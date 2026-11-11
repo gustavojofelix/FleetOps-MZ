@@ -64,14 +64,6 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
-            },
-            "supabase": {
-              "fileReplacements": [
-                {
-                  "replace": "src/app/core/backend/backend.ts",
-                  "with": "src/app/core/backend/backend.supabase.ts"
-                }
-              ]
             }
           },
           "defaultConfiguration": "production"
@@ -84,9 +76,6 @@
             },
             "development": {
               "buildTarget": "fleetops-mz:build:development"
-            },
-            "supabase": {
-              "buildTarget": "fleetops-mz:build:development,supabase"
             }
           },
           "defaultConfiguration": "development"

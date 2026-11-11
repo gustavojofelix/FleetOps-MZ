@@ -1,9 +1,9 @@
-import customers from '../../core/mock-data/customers.json';
-import documents from '../../core/mock-data/documents.json';
-import drivers from '../../core/mock-data/drivers.json';
-import trailers from '../../core/mock-data/trailers.json';
-import trips from '../../core/mock-data/trips.json';
-import vehicles from '../../core/mock-data/vehicles.json';
+import customers from '../../../../tools/demo-data/customers.json';
+import documents from '../../../../tools/demo-data/documents.json';
+import drivers from '../../../../tools/demo-data/drivers.json';
+import trailers from '../../../../tools/demo-data/trailers.json';
+import trips from '../../../../tools/demo-data/trips.json';
+import vehicles from '../../../../tools/demo-data/vehicles.json';
 import { Customer, Driver, FleetDocument, Trailer, Trip, Vehicle } from '../../core/models';
 import { searchEverything } from './search-index';
 

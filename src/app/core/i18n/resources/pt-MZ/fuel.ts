@@ -4,7 +4,7 @@ export const fuel = {
   subtitle: 'Abastecimentos, consumos e leituras a verificar da frota.',
   new: 'Novo abastecimento',
   edit: 'Editar abastecimento',
-  newDescription: 'Registe um abastecimento. Os dados ficam guardados apenas neste navegador.',
+  newDescription: 'Registe um abastecimento.',
   editDescription: 'Actualize o abastecimento {reference}.',
   searchPlaceholder: 'Pesquisar referência, posto, local…',
   allVehicles: 'Todas as viaturas',
@@ -121,7 +121,6 @@ export const fuel = {
   receipt: {
     choose: 'Seleccionar ficheiro do recibo',
     formats: 'Imagem ou PDF',
-    demo: 'Demonstração — o ficheiro não é carregado; guarda-se apenas o nome.',
     remove: 'Remover recibo',
     attached: 'Recibo: {name}',
     none: 'Sem recibo',

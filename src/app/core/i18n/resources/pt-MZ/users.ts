@@ -30,8 +30,8 @@ export const users = {
     inactive: 'Inactivo',
   },
   banner: {
-    title: 'Funções de demonstração',
-    body: 'As funções e permissões aqui apresentadas são ilustrativas e não restringem o acesso nesta versão. O controlo de acesso real será aplicado no servidor (Supabase Auth com Row Level Security).',
+    title: 'Funções e permissões',
+    body: 'Cada função dá acesso a um conjunto de acções. As permissões são impostas pelo servidor: cada utilizador só vê e faz o que a sua função permite.',
   },
   views: {
     label: 'Secções de utilizadores',
@@ -64,7 +64,7 @@ export const users = {
   hints: {
     email: 'Será o endereço de início de sessão quando a autenticação estiver disponível.',
     role: 'Pode alterar a função mais tarde. A função «Proprietário» não pode ser atribuída por convite.',
-    noEmail: 'Demonstração: nenhum e-mail é enviado. O convite fica apenas registado neste navegador.',
+    noEmail: 'Ainda não é enviado e-mail: peça à pessoa que crie conta no FleetOps MZ com este endereço. O convite é aceite automaticamente quando entrar.',
   },
   actions: {
     changeRole: 'Alterar função',
@@ -80,7 +80,7 @@ export const users = {
     description: 'Escolha a nova função de {name}.',
     current: 'Actual',
     confirm: 'Guardar função',
-    demoNote: 'Demonstração: a função só altera o que é apresentado; as permissões reais serão aplicadas pelo servidor.',
+    effectNote: 'A alteração aplica-se de imediato: as permissões são impostas pelo servidor.',
   },
   confirm: {
     deactivateTitle: 'Desactivar {name}?',
@@ -88,13 +88,13 @@ export const users = {
     reactivateTitle: 'Reactivar {name}?',
     reactivateMessage: 'O utilizador volta a ficar activo com a função {role}.',
     deleteInviteTitle: 'Eliminar o convite de {name}?',
-    deleteInviteMessage: 'O convite pendente é removido dos dados de demonstração.',
+    deleteInviteMessage: 'O convite pendente será eliminado.',
   },
   toasts: {
     invited: 'Convite registado para {name}.',
-    invitedDetail: 'Nenhum e-mail foi enviado — esta é uma versão de demonstração.',
-    resent: 'Convite reenviado para {email} (demonstração).',
-    resentDetail: 'Nenhum e-mail é enviado nesta versão; a data do convite foi actualizada.',
+    invitedDetail: 'Peça à pessoa que crie conta com este e-mail; o convite é aceite automaticamente quando entrar.',
+    resent: 'Data do convite actualizada ({email}).',
+    resentDetail: 'Ainda não é enviado e-mail; a data do convite foi actualizada.',
     roleChanged: '{name} é agora {role}.',
     deactivated: '{name} foi desactivado.',
     reactivated: '{name} foi reactivado.',
@@ -109,7 +109,7 @@ export const users = {
   },
   matrix: {
     title: 'Matriz de funções e permissões',
-    subtitle: 'Mapeamento ilustrativo, apenas de leitura. Será validado pelas políticas de segurança do servidor.',
+    subtitle: 'Mapeamento aplicado pelo servidor e usado pela interface para mostrar apenas as acções permitidas.',
     permission: 'Permissão',
     allowed: 'Permitido',
     denied: 'Não permitido',

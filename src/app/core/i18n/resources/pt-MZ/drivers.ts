@@ -4,7 +4,7 @@ export const drivers = {
   subtitle: '{total} motoristas · {onTrip} em viagem · {onLeave} de licença',
   new: 'Novo motorista',
   edit: 'Editar motorista',
-  newDescription: 'Registe um motorista da empresa. Os dados ficam guardados apenas neste navegador.',
+  newDescription: 'Registe um motorista da empresa.',
   editDescription: 'Actualize os dados de {name}.',
   searchPlaceholder: 'Pesquisar nome, n.º de funcionário, telefone, carta…',
   allStatuses: 'Todos',
@@ -102,7 +102,7 @@ export const drivers = {
   },
   confirmDelete: {
     title: 'Eliminar o motorista {name}?',
-    message: 'O motorista será removido dos dados de demonstração.',
+    message: 'O motorista será eliminado de forma permanente.',
   },
   incidentForm: {
     title: 'Registar ocorrência',

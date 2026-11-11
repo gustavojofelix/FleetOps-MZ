@@ -7,7 +7,7 @@ export const vehicles: TranslationOf<typeof source> = {
   subtitle: '{total} vehicles in the fleet · {inTransit} on trips · {maintenance} in maintenance',
   new: 'New vehicle',
   edit: 'Edit vehicle',
-  newDescription: 'Register a fleet vehicle. Data is stored only in this browser.',
+  newDescription: 'Register a fleet vehicle.',
   editDescription: 'Update the details of vehicle {plate}.',
   searchPlaceholder: 'Search plate, fleet no., make…',
   allTypes: 'All types',
@@ -90,7 +90,7 @@ export const vehicles: TranslationOf<typeof source> = {
   },
   confirmDelete: {
     title: 'Delete vehicle {plate}?',
-    message: 'The vehicle will be removed from the demo data.',
+    message: 'The vehicle will be permanently deleted.',
   },
   detail: {
     backToList: 'Vehicles',

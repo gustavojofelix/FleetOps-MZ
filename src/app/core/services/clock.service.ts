@@ -1,28 +1,25 @@
 import { Injectable } from '@angular/core';
 import { IsoDate, IsoDateTime } from '../models';
-import { addDays, toIsoDateTime } from '../formatting/date-utils';
+import { addDays, dateOfTimestamp, fromDateTimeLocalValue, toDateTimeLocalValue } from '../formatting/date-utils';
 
 /**
- * The demo fixtures are generated relative to this date (see tools/generate-mock-data.mjs),
- * so "today" is pinned to keep statuses such as "expiring" or "overdue" reproducible.
- * Replace with the real system date once data comes from the backend.
+ * Single source of "now" for the application, in the company time zone (Mozambique, UTC+2,
+ * the same offset used by date-utils). Inject it instead of calling `new Date()` so tests can
+ * pin the date.
  */
-export const DEMO_REFERENCE_DATE: IsoDate = '2026-10-24';
-
 @Injectable({ providedIn: 'root' })
 export class ClockService {
-  /** Calendar date considered "today" by the application. */
+  /** Calendar date considered "today". */
   today(): IsoDate {
-    return DEMO_REFERENCE_DATE;
+    return dateOfTimestamp(new Date().toISOString());
   }
 
-  /** Current timestamp on the demo reference date, using the real wall-clock time. */
+  /** Current timestamp (minute precision) with the company offset. */
   now(): IsoDateTime {
-    const wall = new Date();
-    return toIsoDateTime(DEMO_REFERENCE_DATE, wall.getHours(), wall.getMinutes());
+    return fromDateTimeLocalValue(toDateTimeLocalValue(new Date().toISOString())) as IsoDateTime;
   }
 
   daysFromToday(days: number): IsoDate {
-    return addDays(DEMO_REFERENCE_DATE, days);
+    return addDays(this.today(), days);
   }
 }

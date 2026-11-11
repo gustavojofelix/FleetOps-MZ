@@ -10,14 +10,13 @@ import { Icon } from '../../../shared/ui/icon/icon';
 import { IconName } from '../../../shared/ui/icon/icon-registry';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { CompanyProfilePanel } from '../company-profile-panel/company-profile-panel';
-import { DemoDataPanel } from '../demo-data-panel/demo-data-panel';
 import { MyPreferencesPanel } from '../my-preferences-panel/my-preferences-panel';
 import { NotificationSettingsPanel } from '../notification-settings-panel/notification-settings-panel';
 import { RegionalPanel } from '../regional-panel/regional-panel';
 import { SETTINGS_TABS, SettingsTab, SettingsUnsavedChanges } from '../settings-form';
 
 interface NavGroup {
-  key: 'company' | 'personal' | 'demo';
+  key: 'company' | 'personal';
   tabs: { tab: SettingsTab; icon: IconName }[];
 }
 
@@ -31,12 +30,11 @@ const NAV: readonly NavGroup[] = [
     ],
   },
   { key: 'personal', tabs: [{ tab: 'preferences', icon: 'user' }] },
-  { key: 'demo', tabs: [{ tab: 'data', icon: 'archive' }] },
 ];
 
 /**
  * Settings shell: company settings (shared, saved explicitly) and personal preferences
- * (saved locally on change). `?tab=company|regional|notifications|preferences|data`.
+ * (saved locally on change). `?tab=company|regional|notifications|preferences`.
  */
 @Component({
   selector: 'app-settings-page',
@@ -49,7 +47,6 @@ const NAV: readonly NavGroup[] = [
     RegionalPanel,
     NotificationSettingsPanel,
     MyPreferencesPanel,
-    DemoDataPanel,
   ],
   templateUrl: './settings-page.html',
   styleUrl: './settings-page.scss',

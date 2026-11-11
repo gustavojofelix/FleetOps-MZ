@@ -4,7 +4,7 @@ export const customers = {
   subtitle: '{total} clientes · {active} activos',
   new: 'Novo cliente',
   edit: 'Editar cliente',
-  newDescription: 'Registe um cliente. Os dados ficam guardados apenas neste navegador.',
+  newDescription: 'Registe um cliente.',
   editDescription: 'Actualize os dados do cliente {name}.',
   searchPlaceholder: 'Pesquisar nome, código, cidade, contacto…',
   allStatuses: 'Todos',
@@ -14,8 +14,8 @@ export const customers = {
   newTrip: 'Nova viagem',
   activate: 'Activar',
   deactivate: 'Desactivar',
-  demoFigure: 'Valor de demonstração',
-  demoFigureHint: 'Não existe ainda módulo de facturação: o saldo em dívida é um valor fictício de demonstração.',
+  demoFigure: 'Sem facturação',
+  demoFigureHint: 'Ainda não existe módulo de facturação: o saldo em dívida não é calculado.',
   periodLabel: 'Período',
   status: {
     active: 'Activo',
@@ -57,7 +57,7 @@ export const customers = {
     code: 'Sugerido automaticamente; deve ser único.',
     taxId: 'Número Único de Identificação Tributária (9 dígitos em Moçambique).',
     creditLimit: 'Expresso na moeda preferida do cliente.',
-    outstandingBalance: 'Calculado pela facturação (fora do âmbito desta demonstração). Não editável.',
+    outstandingBalance: 'Será calculado pelo módulo de facturação (ainda não disponível). Não editável.',
     suggestCode: 'Sugerir código',
     paymentTerms: 'Dias após a emissão da factura.',
   },
@@ -96,7 +96,7 @@ export const customers = {
   },
   confirmDelete: {
     title: 'Eliminar o cliente {name}?',
-    message: 'O cliente será removido dos dados de demonstração.',
+    message: 'O cliente será eliminado de forma permanente.',
   },
   confirmDeactivate: {
     title: 'Desactivar o cliente {name}?',
@@ -156,6 +156,6 @@ export const customers = {
     tripsTotal: 'Viagens no total',
     revenuePeriod: 'Receita no período ({currency})',
     revenueTotal: 'Receita total ({currency})',
-    outstanding: 'Saldo em dívida (demonstração)',
+    outstanding: 'Saldo em dívida (sem facturação)',
   },
 };

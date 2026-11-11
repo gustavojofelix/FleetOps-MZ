@@ -4,7 +4,7 @@ export const trailers = {
   subtitle: '{total} semi-reboques · {inUse} em uso · {maintenance} em manutenção',
   new: 'Novo semi-reboque',
   edit: 'Editar semi-reboque',
-  newDescription: 'Registe um semi-reboque da frota. Os dados ficam guardados apenas neste navegador.',
+  newDescription: 'Registe um semi-reboque da frota.',
   editDescription: 'Actualize os dados do semi-reboque {plate}.',
   searchPlaceholder: 'Pesquisar matrícula, n.º de frota, marca…',
   allStatuses: 'Todos',
@@ -77,7 +77,7 @@ export const trailers = {
   },
   confirmDelete: {
     title: 'Eliminar o semi-reboque {plate}?',
-    message: 'O semi-reboque será removido dos dados de demonstração.',
+    message: 'O semi-reboque será eliminado de forma permanente.',
   },
   detail: {
     backToList: 'Semi-reboques',

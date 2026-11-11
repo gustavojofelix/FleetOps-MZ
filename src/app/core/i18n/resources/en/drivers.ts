@@ -7,7 +7,7 @@ export const drivers: TranslationOf<typeof source> = {
   subtitle: '{total} drivers · {onTrip} on a trip · {onLeave} on leave',
   new: 'New driver',
   edit: 'Edit driver',
-  newDescription: 'Register a company driver. Data is stored only in this browser.',
+  newDescription: 'Register a company driver.',
   editDescription: 'Update the details of {name}.',
   searchPlaceholder: 'Search name, employee no., phone, licence…',
   allStatuses: 'All',
@@ -105,7 +105,7 @@ export const drivers: TranslationOf<typeof source> = {
   },
   confirmDelete: {
     title: 'Delete driver {name}?',
-    message: 'The driver will be removed from the demo data.',
+    message: 'The driver will be permanently deleted.',
   },
   incidentForm: {
     title: 'Register incident',

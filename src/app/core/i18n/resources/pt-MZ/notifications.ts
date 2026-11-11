@@ -25,7 +25,7 @@ export const notifications = {
     other: '{count} notificações',
   },
   preferencesLink: 'Preferências de notificação',
-  demoNote: 'Notificações geradas a partir dos dados de demonstração. O estado de leitura fica guardado apenas neste navegador.',
+  generatedNote: 'Alertas gerados automaticamente a partir dos dados da empresa. O estado de leitura é pessoal.',
   empty: {
     allTitle: 'Sem notificações',
     allDescription: 'Quando houver alertas de manutenção, documentos, viagens ou despesas, aparecem aqui.',

@@ -99,7 +99,7 @@
             <option [value]="status">{{ 'expenses.approval.' + status | t }}</option>
           }
         </select>
-        <p class="field__hint" id="e-approval-hint"><span class="sim-tag">{{ 'common.labels.demo' | t }}</span> {{ 'expenses.hints.approval' | t }}</p>
+        <p class="field__hint" id="e-approval-hint">{{ 'expenses.hints.approval' | t }}</p>
       </div>
       <div class="field field--full">
         <span class="field__label">{{ 'expenses.fields.receipt' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></span>
@@ -120,7 +120,6 @@
             <input class="visually-hidden" type="file" accept="image/*,application/pdf" (change)="onReceiptSelected($event)" />
           </label>
         }
-        <p class="field__hint"><span class="sim-tag">{{ 'common.labels.demo' | t }}</span> {{ 'expenses.receipt.demo' | t }}</p>
       </div>
       <div class="field field--full">
         <label class="field__label" for="e-notes">{{ 'expenses.fields.notes' | t }} <span class="field__optional">{{ 'common.labels.optional' | t }}</span></label>

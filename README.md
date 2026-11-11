@@ -1,69 +1,74 @@
 # FleetOps MZ
 
 Fleet, road-freight and trip-profitability management for transport companies in Mozambique
-(Port of Beira and the Beira Corridor). **This repository contains the UI/UX phase only**: a complete,
-navigable Angular frontend running on deterministic, fictional demo data. There is no backend,
-authentication or external API yet.
+(Port of Beira and the Beira Corridor). Angular frontend on a Supabase backend (Postgres with
+Row Level Security, Auth and Storage), multi-tenant: each company only ever sees its own data.
 
 ## Quick start
 
 ```bash
 npm install
-npm start            # http://localhost:4200
-npm test             # Vitest unit tests (ng test --watch=false for a single run)
-npm run build        # production build in dist/fleetops-mz
-node tools/generate-mock-data.mjs   # regenerate the demo fixtures (deterministic)
+npm start            # http://localhost:4200 — sign in or create an account
+npm test             # Vitest unit tests (npm run test:ci for a single run)
+npm run build        # production build in dist/fleetops-mz/browser
 ```
 
-Requirements: Node 20.19+, 22.12+ or 24 (developed with Node 24 / Angular 21.2).
+Requirements: Node 20.19+, 22.12+ or 24 (developed with Node 24 / Angular 21.2). The app talks to
+the Supabase project configured in `src/app/core/supabase/supabase-client.ts` (URL + public anon key).
+
+Database changes are versioned in `supabase/migrations` and applied with the Supabase CLI:
+
+```bash
+npx supabase login
+npx supabase link --project-ref <project-ref>
+npx supabase db push --remote      # CLI v3: without --remote it targets a local database
+```
 
 ## What's inside
 
 | Area | Modules |
 |---|---|
-| Overview | Executive dashboard |
+| Overview | Executive dashboard, fleet map (positions are simulated until telematics are connected) |
 | Fleet operations | Vehicles, Drivers, Trailers, Trips (create / edit / detail / timeline), Dispatch board, Customers |
-| Fleet costs | Fuel management (consistency checks), Expenses (demo approvals), Maintenance (work orders), Trip profitability, Financial reports (CSV export) |
-| Administration | Documents (expiry tracking, simulated upload), Notifications, Users & permissions (demo roles), Company settings |
+| Fleet costs | Fuel (consistency checks), Expenses (approval by owner / admin / finance), Maintenance work orders, Trip profitability, Financial reports (CSV export) |
+| Administration | Documents (expiry tracking, file storage), Notifications, Users & permissions (invitations, roles), Company settings |
 
-Cross-cutting: collapsible sidebar + mobile drawer, global search (Ctrl/⌘ K), light/dark/system themes,
-Portuguese (Mozambique) and English with live switching, locale-aware formatting, multi-currency
-(MZN, USD, ZAR, historical ZWL) with clearly labelled **simulated** conversions, responsive layouts from
-360 px to wide desktops, keyboard-accessible components.
+Cross-cutting: sign-in and company onboarding, role-based actions, global search (Ctrl/⌘ K),
+light/dark/system themes, Portuguese (Mozambique) and English, locale-aware formatting,
+multi-currency (MZN, USD, ZAR, historical ZWL) with indicative exchange rates, responsive layouts.
 
 ## Architecture
 
 ```
-src/app/core       models · data-access contracts · mock repositories · domain rules · i18n · formatting · state
-src/app/shared     UI components (charts, modal/drawer, badges, tables helpers…) and utilities
+src/app/core       models · data-access contracts · Supabase repositories · domain rules · i18n · formatting · state
+src/app/shared     UI components (charts, modal/drawer, badges, *appCan…) and utilities
 src/app/layout     application shell, sidebar, top bar, global search
-src/app/features   one lazy-loaded folder per module
+src/app/features   one lazy-loaded folder per module (+ auth: sign-in and onboarding)
 src/styles         design tokens (light/dark) and the global CSS vocabulary
-tools/             deterministic fixture generator
-docs/              conventions and backend integration notes
+supabase/          CLI config and SQL migrations (schema, RLS, triggers, RPCs, storage policies)
+tools/             demo-data generator (tools/demo-data, used by tests and the demo seed), demo-video recorder
+docs/              backend notes and frontend conventions
 ```
 
-- Pages depend on **abstract repositories** (`core/data-access/repositories.ts`) bound to mock
-  implementations in `provideMockDataAccess()`. A Supabase implementation can be provided instead
-  without touching the UI — see [docs/BACKEND_INTEGRATION.md](docs/BACKEND_INTEGRATION.md).
-- Financial and operational rules are pure functions in `core/domain` with unit tests
-  (contribution margin, fuel consistency, assignment validation, expiry, maintenance status).
+- Pages depend on **abstract repositories** (`core/data-access/repositories.ts`); `provideBackend()`
+  (`core/backend/backend.ts`) binds them to the Supabase implementations in `core/supabase`.
+- **Security lives in the database**: every table has RLS by organization and role; multi-record rules
+  (trip status ↔ vehicle/driver/trailer status, expense approval, invitations) are triggers or RPCs.
+  The UI hides actions a role cannot perform (`PermissionService`, `*appCan`) as a convenience only.
+- Financial and operational rules are pure functions in `core/domain` with unit tests.
 - Every user-facing string lives in `core/i18n/resources/<language>/<feature>.ts`; English is
   type-checked against the Portuguese source so missing keys fail compilation.
 
-Development rules: [docs/FRONTEND_CONVENTIONS.md](docs/FRONTEND_CONVENTIONS.md).
+Details: [docs/BACKEND_INTEGRATION.md](docs/BACKEND_INTEGRATION.md) · rules for UI work:
+[docs/FRONTEND_CONVENTIONS.md](docs/FRONTEND_CONVENTIONS.md).
 
-## Demo data and what is mocked
+## Not available yet
 
-- All companies, people, plates, phone numbers, documents and amounts are **fictional**.
-- "Today" is pinned to **24 Oct 2026** (`ClockService`) so statuses such as *expiring* or *overdue*
-  stay reproducible. Replace with the real clock when the backend arrives.
-- Create / edit / delete operations persist to `localStorage` in this browser only. Use
-  *Profile menu → Reset demo data* (or Settings → Demo data) to restore the original fixtures.
-- Exchange rates are fixed demo values (`core/formatting/currency.ts`) and are always labelled as simulated.
-- File uploads (receipts, documents, logo) are simulated: only the file name is kept locally.
-- Users, roles and permissions are demonstration data; **no access control is enforced** in the browser.
-- Notifications are fixtures; email digests and invitations are not sent.
+- Invitation and digest e-mails are not sent: an invited person creates an account with the invited
+  address and the invitation is accepted automatically on sign-in.
+- Exchange rates are indicative values from the `exchange_rates` table (no live market feed).
+- Outstanding customer balances need an invoicing module.
+- Fleet-map positions are simulated from active trips (no GPS / telematics feed yet).
 
 ## Contribution margin
 
