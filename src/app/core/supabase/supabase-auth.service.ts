@@ -1,5 +1,4 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { Session } from '@supabase/supabase-js';
 import { AuthSession } from '../backend/auth-session';
 import { SUPABASE, toError } from './supabase-client';
@@ -14,7 +13,6 @@ export class SupabaseAuthService extends AuthSession {
   readonly enabled = true;
 
   private readonly client = inject(SUPABASE);
-  private readonly router = inject(Router);
   private readonly state = signal<Session | null>(null);
 
   readonly session = this.state.asReadonly();
@@ -28,7 +26,8 @@ export class SupabaseAuthService extends AuthSession {
     // Keep the callback synchronous: awaiting Supabase calls inside it can deadlock the client.
     this.client.auth.onAuthStateChange((event, session) => {
       this.state.set(session);
-      if (event === 'SIGNED_OUT') void this.router.navigateByUrl('/login');
+      // Full reload: no cached data of the previous user survives in memory.
+      if (event === 'SIGNED_OUT') location.assign('/login');
     });
   }
 

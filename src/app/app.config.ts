@@ -18,8 +18,10 @@ export const appConfig: ApplicationConfig = {
       inject(ThemeService);
       const settings = inject(CompanySettingsService);
       const i18n = inject(TranslationService);
-      const organization = await settings.load();
-      await i18n.init(organization.defaultLanguage);
+      // With a real backend there is no organization before sign-in: start with the defaults
+      // and let the organization guard load the settings afterwards.
+      const organization = await settings.load().catch(() => null);
+      await i18n.init(organization?.defaultLanguage);
     }),
   ],
 };

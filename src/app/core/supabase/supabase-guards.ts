@@ -1,5 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { TranslationService } from '../i18n/translation.service';
+import { CompanySettingsService } from '../state/company-settings.service';
 import { CurrentOrganization } from './current-organization.service';
 import { SupabaseAuthService } from './supabase-auth.service';
 
@@ -14,9 +16,18 @@ export const authGuard: CanActivateFn = async (_route, state) => {
 /** Requires an organization membership; users without one go through onboarding. */
 export const organizationGuard: CanActivateFn = async () => {
   const organization = inject(CurrentOrganization);
+  const settings = inject(CompanySettingsService);
+  const i18n = inject(TranslationService);
   const router = inject(Router);
   try {
-    return (await organization.load()) ? true : router.createUrlTree(['/onboarding']);
+    const membership = await organization.load();
+    if (!membership) return router.createUrlTree(['/onboarding']);
+    // Company settings (currency, units, default language) for this organization.
+    if (settings.organization()?.id !== membership.organizationId) {
+      const company = await settings.load();
+      await i18n.applyCompanyDefault(company.defaultLanguage);
+    }
+    return true;
   } catch (error) {
     console.error(error);
     return router.createUrlTree(['/login'], { queryParams: { error: 'membership' } });

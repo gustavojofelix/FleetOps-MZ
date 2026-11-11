@@ -1,10 +1,25 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
 import { CanActivateFn, Routes } from '@angular/router';
-import { VehicleRepository } from '../data-access/repositories';
+import {
+  CustomerRepository,
+  DriverRepository,
+  OrganizationRepository,
+  RouteRepository,
+  TrailerRepository,
+  UserRepository,
+  VehicleRepository,
+} from '../data-access/repositories';
 import { provideMockDataAccess } from '../data-access/provide-data-access';
 import { SupabaseAuthService } from '../supabase/supabase-auth.service';
 import { authGuard, noOrganizationGuard, organizationGuard } from '../supabase/supabase-guards';
-import { SupabaseVehicleRepository } from '../supabase/supabase-vehicle.repository';
+import {
+  SupabaseCustomerRepository,
+  SupabaseDriverRepository,
+  SupabaseRouteRepository,
+  SupabaseTrailerRepository,
+  SupabaseVehicleRepository,
+} from '../supabase/repositories/master-data.repositories';
+import { SupabaseOrganizationRepository, SupabaseUserRepository } from '../supabase/repositories/organization.repositories';
 import { AuthSession } from './auth-session';
 
 /*
@@ -21,6 +36,12 @@ export function provideBackend(): EnvironmentProviders {
     provideMockDataAccess(),
     // Overrides (last provider for a token wins).
     { provide: VehicleRepository, useClass: SupabaseVehicleRepository },
+    { provide: DriverRepository, useClass: SupabaseDriverRepository },
+    { provide: TrailerRepository, useClass: SupabaseTrailerRepository },
+    { provide: CustomerRepository, useClass: SupabaseCustomerRepository },
+    { provide: RouteRepository, useClass: SupabaseRouteRepository },
+    { provide: OrganizationRepository, useClass: SupabaseOrganizationRepository },
+    { provide: UserRepository, useClass: SupabaseUserRepository },
     { provide: AuthSession, useExisting: SupabaseAuthService },
   ]);
 }

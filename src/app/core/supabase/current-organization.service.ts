@@ -4,6 +4,8 @@ import { SUPABASE, toError } from './supabase-client';
 import { SupabaseAuthService } from './supabase-auth.service';
 
 export interface Membership {
+  /** organization_members.id — the AppUser id used across the app. */
+  memberId: string;
   organizationId: string;
   role: UserRole;
   fullName: string;
@@ -37,7 +39,7 @@ export class CurrentOrganization {
 
     const { data, error } = await this.client
       .from('organization_members')
-      .select('organization_id, role, full_name, email')
+      .select('id, organization_id, role, full_name, email')
       .eq('user_id', userId)
       .eq('status', 'active')
       .order('created_at')
@@ -46,7 +48,7 @@ export class CurrentOrganization {
     if (error) throw toError(error);
 
     const membership: Membership | null = data
-      ? { organizationId: data.organization_id, role: data.role as UserRole, fullName: data.full_name, email: data.email }
+      ? { memberId: data.id, organizationId: data.organization_id, role: data.role as UserRole, fullName: data.full_name, email: data.email }
       : null;
     this.state.set(membership);
     this.loadedFor = userId;
