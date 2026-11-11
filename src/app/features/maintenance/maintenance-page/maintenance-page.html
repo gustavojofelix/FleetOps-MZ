@@ -5,7 +5,7 @@
         <app-icon name="download" [size]="16" />
         {{ 'common.actions.exportCsv' | t }}
       </button>
-      <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <button *appCan="'fleet.manage'" type="button" class="btn btn--primary" (click)="openCreate()">
         <app-icon name="plus" [size]="16" />
         {{ 'maintenance.new' | t }}
       </button>
@@ -137,7 +137,7 @@
               </div>
               <div class="list-row__aside upcoming-list__aside">
                 <app-status-badge kind="maintenance" [value]="item.status" />
-                <button
+                <button *appCan="'fleet.manage'"
                   type="button"
                   class="btn btn--ghost btn--sm"
                   [class.btn--loading]="busyId() === item.record.id"
@@ -177,7 +177,7 @@
                 <span class="list-row__meta">{{ forecastLabel(forecast) }}</span>
               </div>
               <div class="list-row__aside">
-                <button
+                <button *appCan="'fleet.manage'"
                   type="button"
                   class="btn btn--secondary btn--sm"
                   [attr.aria-label]="('maintenance.upcoming.schedule' | t) + ' — ' + directory.plate(forecast.vehicleId)"
@@ -274,7 +274,7 @@
           </app-empty-state>
         } @else {
           <app-empty-state icon="wrench" [title]="'common.states.emptyTitle' | t" [description]="'maintenance.empty' | t">
-            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'maintenance.new' | t }}</button>
+            <button *appCan="'fleet.manage'" type="button" class="btn btn--primary" (click)="openCreate()">{{ 'maintenance.new' | t }}</button>
           </app-empty-state>
         }
       } @else {
@@ -375,28 +375,28 @@
                       </button>
                       <div dropdownMenu>
                         @if (canStart(row)) {
-                          <button type="button" class="menu__item" role="menuitem" (click)="start(m)">
+                          <button *appCan="'fleet.manage'" type="button" class="menu__item" role="menuitem" (click)="start(m)">
                             <app-icon name="wrench" [size]="16" /> {{ 'maintenance.actions.start' | t }}
                           </button>
                         }
                         @if (m.status === 'in_progress' || m.status === 'scheduled') {
-                          <button type="button" class="menu__item" role="menuitem" (click)="completing.set(m)">
+                          <button *appCan="'fleet.manage'" type="button" class="menu__item" role="menuitem" (click)="completing.set(m)">
                             <app-icon name="circle-check" [size]="16" /> {{ 'maintenance.actions.complete' | t }}
                           </button>
                         }
-                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(m)">
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item" role="menuitem" (click)="openEdit(m)">
                           <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
                         </button>
                         <a class="menu__item" role="menuitem" [routerLink]="['/vehicles', m.vehicleId]">
                           <app-icon name="truck" [size]="16" /> {{ 'maintenance.actions.viewVehicle' | t }}
                         </a>
-                        <div class="menu__separator"></div>
+                        <div *appCan="'fleet.manage'" class="menu__separator"></div>
                         @if (m.status === 'in_progress' || m.status === 'scheduled') {
-                          <button type="button" class="menu__item" role="menuitem" (click)="cancel(m)">
+                          <button *appCan="'fleet.manage'" type="button" class="menu__item" role="menuitem" (click)="cancel(m)">
                             <app-icon name="ban" [size]="16" /> {{ 'maintenance.actions.cancel' | t }}
                           </button>
                         }
-                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(m)">
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(m)">
                           <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
                         </button>
                       </div>

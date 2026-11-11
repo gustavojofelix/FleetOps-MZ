@@ -41,6 +41,7 @@ import { PeriodPreset, PeriodSelection, resolvePeriod } from '../../../shared/ut
 import { MaintenanceCompleteDialog } from '../maintenance-complete-dialog/maintenance-complete-dialog';
 import { MaintenanceFacade, MaintenanceResult, ServiceForecast, UpcomingItem, VehicleOnTripError } from '../maintenance.facade';
 import { MaintenanceForm, MaintenancePreset } from '../maintenance-form/maintenance-form';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 /** "open" (default) = overdue + scheduled + in progress; "all" = every status. */
 type MaintenanceTab = 'open' | 'all' | MaintenanceDisplayStatus;
@@ -78,6 +79,7 @@ const OVERVIEW_PERIOD_PRESETS: readonly PeriodPreset[] = ['last30Days', 'last90D
     DonutChart,
     MaintenanceForm,
     MaintenanceCompleteDialog,
+    CanDirective,
   ],
   templateUrl: './maintenance-page.html',
   styleUrl: './maintenance-page.scss',

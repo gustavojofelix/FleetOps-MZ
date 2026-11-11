@@ -1,8 +1,9 @@
-import { PERMISSIONS, Permission, UserRole } from '../../core/models';
+import { PERMISSIONS, Permission, UserRole } from '../models';
 
 /**
- * Demo role → permission mapping, used only to display the matrix. It does not restrict
- * anything in the UI: real enforcement belongs to the backend (Supabase Auth + Row Level Security).
+ * Role → permission mapping. The UI uses it to hide actions a role cannot perform
+ * (PermissionService, *appCan); the database enforces the same rules with RLS policies and
+ * triggers (supabase/migrations), so hiding is a convenience, never the protection.
  */
 export const ROLE_PERMISSIONS: Readonly<Record<UserRole, readonly Permission[]>> = {
   owner: PERMISSIONS,

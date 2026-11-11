@@ -5,15 +5,15 @@
         <app-status-badge kind="vehicle" [value]="v.status" />
       </ng-container>
       <ng-container actions>
-        <button type="button" class="btn btn--secondary" (click)="statusTarget.set(v)">
+        <button *appCan="'fleet.manage'" type="button" class="btn btn--secondary" (click)="statusTarget.set(v)">
           <app-icon name="refresh" [size]="16" />
           {{ 'common.actions.changeStatus' | t }}
         </button>
-        <button type="button" class="btn btn--secondary" (click)="editOpen.set(true)">
+        <button *appCan="'fleet.manage'" type="button" class="btn btn--secondary" (click)="editOpen.set(true)">
           <app-icon name="pencil" [size]="16" />
           {{ 'common.actions.edit' | t }}
         </button>
-        <a class="btn btn--primary" routerLink="/trips/new" [queryParams]="{ vehicleId: v.id }">
+        <a *appCan="'trips.manage'" class="btn btn--primary" routerLink="/trips/new" [queryParams]="{ vehicleId: v.id }">
           <app-icon name="plus" [size]="16" />
           {{ 'vehicles.newTrip' | t }}
         </a>
@@ -237,7 +237,7 @@
               </div>
             } @else {
               <app-empty-state icon="route" compact [title]="'vehicles.detail.noTrips' | t">
-                <a class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ vehicleId: v.id }">{{ 'vehicles.newTrip' | t }}</a>
+                <a *appCan="'trips.manage'" class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ vehicleId: v.id }">{{ 'vehicles.newTrip' | t }}</a>
               </app-empty-state>
             }
           </section>

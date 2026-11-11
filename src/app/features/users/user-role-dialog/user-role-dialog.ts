@@ -5,7 +5,7 @@ import { AppUser, UserRole } from '../../../core/models';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { Modal } from '../../../shared/ui/modal/modal';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
-import { ASSIGNABLE_ROLES } from '../role-permissions';
+import { ASSIGNABLE_ROLES } from '../../../core/domain/permissions';
 import { UsersFacade } from '../users.facade';
 
 /** Small dialog to change a member's role. The owner is never offered here. */

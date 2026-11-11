@@ -42,6 +42,7 @@ import { PeriodSelection, resolvePeriod } from '../../../shared/utils/period';
 import { approvalCounts, categoryBreakdown, summariseExpenses } from '../expense-calculations';
 import { ExpenseForm, ExpenseFormDefaults, ExpenseSaveResult } from '../expense-form/expense-form';
 import { ExpensesFacade } from '../expenses.facade';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 /** Fixed chart colour slot per category (tied to the category, never to its rank). */
 const CATEGORY_COLORS: Partial<Record<ExpenseCategory, DonutSlice['color']>> = {
@@ -75,6 +76,7 @@ const OTHERS_COLOR: DonutSlice['color'] = 6;
     Modal,
     TooltipDirective,
     ExpenseForm,
+    CanDirective,
   ],
   templateUrl: './expenses-page.html',
   styleUrl: './expenses-page.scss',

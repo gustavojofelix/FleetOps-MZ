@@ -5,7 +5,7 @@
         <app-icon name="download" [size]="16" />
         {{ 'common.actions.exportCsv' | t }}
       </button>
-      <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <button *appCan="'costs.manage'" type="button" class="btn btn--primary" (click)="openCreate()">
         <app-icon name="plus" [size]="16" />
         {{ 'expenses.new' | t }}
       </button>
@@ -220,7 +220,7 @@
         <span class="sim-tag">{{ 'common.labels.demo' | t }}</span>
         <span class="toolbar__spacer"></span>
         <button type="button" class="btn btn--ghost btn--sm" [disabled]="busy()" (click)="clearSelection()">{{ 'expenses.selection.clear' | t }}</button>
-        <button type="button" class="btn btn--primary btn--sm" [class.btn--loading]="busy()" [disabled]="busy()" (click)="approveSelected()">
+        <button *appCan="'costs.approve'" type="button" class="btn btn--primary btn--sm" [class.btn--loading]="busy()" [disabled]="busy()" (click)="approveSelected()">
           <app-icon name="check" [size]="14" />
           {{ 'expenses.selection.approveSelected' | t }}
         </button>
@@ -242,7 +242,7 @@
           </app-empty-state>
         } @else {
           <app-empty-state icon="receipt" [title]="'common.states.emptyTitle' | t" [description]="'expenses.empty' | t">
-            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'expenses.new' | t }}</button>
+            <button *appCan="'costs.manage'" type="button" class="btn btn--primary" (click)="openCreate()">{{ 'expenses.new' | t }}</button>
           </app-empty-state>
         }
       } @else {
@@ -251,7 +251,7 @@
             <thead>
               <tr>
                 <th scope="col" class="select-cell">
-                  <input
+                  <input *appCan="'costs.approve'"
                     type="checkbox"
                     class="select-checkbox"
                     [checked]="allSelected()"
@@ -290,7 +290,7 @@
                 <tr [class.is-selected]="pending && selected">
                   <td class="select-cell" [attr.data-label]="pending ? ('common.actions.select' | t) : null">
                     @if (pending) {
-                      <input
+                      <input *appCan="'costs.approve'"
                         type="checkbox"
                         class="select-checkbox"
                         [checked]="selected"
@@ -339,7 +339,7 @@
                   <td class="data-table__actions">
                     <div class="row-actions">
                       @if (pending) {
-                        <button
+                        <button *appCan="'costs.approve'"
                           type="button"
                           class="btn btn--ghost btn--icon btn--sm row-actions__approve"
                           [attr.aria-label]="'expenses.actions.approve' | t: { reference: expense.reference }"
@@ -348,7 +348,7 @@
                         >
                           <app-icon name="check" [size]="16" />
                         </button>
-                        <button
+                        <button *appCan="'costs.approve'"
                           type="button"
                           class="btn btn--ghost btn--icon btn--sm row-actions__reject"
                           [attr.aria-label]="'expenses.actions.reject' | t: { reference: expense.reference }"
@@ -358,30 +358,32 @@
                           <app-icon name="ban" [size]="16" />
                         </button>
                       }
-                      <app-dropdown align="end">
-                        <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + expense.reference">
-                          <app-icon name="ellipsis" [size]="16" />
-                        </button>
-                        <div dropdownMenu>
-                          <button type="button" class="menu__item" role="menuitem" (click)="openEdit(expense)">
-                            <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                      <ng-container *appCan="'costs.manage'">
+                        <app-dropdown align="end">
+                          <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + expense.reference">
+                            <app-icon name="ellipsis" [size]="16" />
                           </button>
-                          @if (!pending) {
-                            <button type="button" class="menu__item" role="menuitem" (click)="resetPending(expense)">
-                              <app-icon name="undo" [size]="16" /> {{ 'expenses.actions.resetPending' | t }}
+                          <div dropdownMenu>
+                            <button type="button" class="menu__item" role="menuitem" (click)="openEdit(expense)">
+                              <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
                             </button>
-                          }
-                          @if (expense.tripId) {
-                            <a class="menu__item" role="menuitem" [routerLink]="['/trips', expense.tripId]">
-                              <app-icon name="route" [size]="16" /> {{ 'expenses.tripContext.viewTrip' | t }}
-                            </a>
-                          }
-                          <div class="menu__separator"></div>
-                          <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(expense)">
-                            <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
-                          </button>
-                        </div>
-                      </app-dropdown>
+                            @if (!pending) {
+                              <button type="button" class="menu__item" role="menuitem" (click)="resetPending(expense)">
+                                <app-icon name="undo" [size]="16" /> {{ 'expenses.actions.resetPending' | t }}
+                              </button>
+                            }
+                            @if (expense.tripId) {
+                              <a class="menu__item" role="menuitem" [routerLink]="['/trips', expense.tripId]">
+                                <app-icon name="route" [size]="16" /> {{ 'expenses.tripContext.viewTrip' | t }}
+                              </a>
+                            }
+                            <div class="menu__separator"></div>
+                            <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(expense)">
+                              <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                            </button>
+                          </div>
+                        </app-dropdown>
+                      </ng-container>
                     </div>
                   </td>
                 </tr>

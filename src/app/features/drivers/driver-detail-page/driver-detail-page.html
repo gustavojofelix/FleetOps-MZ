@@ -5,15 +5,15 @@
         <app-status-badge kind="driver" [value]="d.status" />
       </ng-container>
       <ng-container actions>
-        <button type="button" class="btn btn--secondary" (click)="statusTarget.set(d)">
+        <button *appCan="'fleet.manage'" type="button" class="btn btn--secondary" (click)="statusTarget.set(d)">
           <app-icon name="refresh" [size]="16" />
           {{ 'common.actions.changeStatus' | t }}
         </button>
-        <button type="button" class="btn btn--secondary" (click)="editOpen.set(true)">
+        <button *appCan="'fleet.manage'" type="button" class="btn btn--secondary" (click)="editOpen.set(true)">
           <app-icon name="pencil" [size]="16" />
           {{ 'common.actions.edit' | t }}
         </button>
-        <a class="btn btn--primary" routerLink="/trips/new" [queryParams]="{ driverId: d.id }">
+        <a *appCan="'trips.manage'" class="btn btn--primary" routerLink="/trips/new" [queryParams]="{ driverId: d.id }">
           <app-icon name="plus" [size]="16" />
           {{ 'drivers.newTrip' | t }}
         </a>
@@ -177,7 +177,7 @@
                       <div class="list-row">
                         <span class="avatar"><app-icon name="truck" [size]="16" /></span>
                         <span class="list-row__main"><span class="list-row__meta">{{ 'drivers.noVehicle' | t }}</span></span>
-                        <button type="button" class="btn btn--ghost btn--sm" (click)="editOpen.set(true)">{{ 'common.actions.edit' | t }}</button>
+                        <button *appCan="'fleet.manage'" type="button" class="btn btn--ghost btn--sm" (click)="editOpen.set(true)">{{ 'common.actions.edit' | t }}</button>
                       </div>
                     }
                   </li>
@@ -238,7 +238,7 @@
               </div>
             } @else {
               <app-empty-state icon="route" compact [title]="'drivers.detail.noTrips' | t">
-                <a class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ driverId: d.id }">{{ 'drivers.newTrip' | t }}</a>
+                <a *appCan="'trips.manage'" class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ driverId: d.id }">{{ 'drivers.newTrip' | t }}</a>
               </app-empty-state>
             }
           </section>
@@ -249,7 +249,7 @@
             <header class="card__header">
               <h2 class="card__title">{{ 'drivers.detail.tabs.incidents' | t }}</h2>
               <div class="card__actions">
-                <button type="button" class="btn btn--secondary btn--sm" (click)="incidentOpen.set(true)">
+                <button *appCan="'fleet.manage'" type="button" class="btn btn--secondary btn--sm" (click)="incidentOpen.set(true)">
                   <app-icon name="plus" [size]="16" />
                   {{ 'drivers.detail.registerIncident' | t }}
                 </button>

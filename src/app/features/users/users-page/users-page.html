@@ -7,7 +7,7 @@
           {{ 'common.actions.exportCsv' | t }}
         </button>
       }
-      <button type="button" class="btn btn--primary" (click)="inviteOpen.set(true)">
+      <button *appCan="'users.manage'" type="button" class="btn btn--primary" (click)="inviteOpen.set(true)">
         <app-icon name="user-plus" [size]="16" />
         {{ 'users.invite' | t }}
       </button>
@@ -104,7 +104,7 @@
             </app-empty-state>
           } @else {
             <app-empty-state icon="users" [title]="'common.states.emptyTitle' | t" [description]="'users.empty' | t">
-              <button type="button" class="btn btn--primary" (click)="inviteOpen.set(true)">{{ 'users.invite' | t }}</button>
+              <button *appCan="'users.manage'" type="button" class="btn btn--primary" (click)="inviteOpen.set(true)">{{ 'users.invite' | t }}</button>
             </app-empty-state>
           }
         } @else {
@@ -178,12 +178,12 @@
                       }
                     </td>
                     <td class="data-table__actions">
-                      <app-dropdown align="end">
-                        <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + user.fullName">
-                          <app-icon name="ellipsis" [size]="16" />
-                        </button>
-                        <div dropdownMenu>
-                          @if (isProtected(user)) {
+                      @if (isProtected(user)) {
+                        <app-dropdown align="end">
+                          <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + user.fullName">
+                            <app-icon name="ellipsis" [size]="16" />
+                          </button>
+                          <div dropdownMenu>
                             <p class="menu__hint">
                               <app-icon name="lock" [size]="14" />
                               <span>{{ 'users.ownerLockedHint' | t }}</span>
@@ -192,37 +192,46 @@
                             <button type="button" class="menu__item" role="menuitem" (click)="selectView('roles')">
                               <app-icon name="eye" [size]="16" /> {{ 'users.actions.viewPermissions' | t }}
                             </button>
-                          } @else {
-                            <button type="button" class="menu__item" role="menuitem" (click)="openRoleDialog(user)">
-                              <app-icon name="shield-check" [size]="16" /> {{ 'users.actions.changeRole' | t }}
+                          </div>
+                        </app-dropdown>
+                      } @else {
+                        <ng-container *appCan="'users.manage'">
+                          <app-dropdown align="end">
+                            <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + user.fullName">
+                              <app-icon name="ellipsis" [size]="16" />
                             </button>
-                            @switch (user.status) {
-                              @case ('invited') {
-                                <button type="button" class="menu__item" role="menuitem" (click)="resendInvite(user)">
-                                  <app-icon name="send" [size]="16" /> {{ 'users.actions.resendInvite' | t }}
-                                </button>
-                                <div class="menu__separator"></div>
-                                <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="deleteInvite(user)">
-                                  <app-icon name="trash" [size]="16" /> {{ 'users.actions.deleteInvite' | t }}
-                                </button>
-                              }
-                              @case ('inactive') {
-                                <button type="button" class="menu__item" role="menuitem" (click)="reactivate(user)">
-                                  <app-icon name="rotate-ccw" [size]="16" /> {{ 'users.actions.reactivate' | t }}
-                                </button>
-                              }
-                              @default {
-                                @if (!isCurrent(user)) {
+                            <div dropdownMenu>
+                              <button type="button" class="menu__item" role="menuitem" (click)="openRoleDialog(user)">
+                                <app-icon name="shield-check" [size]="16" /> {{ 'users.actions.changeRole' | t }}
+                              </button>
+                              @switch (user.status) {
+                                @case ('invited') {
+                                  <button type="button" class="menu__item" role="menuitem" (click)="resendInvite(user)">
+                                    <app-icon name="send" [size]="16" /> {{ 'users.actions.resendInvite' | t }}
+                                  </button>
                                   <div class="menu__separator"></div>
-                                  <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="deactivate(user)">
-                                    <app-icon name="ban" [size]="16" /> {{ 'users.actions.deactivate' | t }}
+                                  <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="deleteInvite(user)">
+                                    <app-icon name="trash" [size]="16" /> {{ 'users.actions.deleteInvite' | t }}
                                   </button>
                                 }
+                                @case ('inactive') {
+                                  <button type="button" class="menu__item" role="menuitem" (click)="reactivate(user)">
+                                    <app-icon name="rotate-ccw" [size]="16" /> {{ 'users.actions.reactivate' | t }}
+                                  </button>
+                                }
+                                @default {
+                                  @if (!isCurrent(user)) {
+                                    <div class="menu__separator"></div>
+                                    <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="deactivate(user)">
+                                      <app-icon name="ban" [size]="16" /> {{ 'users.actions.deactivate' | t }}
+                                    </button>
+                                  }
+                                }
                               }
-                            }
-                          }
-                        </div>
-                      </app-dropdown>
+                            </div>
+                          </app-dropdown>
+                        </ng-container>
+                      }
                     </td>
                   </tr>
                 }

@@ -9,11 +9,11 @@
         <app-status-badge kind="trailer" [value]="tr.status" />
       </ng-container>
       <ng-container actions>
-        <button type="button" class="btn btn--secondary" (click)="statusTarget.set(tr)">
+        <button *appCan="'fleet.manage'" type="button" class="btn btn--secondary" (click)="statusTarget.set(tr)">
           <app-icon name="refresh" [size]="16" />
           {{ 'common.actions.changeStatus' | t }}
         </button>
-        <button type="button" class="btn btn--primary" (click)="editOpen.set(true)">
+        <button *appCan="'fleet.manage'" type="button" class="btn btn--primary" (click)="editOpen.set(true)">
           <app-icon name="pencil" [size]="16" />
           {{ 'common.actions.edit' | t }}
         </button>
@@ -124,7 +124,7 @@
                       <div class="list-row">
                         <span class="avatar"><app-icon name="truck" [size]="16" /></span>
                         <span class="list-row__main"><span class="list-row__meta">{{ 'trailers.noVehicle' | t }}</span></span>
-                        <button type="button" class="btn btn--ghost btn--sm" (click)="editOpen.set(true)">{{ 'common.actions.edit' | t }}</button>
+                        <button *appCan="'fleet.manage'" type="button" class="btn btn--ghost btn--sm" (click)="editOpen.set(true)">{{ 'common.actions.edit' | t }}</button>
                       </div>
                     }
                   </li>

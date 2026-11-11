@@ -14,7 +14,7 @@
   </header>
 
   <div class="card__body panel-body">
-    <fieldset class="form-section" [disabled]="saving()">
+    <fieldset class="form-section" [disabled]="saving() || !canManage()">
       <legend class="form-section__title">{{ 'settings.notifications.thresholds' | t }}</legend>
       <div class="form-grid">
         <div class="field">
@@ -38,7 +38,7 @@
       </div>
     </fieldset>
 
-    <fieldset class="form-section" [disabled]="saving()">
+    <fieldset class="form-section" [disabled]="saving() || !canManage()">
       <legend class="form-section__title">{{ 'settings.notifications.alerts' | t }}</legend>
       <div>
         @for (toggle of toggles; track toggle) {
@@ -55,7 +55,7 @@
       </div>
     </fieldset>
 
-    <fieldset class="form-section" [disabled]="saving()">
+    <fieldset class="form-section" [disabled]="saving() || !canManage()">
       <legend class="form-section__title">{{ 'settings.notifications.digest' | t }}</legend>
       <div class="switch-row">
         <span class="switch-row__text">
@@ -74,7 +74,7 @@
     </fieldset>
   </div>
 
-  <footer class="save-bar">
+  <footer *appCan="'settings.manage'" class="save-bar">
     @if (tracker.dirty()) {
       <span class="save-bar__status badge badge--warning" role="status">
         <app-icon name="circle-alert" [size]="12" />

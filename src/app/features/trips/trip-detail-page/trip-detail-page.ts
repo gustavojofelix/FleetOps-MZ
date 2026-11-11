@@ -25,6 +25,7 @@ import { TripActions } from '../trip-actions.service';
 import { isTripEditable } from '../trip-filters';
 import { TripNoteDialog } from '../trip-note-dialog/trip-note-dialog';
 import { TripStatusDialog } from '../trip-status-dialog/trip-status-dialog';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 type MarkerTone = 'accent' | 'warning' | 'danger' | 'success' | null;
 
@@ -62,6 +63,7 @@ const EVENT_ICONS: Record<TripEvent['type'], IconName> = {
     TooltipDirective,
     TripStatusDialog,
     TripNoteDialog,
+    CanDirective,
   ],
   templateUrl: './trip-detail-page.html',
   styleUrl: './trip-detail-page.scss',

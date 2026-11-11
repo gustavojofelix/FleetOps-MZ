@@ -108,12 +108,12 @@
           {{ 'common.actions.download' | t }}
         </button>
       }
-      <button type="button" class="btn btn--secondary" (click)="edit.emit(doc)">
+      <button *appCan="'documents.manage'" type="button" class="btn btn--secondary" (click)="edit.emit(doc)">
         <app-icon name="pencil" [size]="16" />
         {{ 'common.actions.edit' | t }}
       </button>
       @if (canRenew()) {
-        <button type="button" class="btn btn--primary" (click)="renew.emit(doc)">
+        <button *appCan="'documents.manage'" type="button" class="btn btn--primary" (click)="renew.emit(doc)">
           <app-icon name="refresh" [size]="16" />
           {{ 'documents.actions.renew' | t }}
         </button>

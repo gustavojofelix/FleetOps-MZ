@@ -8,7 +8,7 @@ import { FieldError } from '../../../shared/ui/field-error/field-error';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { revealErrors } from '../../../shared/utils/form-utils';
-import { ASSIGNABLE_ROLES } from '../role-permissions';
+import { ASSIGNABLE_ROLES } from '../../../core/domain/permissions';
 import { UsersFacade } from '../users.facade';
 
 /** Invitation form rendered inside a drawer. Demo: no email is sent. */

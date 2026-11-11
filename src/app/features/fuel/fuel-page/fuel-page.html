@@ -5,7 +5,7 @@
         <app-icon name="download" [size]="16" />
         {{ 'common.actions.exportCsv' | t }}
       </button>
-      <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <button *appCan="'costs.manage'" type="button" class="btn btn--primary" (click)="openCreate()">
         <app-icon name="plus" [size]="16" />
         {{ 'fuel.new' | t }}
       </button>
@@ -241,7 +241,7 @@
           </app-empty-state>
         } @else {
           <app-empty-state icon="fuel" [title]="'common.states.emptyTitle' | t" [description]="'fuel.empty' | t">
-            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'fuel.new' | t }}</button>
+            <button *appCan="'costs.manage'" type="button" class="btn btn--primary" (click)="openCreate()">{{ 'fuel.new' | t }}</button>
           </app-empty-state>
         }
       } @else {
@@ -361,25 +361,27 @@
                     }
                   </td>
                   <td class="data-table__actions">
-                    <app-dropdown align="end">
-                      <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + record.reference">
-                        <app-icon name="ellipsis" [size]="16" />
-                      </button>
-                      <div dropdownMenu>
-                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(record)">
-                          <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                    <ng-container *appCan="'costs.manage'">
+                      <app-dropdown align="end">
+                        <button dropdownTrigger type="button" class="btn btn--ghost btn--icon btn--sm" [attr.aria-label]="('common.actions.more' | t) + ' — ' + record.reference">
+                          <app-icon name="ellipsis" [size]="16" />
                         </button>
-                        @if (record.tripId) {
-                          <a class="menu__item" role="menuitem" [routerLink]="['/trips', record.tripId]">
-                            <app-icon name="route" [size]="16" /> {{ 'fuel.tripContext.viewTrip' | t }}
-                          </a>
-                        }
-                        <div class="menu__separator"></div>
-                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(record)">
-                          <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
-                        </button>
-                      </div>
-                    </app-dropdown>
+                        <div dropdownMenu>
+                          <button type="button" class="menu__item" role="menuitem" (click)="openEdit(record)">
+                            <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
+                          </button>
+                          @if (record.tripId) {
+                            <a class="menu__item" role="menuitem" [routerLink]="['/trips', record.tripId]">
+                              <app-icon name="route" [size]="16" /> {{ 'fuel.tripContext.viewTrip' | t }}
+                            </a>
+                          }
+                          <div class="menu__separator"></div>
+                          <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(record)">
+                            <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+                          </button>
+                        </div>
+                      </app-dropdown>
+                    </ng-container>
                   </td>
                 </tr>
               }

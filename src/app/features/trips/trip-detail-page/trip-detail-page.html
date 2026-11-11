@@ -13,46 +13,50 @@
       </ng-container>
       <ng-container actions>
         @if (transitions().length) {
-          <button type="button" class="btn btn--secondary" (click)="statusTarget.set(t)">
+          <button *appCan="'trips.manage'" type="button" class="btn btn--secondary" (click)="statusTarget.set(t)">
             <app-icon name="refresh" [size]="16" />
             {{ 'common.actions.changeStatus' | t }}
           </button>
         }
         @if (canEdit()) {
-          <a class="btn btn--secondary" [routerLink]="['/trips', t.id, 'edit']">
+          <a *appCan="'trips.manage'" class="btn btn--secondary" [routerLink]="['/trips', t.id, 'edit']">
             <app-icon name="pencil" [size]="16" />
             {{ 'common.actions.edit' | t }}
           </a>
         }
-        <app-dropdown align="end">
-          <button dropdownTrigger type="button" class="btn btn--secondary btn--icon" [attr.aria-label]="'common.actions.more' | t">
-            <app-icon name="ellipsis" [size]="16" />
-          </button>
-          <div dropdownMenu>
-            <button type="button" class="menu__item" role="menuitem" (click)="noteTarget.set(t)">
-              <app-icon name="file-text" [size]="16" /> {{ 'trips.detail.addNote' | t }}
+        <ng-container *appCan="['trips.manage', 'costs.manage']">
+          <app-dropdown align="end">
+            <button dropdownTrigger type="button" class="btn btn--secondary btn--icon" [attr.aria-label]="'common.actions.more' | t">
+              <app-icon name="ellipsis" [size]="16" />
             </button>
-            <a class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ duplicate: t.id }">
-              <app-icon name="copy" [size]="16" /> {{ 'trips.detail.duplicate' | t }}
-            </a>
-            @if (!canEdit()) {
-              <button type="button" class="menu__item" role="menuitem" (click)="openEdit(t)">
-                <app-icon name="lock" [size]="16" /> {{ 'common.actions.edit' | t }}
+            <div dropdownMenu>
+              <button *appCan="'trips.manage'" type="button" class="menu__item" role="menuitem" (click)="noteTarget.set(t)">
+                <app-icon name="file-text" [size]="16" /> {{ 'trips.detail.addNote' | t }}
               </button>
-            }
-            <div class="menu__separator"></div>
-            <a class="menu__item" role="menuitem" routerLink="/fuel" [queryParams]="{ tripId: t.id }">
-              <app-icon name="fuel" [size]="16" /> {{ 'trips.detail.addFuel' | t }}
-            </a>
-            <a class="menu__item" role="menuitem" routerLink="/expenses" [queryParams]="{ tripId: t.id }">
-              <app-icon name="receipt" [size]="16" /> {{ 'trips.detail.addExpense' | t }}
-            </a>
-            <div class="menu__separator"></div>
-            <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(t)">
-              <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
-            </button>
-          </div>
-        </app-dropdown>
+              <a *appCan="'trips.manage'" class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ duplicate: t.id }">
+                <app-icon name="copy" [size]="16" /> {{ 'trips.detail.duplicate' | t }}
+              </a>
+              @if (!canEdit()) {
+                <button *appCan="'trips.manage'" type="button" class="menu__item" role="menuitem" (click)="openEdit(t)">
+                  <app-icon name="lock" [size]="16" /> {{ 'common.actions.edit' | t }}
+                </button>
+              }
+              <ng-container *appCan="'trips.manage'">
+                <div *appCan="'costs.manage'" class="menu__separator"></div>
+              </ng-container>
+              <a *appCan="'costs.manage'" class="menu__item" role="menuitem" routerLink="/fuel" [queryParams]="{ tripId: t.id }">
+                <app-icon name="fuel" [size]="16" /> {{ 'trips.detail.addFuel' | t }}
+              </a>
+              <a *appCan="'costs.manage'" class="menu__item" role="menuitem" routerLink="/expenses" [queryParams]="{ tripId: t.id }">
+                <app-icon name="receipt" [size]="16" /> {{ 'trips.detail.addExpense' | t }}
+              </a>
+              <div *appCan="'trips.manage'" class="menu__separator"></div>
+              <button *appCan="'trips.manage'" type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(t)">
+                <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
+              </button>
+            </div>
+          </app-dropdown>
+        </ng-container>
       </ng-container>
     </app-page-header>
 
@@ -171,7 +175,7 @@
           <header class="card__header">
             <h2 class="card__title">{{ 'trips.detail.timeline' | t }}</h2>
             <div class="card__actions">
-              <button type="button" class="btn btn--ghost btn--sm" (click)="noteTarget.set(t)">
+              <button *appCan="'trips.manage'" type="button" class="btn btn--ghost btn--sm" (click)="noteTarget.set(t)">
                 <app-icon name="plus" [size]="14" /> {{ 'trips.detail.addNote' | t }}
               </button>
             </div>
@@ -228,7 +232,7 @@
               <h2 class="card__title">{{ 'trips.detail.costs' | t }}</h2>
               <p class="card__subtitle">{{ 'trips.detail.costsDescription' | t }}</p>
             </div>
-            <div class="card__actions cost-actions">
+            <div *appCan="'costs.manage'" class="card__actions cost-actions">
               <a class="btn btn--secondary btn--sm" routerLink="/fuel" [queryParams]="{ tripId: t.id }">
                 <app-icon name="fuel" [size]="14" /> {{ 'trips.detail.addFuel' | t }}
               </a>
@@ -325,8 +329,8 @@
             </div>
           } @else {
             <app-empty-state icon="receipt" compact [title]="'trips.detail.noCosts' | t">
-              <a class="btn btn--secondary btn--sm" routerLink="/fuel" [queryParams]="{ tripId: t.id }">{{ 'trips.detail.addFuel' | t }}</a>
-              <a class="btn btn--secondary btn--sm" routerLink="/expenses" [queryParams]="{ tripId: t.id }">{{ 'trips.detail.addExpense' | t }}</a>
+              <a *appCan="'costs.manage'" class="btn btn--secondary btn--sm" routerLink="/fuel" [queryParams]="{ tripId: t.id }">{{ 'trips.detail.addFuel' | t }}</a>
+              <a *appCan="'costs.manage'" class="btn btn--secondary btn--sm" routerLink="/expenses" [queryParams]="{ tripId: t.id }">{{ 'trips.detail.addExpense' | t }}</a>
             </app-empty-state>
           }
         </section>

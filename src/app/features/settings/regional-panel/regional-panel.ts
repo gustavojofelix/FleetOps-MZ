@@ -15,6 +15,8 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { revealErrors } from '../../../shared/utils/form-utils';
 import { trackSettingsForm } from '../settings-form';
 import { SettingsScope } from '../settings-scope/settings-scope';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
+import { PermissionService } from '../../../core/services/permission.service';
 
 const TIME_ZONES = ['Africa/Maputo', 'Africa/Johannesburg', 'Africa/Harare', 'Africa/Blantyre', 'Africa/Lusaka'] as const;
 const DATE_FORMATS: readonly DateFormatPreference[] = ['dd/MM/yyyy', 'yyyy-MM-dd', 'MM/dd/yyyy'];
@@ -26,7 +28,7 @@ const SAMPLE_LITRES = 400;
 
 @Component({
   selector: 'app-regional-panel',
-  imports: [ReactiveFormsModule, TranslatePipe, Icon, SettingsScope],
+  imports: [ReactiveFormsModule, TranslatePipe, Icon, SettingsScope, CanDirective],
   templateUrl: './regional-panel.html',
   styleUrl: './regional-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,6 +43,7 @@ export class RegionalPanel {
   private readonly clock = inject(ClockService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   protected readonly i18n = inject(TranslationService);
+  private readonly permissions = inject(PermissionService);
 
   protected readonly timeZones = TIME_ZONES;
   protected readonly dateFormats = DATE_FORMATS;
@@ -49,6 +52,7 @@ export class RegionalPanel {
   protected readonly currencies = ACTIVE_CURRENCIES;
   protected readonly currencyMeta = CURRENCIES;
   protected readonly saving = signal(false);
+  protected readonly canManage = computed(() => this.permissions.can('settings.manage'));
 
   protected readonly form = this.fb.group({
     defaultLanguage: ['pt-MZ', Validators.required],

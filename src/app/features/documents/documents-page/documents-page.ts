@@ -36,6 +36,7 @@ import { createListState } from '../../../shared/utils/list-state';
 import { DocumentForm, DocumentFormMode, DocumentPreset } from '../document-form/document-form';
 import { DocumentPreview } from '../document-preview/document-preview';
 import { DocumentsFacade } from '../documents.facade';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 interface SummaryItem {
   status: DocumentStatus;
@@ -70,6 +71,7 @@ const SUMMARY_ORDER: readonly { status: DocumentStatus; icon: IconName }[] = [
     TooltipDirective,
     DocumentForm,
     DocumentPreview,
+    CanDirective,
   ],
   templateUrl: './documents-page.html',
   styleUrl: './documents-page.scss',

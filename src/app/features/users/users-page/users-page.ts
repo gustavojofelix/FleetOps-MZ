@@ -26,6 +26,7 @@ import { PermissionsMatrix } from '../permissions-matrix/permissions-matrix';
 import { UserInviteForm } from '../user-invite-form/user-invite-form';
 import { UserRoleDialog } from '../user-role-dialog/user-role-dialog';
 import { UsersFacade } from '../users.facade';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 type UsersView = 'members' | 'roles';
 const VIEWS: readonly UsersView[] = ['members', 'roles'];
@@ -48,6 +49,7 @@ const VIEWS: readonly UsersView[] = ['members', 'roles'];
     UserInviteForm,
     UserRoleDialog,
     PermissionsMatrix,
+    CanDirective,
   ],
   templateUrl: './users-page.html',
   styleUrl: './users-page.scss',

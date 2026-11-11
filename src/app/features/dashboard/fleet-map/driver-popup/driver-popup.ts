@@ -12,6 +12,7 @@ import { IconName } from '../../../../shared/ui/icon/icon-registry';
 import { Modal } from '../../../../shared/ui/modal/modal';
 import { ToastService } from '../../../../shared/ui/toast/toast.service';
 import { UnitView } from '../fleet-map.model';
+import { CanDirective } from '../../../../shared/ui/can/can.directive';
 
 type QuickMessageKey =
   | 'location'
@@ -67,7 +68,7 @@ const IN_PLACE_KM = 5;
  */
 @Component({
   selector: 'app-driver-popup',
-  imports: [RouterLink, TranslatePipe, ...FORMAT_PIPES, ExpiryBadge, Icon, Modal],
+  imports: [RouterLink, TranslatePipe, ...FORMAT_PIPES, ExpiryBadge, Icon, Modal, CanDirective],
   templateUrl: './driver-popup.html',
   styleUrl: './driver-popup.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

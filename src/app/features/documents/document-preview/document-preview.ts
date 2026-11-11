@@ -11,11 +11,12 @@ import { ExpiryBadge } from '../../../shared/ui/expiry-badge/expiry-badge';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { Modal } from '../../../shared/ui/modal/modal';
 import { DocumentsFacade } from '../documents.facade';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 /** Read-only preview of the document metadata, with a link to the stored file when there is one. */
 @Component({
   selector: 'app-document-preview',
-  imports: [Modal, RouterLink, TranslatePipe, ...FORMAT_PIPES, ExpiryBadge, Icon],
+  imports: [Modal, RouterLink, TranslatePipe, ...FORMAT_PIPES, ExpiryBadge, Icon, CanDirective],
   templateUrl: './document-preview.html',
   styleUrl: './document-preview.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

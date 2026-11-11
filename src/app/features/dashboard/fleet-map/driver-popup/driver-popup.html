@@ -136,7 +136,7 @@
               {{ 'dashboard.map.popup.openTrip' | t }}
             </a>
           } @else {
-            <a class="driver-popup__action" routerLink="/trips/new" [queryParams]="{ driverId: unit.driverId, vehicleId: unit.vehicleId }">
+            <a *appCan="'trips.manage'" class="driver-popup__action" routerLink="/trips/new" [queryParams]="{ driverId: unit.driverId, vehicleId: unit.vehicleId }">
               <app-icon name="plus" [size]="18" />
               {{ 'dashboard.map.newTrip' | t }}
             </a>

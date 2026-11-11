@@ -10,6 +10,8 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { phoneNumber, revealErrors } from '../../../shared/utils/form-utils';
 import { trackSettingsForm } from '../settings-form';
 import { SettingsScope } from '../settings-scope/settings-scope';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
+import { PermissionService } from '../../../core/services/permission.service';
 
 const COUNTRIES = ['MZ', 'ZA', 'ZW', 'MW', 'ZM'] as const;
 const MAX_LOGO_BYTES = 2 * 1024 * 1024;
@@ -23,7 +25,7 @@ const nuit = (control: AbstractControl): ValidationErrors | null => {
 
 @Component({
   selector: 'app-company-profile-panel',
-  imports: [ReactiveFormsModule, TranslatePipe, FieldError, Icon, SettingsScope],
+  imports: [ReactiveFormsModule, TranslatePipe, FieldError, Icon, SettingsScope, CanDirective],
   templateUrl: './company-profile-panel.html',
   styleUrl: './company-profile-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,9 +38,11 @@ export class CompanyProfilePanel {
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(TranslationService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly permissions = inject(PermissionService);
 
   protected readonly countries = COUNTRIES;
   protected readonly saving = signal(false);
+  protected readonly canManage = computed(() => this.permissions.can('settings.manage'));
   /** Demo: object URL of a locally chosen logo, kept only for this session. */
   protected readonly logoUrl = signal<string | null>(null);
   protected readonly logoName = signal<string | null>(null);

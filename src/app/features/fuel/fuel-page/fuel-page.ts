@@ -37,6 +37,7 @@ import { PeriodSelection, resolvePeriod } from '../../../shared/utils/period';
 import { consumptionByVehicle, fuelChartMonths, monthlyFuel, summariseFuel } from '../fuel-calculations';
 import { FuelFacade } from '../fuel.facade';
 import { FuelForm, FuelFormDefaults, FuelSaveResult } from '../fuel-form/fuel-form';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 type ChartMetric = 'litres' | 'cost';
 
@@ -76,6 +77,7 @@ interface FuelListParams {
     Modal,
     TooltipDirective,
     FuelForm,
+    CanDirective,
   ],
   templateUrl: './fuel-page.html',
   styleUrl: './fuel-page.scss',

@@ -20,6 +20,7 @@ import { DriverForm } from '../driver-form/driver-form';
 import { DriverIncidentDialog } from '../driver-incident-dialog/driver-incident-dialog';
 import { DriverStatusDialog } from '../driver-status-dialog/driver-status-dialog';
 import { INCIDENT_SEVERITY_TONES, driverInitials, driverName } from '../driver-utils';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 export type DriverTab = 'overview' | 'trips' | 'incidents' | 'documents';
 const TABS: DriverTab[] = ['overview', 'trips', 'incidents', 'documents'];
@@ -41,6 +42,7 @@ const TABS: DriverTab[] = ['overview', 'trips', 'incidents', 'documents'];
     DriverForm,
     DriverStatusDialog,
     DriverIncidentDialog,
+    CanDirective,
   ],
   templateUrl: './driver-detail-page.html',
   styleUrl: './driver-detail-page.scss',

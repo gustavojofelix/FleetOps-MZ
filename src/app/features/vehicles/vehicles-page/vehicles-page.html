@@ -5,7 +5,7 @@
         <app-icon name="download" [size]="16" />
         {{ 'common.actions.exportCsv' | t }}
       </button>
-      <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <button *appCan="'fleet.manage'" type="button" class="btn btn--primary" (click)="openCreate()">
         <app-icon name="plus" [size]="16" />
         {{ 'vehicles.new' | t }}
       </button>
@@ -79,7 +79,7 @@
           </app-empty-state>
         } @else {
           <app-empty-state icon="truck" [title]="'common.states.emptyTitle' | t" [description]="'vehicles.empty' | t">
-            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'vehicles.new' | t }}</button>
+            <button *appCan="'fleet.manage'" type="button" class="btn btn--primary" (click)="openCreate()">{{ 'vehicles.new' | t }}</button>
           </app-empty-state>
         }
       } @else if (view() === 'list') {
@@ -152,17 +152,17 @@
                         <a class="menu__item" role="menuitem" [routerLink]="['/vehicles', vehicle.id]">
                           <app-icon name="eye" [size]="16" /> {{ 'common.actions.viewDetails' | t }}
                         </a>
-                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(vehicle)">
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item" role="menuitem" (click)="openEdit(vehicle)">
                           <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
                         </button>
-                        <button type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(vehicle)">
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(vehicle)">
                           <app-icon name="refresh" [size]="16" /> {{ 'common.actions.changeStatus' | t }}
                         </button>
-                        <a class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ vehicleId: vehicle.id }">
+                        <a *appCan="'trips.manage'" class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ vehicleId: vehicle.id }">
                           <app-icon name="route" [size]="16" /> {{ 'vehicles.newTrip' | t }}
                         </a>
-                        <div class="menu__separator"></div>
-                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(vehicle)">
+                        <div *appCan="'fleet.manage'" class="menu__separator"></div>
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(vehicle)">
                           <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
                         </button>
                       </div>
@@ -198,7 +198,7 @@
               </dl>
               <div class="vehicle-card__actions">
                 <a class="btn btn--secondary btn--sm" [routerLink]="['/vehicles', vehicle.id]">{{ 'common.actions.viewDetails' | t }}</a>
-                <button type="button" class="btn btn--ghost btn--sm" (click)="openEdit(vehicle)">{{ 'common.actions.edit' | t }}</button>
+                <button *appCan="'fleet.manage'" type="button" class="btn btn--ghost btn--sm" (click)="openEdit(vehicle)">{{ 'common.actions.edit' | t }}</button>
               </div>
             </li>
           }

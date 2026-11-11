@@ -5,7 +5,7 @@
         <app-icon name="download" [size]="16" />
         {{ 'common.actions.exportCsv' | t }}
       </button>
-      <a class="btn btn--primary" routerLink="/trips/new">
+      <a *appCan="'trips.manage'" class="btn btn--primary" routerLink="/trips/new">
         <app-icon name="plus" [size]="16" />
         {{ 'trips.new' | t }}
       </a>
@@ -92,7 +92,7 @@
             </app-empty-state>
           } @else {
             <app-empty-state icon="route" [title]="'common.states.emptyTitle' | t" [description]="'trips.empty' | t">
-              <a class="btn btn--primary" routerLink="/trips/new">{{ 'trips.new' | t }}</a>
+              <a *appCan="'trips.manage'" class="btn btn--primary" routerLink="/trips/new">{{ 'trips.new' | t }}</a>
             </app-empty-state>
           }
         } @else {
@@ -219,20 +219,20 @@
                             <app-icon name="eye" [size]="16" /> {{ 'common.actions.viewDetails' | t }}
                           </a>
                           @if (canEdit(trip)) {
-                            <a class="menu__item" role="menuitem" [routerLink]="['/trips', trip.id, 'edit']">
+                            <a *appCan="'trips.manage'" class="menu__item" role="menuitem" [routerLink]="['/trips', trip.id, 'edit']">
                               <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
                             </a>
                           }
                           @if (canChangeStatus(trip)) {
-                            <button type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(trip)">
+                            <button *appCan="'trips.manage'" type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(trip)">
                               <app-icon name="refresh" [size]="16" /> {{ 'common.actions.changeStatus' | t }}
                             </button>
                           }
-                          <a class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ duplicate: trip.id }">
+                          <a *appCan="'trips.manage'" class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ duplicate: trip.id }">
                             <app-icon name="copy" [size]="16" /> {{ 'trips.detail.duplicate' | t }}
                           </a>
-                          <div class="menu__separator"></div>
-                          <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(trip)">
+                          <div *appCan="'trips.manage'" class="menu__separator"></div>
+                          <button *appCan="'trips.manage'" type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(trip)">
                             <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
                           </button>
                         </div>

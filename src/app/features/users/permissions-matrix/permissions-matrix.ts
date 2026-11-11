@@ -3,7 +3,7 @@ import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 import { PERMISSIONS, Permission, USER_ROLES, UserRole } from '../../../core/models';
 import { EntityDirectory } from '../../../core/services/entity-directory.service';
 import { Icon } from '../../../shared/ui/icon/icon';
-import { ROLE_PERMISSIONS, roleHasPermission } from '../role-permissions';
+import { ROLE_PERMISSIONS, roleHasPermission } from '../../../core/domain/permissions';
 
 /** Read-only roles × permissions matrix with role descriptions (demo mapping). */
 @Component({

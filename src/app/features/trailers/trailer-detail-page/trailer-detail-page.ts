@@ -18,6 +18,7 @@ import { StatusBadge } from '../../../shared/ui/status-badge/status-badge';
 import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { TrailerForm } from '../trailer-form/trailer-form';
 import { TrailerStatusDialog } from '../trailer-status-dialog/trailer-status-dialog';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 export type TrailerTab = 'overview' | 'trips' | 'documents';
 const TABS: TrailerTab[] = ['overview', 'trips', 'documents'];
@@ -38,6 +39,7 @@ const TABS: TrailerTab[] = ['overview', 'trips', 'documents'];
     Modal,
     TrailerForm,
     TrailerStatusDialog,
+    CanDirective,
   ],
   templateUrl: './trailer-detail-page.html',
   styleUrl: './trailer-detail-page.scss',

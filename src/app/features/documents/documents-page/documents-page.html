@@ -5,7 +5,7 @@
         <app-icon name="download" [size]="16" />
         {{ 'common.actions.exportCsv' | t }}
       </button>
-      <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <button *appCan="'documents.manage'" type="button" class="btn btn--primary" (click)="openCreate()">
         <app-icon name="upload" [size]="16" />
         {{ 'documents.new' | t }}
       </button>
@@ -100,7 +100,7 @@
           </app-empty-state>
         } @else {
           <app-empty-state icon="file-text" [title]="'common.states.emptyTitle' | t" [description]="'documents.empty' | t">
-            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'documents.new' | t }}</button>
+            <button *appCan="'documents.manage'" type="button" class="btn btn--primary" (click)="openCreate()">{{ 'documents.new' | t }}</button>
           </app-empty-state>
         }
       } @else {
@@ -183,19 +183,19 @@
                         <button type="button" class="menu__item" role="menuitem" (click)="previewing.set(d)">
                           <app-icon name="eye" [size]="16" /> {{ 'documents.actions.preview' | t }}
                         </button>
-                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(d)">
+                        <button *appCan="'documents.manage'" type="button" class="menu__item" role="menuitem" (click)="openEdit(d)">
                           <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
                         </button>
                         @if (canRenew(row.status)) {
-                          <button type="button" class="menu__item" role="menuitem" (click)="openRenew(d)">
+                          <button *appCan="'documents.manage'" type="button" class="menu__item" role="menuitem" (click)="openRenew(d)">
                             <app-icon name="refresh" [size]="16" /> {{ 'documents.actions.renew' | t }}
                           </button>
                         }
                         <a class="menu__item" role="menuitem" [routerLink]="directory.entityLink(d.entityType, d.entityId)">
                           <app-icon name="external-link" [size]="16" /> {{ 'documents.preview.openRecord' | t }}
                         </a>
-                        <div class="menu__separator"></div>
-                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(d)">
+                        <div *appCan="'documents.manage'" class="menu__separator"></div>
+                        <button *appCan="'documents.manage'" type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(d)">
                           <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
                         </button>
                       </div>

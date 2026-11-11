@@ -38,6 +38,7 @@ import {
 } from '../trip-filters';
 import { TripStatusDialog } from '../trip-status-dialog/trip-status-dialog';
 import { TripStatusFilter } from '../trip-status-filter/trip-status-filter';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 interface SelectOption {
   id: string;
@@ -63,6 +64,7 @@ interface SelectOption {
     TooltipDirective,
     TripStatusFilter,
     TripStatusDialog,
+    CanDirective,
   ],
   templateUrl: './trips-page.html',
   styleUrl: './trips-page.scss',

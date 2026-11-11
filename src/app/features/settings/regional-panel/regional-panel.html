@@ -8,7 +8,7 @@
   </header>
 
   <div class="card__body panel-body">
-    <fieldset class="form-section" [disabled]="saving()">
+    <fieldset class="form-section" [disabled]="saving() || !canManage()">
       <legend class="form-section__title">{{ 'settings.regional.languageSection' | t }}</legend>
       <div class="form-grid">
         <div class="field">
@@ -38,7 +38,7 @@
       </div>
     </fieldset>
 
-    <fieldset class="form-section" [disabled]="saving()">
+    <fieldset class="form-section" [disabled]="saving() || !canManage()">
       <legend class="form-section__title">{{ 'settings.regional.financialSection' | t }}</legend>
       <div class="form-grid">
         <div class="field">
@@ -63,7 +63,7 @@
     </fieldset>
 
     <div class="form-section">
-      <fieldset class="form-reset" [disabled]="saving()">
+      <fieldset class="form-reset" [disabled]="saving() || !canManage()">
         <legend class="form-section__title">{{ 'settings.regional.fields.dateFormat' | t }}</legend>
         <div class="option-cards">
           @for (pattern of dateFormats; track pattern) {
@@ -79,7 +79,7 @@
       </fieldset>
 
       <div class="form-grid">
-        <fieldset class="form-reset" [disabled]="saving()">
+        <fieldset class="form-reset" [disabled]="saving() || !canManage()">
           <legend class="field__label">{{ 'settings.regional.fields.distanceUnit' | t }}</legend>
           <div class="option-cards option-cards--stack">
             @for (unit of distanceUnits; track unit) {
@@ -93,7 +93,7 @@
             }
           </div>
         </fieldset>
-        <fieldset class="form-reset" [disabled]="saving()">
+        <fieldset class="form-reset" [disabled]="saving() || !canManage()">
           <legend class="field__label">{{ 'settings.regional.fields.volumeUnit' | t }}</legend>
           <div class="option-cards option-cards--stack">
             @for (unit of volumeUnits; track unit) {
@@ -111,7 +111,7 @@
     </div>
   </div>
 
-  <footer class="save-bar">
+  <footer *appCan="'settings.manage'" class="save-bar">
     @if (tracker.dirty()) {
       <span class="save-bar__status badge badge--warning" role="status">
         <app-icon name="circle-alert" [size]="12" />

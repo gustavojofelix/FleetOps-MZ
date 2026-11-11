@@ -7,15 +7,15 @@
         <app-simulated-notice always />
       </ng-container>
       <ng-container actions>
-        <button type="button" class="btn btn--secondary" [class.btn--loading]="statusSaving()" [disabled]="statusSaving()" (click)="toggleStatus(c)">
+        <button *appCan="['trips.manage', 'costs.manage']" type="button" class="btn btn--secondary" [class.btn--loading]="statusSaving()" [disabled]="statusSaving()" (click)="toggleStatus(c)">
           <app-icon [name]="c.status === 'active' ? 'ban' : 'circle-check'" [size]="16" />
           {{ (c.status === 'active' ? 'customers.deactivate' : 'customers.activate') | t }}
         </button>
-        <button type="button" class="btn btn--secondary" (click)="editOpen.set(true)">
+        <button *appCan="['trips.manage', 'costs.manage']" type="button" class="btn btn--secondary" (click)="editOpen.set(true)">
           <app-icon name="pencil" [size]="16" />
           {{ 'common.actions.edit' | t }}
         </button>
-        <a class="btn btn--primary" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">
+        <a *appCan="'trips.manage'" class="btn btn--primary" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">
           <app-icon name="plus" [size]="16" />
           {{ 'customers.newTrip' | t }}
         </a>
@@ -158,7 +158,7 @@
                   </ul>
                 } @else {
                   <app-empty-state icon="route" compact [title]="'customers.detail.noTrips' | t">
-                    <a class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">{{ 'customers.newTrip' | t }}</a>
+                    <a *appCan="'trips.manage'" class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">{{ 'customers.newTrip' | t }}</a>
                   </app-empty-state>
                 }
               </section>
@@ -271,7 +271,7 @@
               </div>
             } @else {
               <app-empty-state icon="route" compact [title]="'customers.detail.noTrips' | t">
-                <a class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">{{ 'customers.newTrip' | t }}</a>
+                <a *appCan="'trips.manage'" class="btn btn--secondary btn--sm" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">{{ 'customers.newTrip' | t }}</a>
               </app-empty-state>
             }
           </section>

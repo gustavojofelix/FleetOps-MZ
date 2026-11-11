@@ -36,7 +36,7 @@ const TRANSITION_ICONS: Record<TripStatus, IconName> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'dispatch-card',
-    '[attr.draggable]': 'moving() ? "false" : "true"',
+    '[attr.draggable]': 'moving() || !movable() ? "false" : "true"',
     '[class.is-moving]': 'moving()',
     '[class.is-dragging]': 'dragging()',
     '[attr.aria-busy]': 'moving() || null',
@@ -48,6 +48,8 @@ export class DispatchCard {
   readonly trip = input.required<Trip>();
   readonly moving = input(false, { transform: booleanAttribute });
   readonly dragging = input(false, { transform: booleanAttribute });
+  /** False when the signed-in user may not change trip status: no drag and no "Move to…" menu. */
+  readonly movable = input(true, { transform: booleanAttribute });
   /** Open the "Move to…" menu upwards (last card of a column) so it is not clipped by the board. */
   readonly menuUp = input(false, { transform: booleanAttribute });
   readonly moveRequested = output<TripStatus>();
@@ -96,7 +98,7 @@ export class DispatchCard {
   }
 
   protected onDragStart(event: DragEvent): void {
-    if (this.moving()) {
+    if (this.moving() || !this.movable()) {
       event.preventDefault();
       return;
     }

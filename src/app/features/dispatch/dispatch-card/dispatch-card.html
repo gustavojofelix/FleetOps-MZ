@@ -70,7 +70,7 @@
   </span>
   @if (moving()) {
     <span class="dc__moving" role="status">{{ 'dispatch.card.moving' | t }}</span>
-  } @else if (transitions().length) {
+  } @else if (movable() && transitions().length) {
     <app-dropdown align="end" class="dc__menu" [direction]="menuUp() ? 'up' : 'down'">
       <button
         dropdownTrigger

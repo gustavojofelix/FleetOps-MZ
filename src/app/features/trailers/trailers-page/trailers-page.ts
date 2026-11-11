@@ -25,6 +25,7 @@ import { createListState } from '../../../shared/utils/list-state';
 import { TrailerForm } from '../trailer-form/trailer-form';
 import { TrailerStatusDialog } from '../trailer-status-dialog/trailer-status-dialog';
 import { TrailersFacade } from '../trailers.facade';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 @Component({
   selector: 'app-trailers-page',
@@ -44,6 +45,7 @@ import { TrailersFacade } from '../trailers.facade';
     Modal,
     TrailerForm,
     TrailerStatusDialog,
+    CanDirective,
   ],
   templateUrl: './trailers-page.html',
   styleUrl: './trailers-page.scss',

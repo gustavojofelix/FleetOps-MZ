@@ -20,7 +20,7 @@
           }
         </div>
         <div class="logo-row__controls">
-          <label
+          <label *appCan="'settings.manage'"
             class="dropzone"
             [class.dropzone--active]="dragging()"
             (dragover)="onDragOver($event)"
@@ -41,7 +41,7 @@
               <span class="chip">
                 <app-icon name="image" [size]="14" />
                 <span class="truncate">{{ name }}</span>
-                <button type="button" [attr.aria-label]="'settings.company.logoRemove' | t" (click)="removeLogo()">
+                <button *appCan="'settings.manage'" type="button" [attr.aria-label]="'settings.company.logoRemove' | t" (click)="removeLogo()">
                   <app-icon name="x" [size]="12" />
                 </button>
               </span>
@@ -51,7 +51,7 @@
       </div>
     </section>
 
-    <fieldset class="form-section" [disabled]="saving()">
+    <fieldset class="form-section" [disabled]="saving() || !canManage()">
       <legend class="form-section__title">{{ 'settings.company.identity' | t }}</legend>
       <div class="form-grid">
         <div class="field">
@@ -74,7 +74,7 @@
       </div>
     </fieldset>
 
-    <fieldset class="form-section" [disabled]="saving()">
+    <fieldset class="form-section" [disabled]="saving() || !canManage()">
       <legend class="form-section__title">{{ 'settings.company.contacts' | t }}</legend>
       <div class="form-grid">
         <div class="field">
@@ -109,7 +109,7 @@
     </fieldset>
   </div>
 
-  <footer class="save-bar">
+  <footer *appCan="'settings.manage'" class="save-bar">
     @if (tracker.dirty()) {
       <span class="save-bar__status badge badge--warning" role="status">
         <app-icon name="circle-alert" [size]="12" />

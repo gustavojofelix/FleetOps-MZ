@@ -26,6 +26,7 @@ import { DriverForm } from '../driver-form/driver-form';
 import { DriverStatusDialog } from '../driver-status-dialog/driver-status-dialog';
 import { DriversFacade } from '../drivers.facade';
 import { driverInitials, driverName } from '../driver-utils';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 @Component({
   selector: 'app-drivers-page',
@@ -45,6 +46,7 @@ import { driverInitials, driverName } from '../driver-utils';
     Modal,
     DriverForm,
     DriverStatusDialog,
+    CanDirective,
   ],
   templateUrl: './drivers-page.html',
   styleUrl: './drivers-page.scss',

@@ -11,7 +11,9 @@ import { TranslationService } from '../../../core/i18n/translation.service';
 import { Trip, TripStatus, VEHICLE_TYPES, VehicleType } from '../../../core/models';
 import { ClockService } from '../../../core/services/clock.service';
 import { EntityDirectory } from '../../../core/services/entity-directory.service';
+import { PermissionService } from '../../../core/services/permission.service';
 import { TripWorkflowService } from '../../../core/services/trip-workflow.service';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 import { ConfirmService } from '../../../shared/ui/confirm-dialog/confirm.service';
 import { EmptyState } from '../../../shared/ui/empty-state/empty-state';
 import { Icon } from '../../../shared/ui/icon/icon';
@@ -45,7 +47,7 @@ interface DragState {
 
 @Component({
   selector: 'app-dispatch-page',
-  imports: [RouterLink, TranslatePipe, ...FORMAT_PIPES, PageHeader, KpiCard, EmptyState, Icon, DispatchCard, DelayReasonDialog],
+  imports: [RouterLink, TranslatePipe, ...FORMAT_PIPES, PageHeader, KpiCard, EmptyState, Icon, DispatchCard, DelayReasonDialog, CanDirective],
   templateUrl: './dispatch-page.html',
   styleUrl: './dispatch-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,6 +61,10 @@ export class DispatchPage {
   private readonly i18n = inject(TranslationService);
   private readonly format = inject(FormatService);
   protected readonly directory = inject(EntityDirectory);
+  private readonly permissions = inject(PermissionService);
+
+  /** Without trips.manage the board is read-only: no drag and drop, no "Move to…" menu. */
+  protected readonly canManage = computed(() => this.permissions.can('trips.manage'));
 
   protected readonly columns = BOARD_COLUMNS;
   protected readonly corridors = CORRIDORS;

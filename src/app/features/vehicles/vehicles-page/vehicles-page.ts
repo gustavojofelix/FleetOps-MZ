@@ -25,6 +25,7 @@ import { createListState } from '../../../shared/utils/list-state';
 import { VehicleForm } from '../vehicle-form/vehicle-form';
 import { VehicleStatusDialog } from '../vehicle-status-dialog/vehicle-status-dialog';
 import { VehiclesFacade } from '../vehicles.facade';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 type ViewMode = 'list' | 'grid';
 const DOC_PRIORITY: DocumentStatus[] = ['expired', 'expiring', 'valid', 'no_expiry'];
@@ -46,6 +47,7 @@ const DOC_PRIORITY: DocumentStatus[] = ['expired', 'expiring', 'valid', 'no_expi
     Modal,
     VehicleForm,
     VehicleStatusDialog,
+    CanDirective,
   ],
   templateUrl: './vehicles-page.html',
   styleUrl: './vehicles-page.scss',

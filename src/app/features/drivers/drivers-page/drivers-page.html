@@ -5,7 +5,7 @@
         <app-icon name="download" [size]="16" />
         {{ 'common.actions.exportCsv' | t }}
       </button>
-      <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <button *appCan="'fleet.manage'" type="button" class="btn btn--primary" (click)="openCreate()">
         <app-icon name="user-plus" [size]="16" />
         {{ 'drivers.new' | t }}
       </button>
@@ -65,7 +65,7 @@
           </app-empty-state>
         } @else {
           <app-empty-state icon="users" [title]="'common.states.emptyTitle' | t" [description]="'drivers.empty' | t">
-            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'drivers.new' | t }}</button>
+            <button *appCan="'fleet.manage'" type="button" class="btn btn--primary" (click)="openCreate()">{{ 'drivers.new' | t }}</button>
           </app-empty-state>
         }
       } @else {
@@ -143,17 +143,17 @@
                         <a class="menu__item" role="menuitem" [routerLink]="['/drivers', driver.id]">
                           <app-icon name="eye" [size]="16" /> {{ 'common.actions.viewDetails' | t }}
                         </a>
-                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(driver)">
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item" role="menuitem" (click)="openEdit(driver)">
                           <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
                         </button>
-                        <button type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(driver)">
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(driver)">
                           <app-icon name="refresh" [size]="16" /> {{ 'common.actions.changeStatus' | t }}
                         </button>
-                        <a class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ driverId: driver.id }">
+                        <a *appCan="'trips.manage'" class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ driverId: driver.id }">
                           <app-icon name="route" [size]="16" /> {{ 'drivers.newTrip' | t }}
                         </a>
-                        <div class="menu__separator"></div>
-                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(driver)">
+                        <div *appCan="'fleet.manage'" class="menu__separator"></div>
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(driver)">
                           <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
                         </button>
                       </div>

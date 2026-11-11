@@ -27,6 +27,7 @@ import { TooltipDirective } from '../../../shared/ui/tooltip/tooltip.directive';
 import { resolvePeriod } from '../../../shared/utils/period';
 import { CustomerForm } from '../customer-form/customer-form';
 import { CustomersFacade, creditUsage, tripReportingDate } from '../customers.facade';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 export type CustomerTab = 'overview' | 'trips' | 'revenue' | 'documents';
 const TABS: CustomerTab[] = ['overview', 'trips', 'revenue', 'documents'];
@@ -50,6 +51,7 @@ const TOP_ROUTES = 5;
     TooltipDirective,
     BarChart,
     CustomerForm,
+    CanDirective,
   ],
   templateUrl: './customer-detail-page.html',
   styleUrl: './customer-detail-page.scss',

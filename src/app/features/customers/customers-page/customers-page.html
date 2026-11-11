@@ -8,7 +8,7 @@
         <app-icon name="download" [size]="16" />
         {{ 'common.actions.exportCsv' | t }}
       </button>
-      <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <button *appCan="['trips.manage', 'costs.manage']" type="button" class="btn btn--primary" (click)="openCreate()">
         <app-icon name="plus" [size]="16" />
         {{ 'customers.new' | t }}
       </button>
@@ -81,7 +81,7 @@
           </app-empty-state>
         } @else {
           <app-empty-state icon="building" [title]="'common.states.emptyTitle' | t" [description]="'customers.empty' | t">
-            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'customers.new' | t }}</button>
+            <button *appCan="['trips.manage', 'costs.manage']" type="button" class="btn btn--primary" (click)="openCreate()">{{ 'customers.new' | t }}</button>
           </app-empty-state>
         }
       } @else {
@@ -184,18 +184,18 @@
                         <a class="menu__item" role="menuitem" [routerLink]="['/customers', c.id]">
                           <app-icon name="eye" [size]="16" /> {{ 'common.actions.viewDetails' | t }}
                         </a>
-                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(c)">
+                        <button *appCan="['trips.manage', 'costs.manage']" type="button" class="menu__item" role="menuitem" (click)="openEdit(c)">
                           <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
                         </button>
-                        <a class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">
+                        <a *appCan="'trips.manage'" class="menu__item" role="menuitem" routerLink="/trips/new" [queryParams]="{ customerId: c.id }">
                           <app-icon name="route" [size]="16" /> {{ 'customers.newTrip' | t }}
                         </a>
-                        <button type="button" class="menu__item" role="menuitem" (click)="toggleStatus(c)">
+                        <button *appCan="['trips.manage', 'costs.manage']" type="button" class="menu__item" role="menuitem" (click)="toggleStatus(c)">
                           <app-icon [name]="c.status === 'active' ? 'ban' : 'circle-check'" [size]="16" />
                           {{ (c.status === 'active' ? 'customers.deactivate' : 'customers.activate') | t }}
                         </button>
-                        <div class="menu__separator"></div>
-                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(c)">
+                        <div *appCan="['trips.manage', 'costs.manage']" class="menu__separator"></div>
+                        <button *appCan="['trips.manage', 'costs.manage']" type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(c)">
                           <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
                         </button>
                       </div>

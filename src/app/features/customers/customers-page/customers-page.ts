@@ -30,6 +30,7 @@ import { PeriodSelection, resolvePeriod } from '../../../shared/utils/period';
 import { CustomerForm } from '../customer-form/customer-form';
 import { CustomerMetrics, CustomersFacade } from '../customers.facade';
 import { CUSTOMER_COUNTRIES } from '../customer-countries';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 interface CustomerRow {
   customer: Customer;
@@ -68,6 +69,7 @@ const METRIC_FIELDS = new Set(['tripsInPeriod', 'tripsTotal', 'revenueInPeriod',
     DropdownTrigger,
     Modal,
     CustomerForm,
+    CanDirective,
   ],
   templateUrl: './customers-page.html',
   styleUrl: './customers-page.scss',

@@ -1,7 +1,7 @@
 <div class="page">
   <app-page-header [title]="'dispatch.title' | t" [subtitle]="subtitle()">
     <ng-container actions>
-      <a class="btn btn--primary" routerLink="/trips/new">
+      <a *appCan="'trips.manage'" class="btn btn--primary" routerLink="/trips/new">
         <app-icon name="plus" [size]="16" />
         {{ 'dispatch.newTrip' | t }}
       </a>
@@ -171,6 +171,7 @@
                       <app-dispatch-card
                         [trip]="trip"
                         [moving]="isMoving(trip)"
+                        [movable]="canManage()"
                         [dragging]="drag()?.trip?.id === trip.id"
                         [menuUp]="last && !first"
                         (moveRequested)="requestMove(trip, $event)"

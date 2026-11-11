@@ -11,12 +11,14 @@ import { ToastService } from '../../../shared/ui/toast/toast.service';
 import { revealErrors } from '../../../shared/utils/form-utils';
 import { trackSettingsForm } from '../settings-form';
 import { SettingsScope } from '../settings-scope/settings-scope';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
+import { PermissionService } from '../../../core/services/permission.service';
 
 type AlertToggle = 'tripDelayAlerts' | 'fuelAnomalyAlerts' | 'expenseApprovalAlerts';
 
 @Component({
   selector: 'app-notification-settings-panel',
-  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, FieldError, Icon, SettingsScope],
+  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, FieldError, Icon, SettingsScope, CanDirective],
   templateUrl: './notification-settings-panel.html',
   styleUrl: './notification-settings-panel.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,9 +31,11 @@ export class NotificationSettingsPanel {
   private readonly toast = inject(ToastService);
   private readonly i18n = inject(TranslationService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly permissions = inject(PermissionService);
 
   protected readonly toggles: readonly AlertToggle[] = ['tripDelayAlerts', 'fuelAnomalyAlerts', 'expenseApprovalAlerts'];
   protected readonly saving = signal(false);
+  protected readonly canManage = computed(() => this.permissions.can('settings.manage'));
 
   private readonly wholeDays = Validators.pattern(/^\d+$/);
   protected readonly form = this.fb.group({

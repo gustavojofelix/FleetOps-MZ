@@ -22,6 +22,7 @@ import { VehicleForm } from '../vehicle-form/vehicle-form';
 import { VehicleStatusDialog } from '../vehicle-status-dialog/vehicle-status-dialog';
 import { Vehicle } from '../../../core/models';
 import { FormatService } from '../../../core/formatting/format.service';
+import { CanDirective } from '../../../shared/ui/can/can.directive';
 
 export type VehicleTab = 'overview' | 'trips' | 'fuel' | 'maintenance' | 'documents';
 const TABS: VehicleTab[] = ['overview', 'trips', 'fuel', 'maintenance', 'documents'];
@@ -42,6 +43,7 @@ const TABS: VehicleTab[] = ['overview', 'trips', 'fuel', 'maintenance', 'documen
     Modal,
     VehicleForm,
     VehicleStatusDialog,
+    CanDirective,
   ],
   templateUrl: './vehicle-detail-page.html',
   styleUrl: './vehicle-detail-page.scss',

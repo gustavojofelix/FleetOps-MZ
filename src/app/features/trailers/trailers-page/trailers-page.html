@@ -5,7 +5,7 @@
         <app-icon name="download" [size]="16" />
         {{ 'common.actions.exportCsv' | t }}
       </button>
-      <button type="button" class="btn btn--primary" (click)="openCreate()">
+      <button *appCan="'fleet.manage'" type="button" class="btn btn--primary" (click)="openCreate()">
         <app-icon name="plus" [size]="16" />
         {{ 'trailers.new' | t }}
       </button>
@@ -71,7 +71,7 @@
           </app-empty-state>
         } @else {
           <app-empty-state icon="container" [title]="'common.states.emptyTitle' | t" [description]="'trailers.empty' | t">
-            <button type="button" class="btn btn--primary" (click)="openCreate()">{{ 'trailers.new' | t }}</button>
+            <button *appCan="'fleet.manage'" type="button" class="btn btn--primary" (click)="openCreate()">{{ 'trailers.new' | t }}</button>
           </app-empty-state>
         }
       } @else {
@@ -148,14 +148,14 @@
                         <a class="menu__item" role="menuitem" [routerLink]="['/trailers', trailer.id]">
                           <app-icon name="eye" [size]="16" /> {{ 'common.actions.viewDetails' | t }}
                         </a>
-                        <button type="button" class="menu__item" role="menuitem" (click)="openEdit(trailer)">
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item" role="menuitem" (click)="openEdit(trailer)">
                           <app-icon name="pencil" [size]="16" /> {{ 'common.actions.edit' | t }}
                         </button>
-                        <button type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(trailer)">
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item" role="menuitem" (click)="statusTarget.set(trailer)">
                           <app-icon name="refresh" [size]="16" /> {{ 'common.actions.changeStatus' | t }}
                         </button>
-                        <div class="menu__separator"></div>
-                        <button type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(trailer)">
+                        <div *appCan="'fleet.manage'" class="menu__separator"></div>
+                        <button *appCan="'fleet.manage'" type="button" class="menu__item menu__item--danger" role="menuitem" (click)="remove(trailer)">
                           <app-icon name="trash" [size]="16" /> {{ 'common.actions.delete' | t }}
                         </button>
                       </div>
