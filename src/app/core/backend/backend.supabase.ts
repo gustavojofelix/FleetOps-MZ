@@ -6,6 +6,7 @@ import {
   OrganizationRepository,
   RouteRepository,
   TrailerRepository,
+  TripRepository,
   UserRepository,
   VehicleRepository,
 } from '../data-access/repositories';
@@ -19,6 +20,7 @@ import {
   SupabaseTrailerRepository,
   SupabaseVehicleRepository,
 } from '../supabase/repositories/master-data.repositories';
+import { SupabaseTripRepository } from '../supabase/repositories/trip.repository';
 import { SupabaseOrganizationRepository, SupabaseUserRepository } from '../supabase/repositories/organization.repositories';
 import { AuthSession } from './auth-session';
 
@@ -42,6 +44,7 @@ export function provideBackend(): EnvironmentProviders {
     { provide: RouteRepository, useClass: SupabaseRouteRepository },
     { provide: OrganizationRepository, useClass: SupabaseOrganizationRepository },
     { provide: UserRepository, useClass: SupabaseUserRepository },
+    { provide: TripRepository, useClass: SupabaseTripRepository },
     { provide: AuthSession, useExisting: SupabaseAuthService },
   ]);
 }

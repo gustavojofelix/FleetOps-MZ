@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { Customer, Vehicle } from '../models';
 import { CurrentOrganization } from './current-organization.service';
 import { SupabaseCustomerRepository, SupabaseVehicleRepository } from './repositories/master-data.repositories';
+import { DriverRepository, TrailerRepository, VehicleRepository } from '../data-access/repositories';
+import { SupabaseTripRepository } from './repositories/trip.repository';
 import { SUPABASE } from './supabase-client';
 import { sanitizeSearch, toCamel, toSnake } from './supabase-collection';
 
@@ -34,6 +36,23 @@ function setup<T>(type: new () => T, result: { data: unknown; count?: number }) 
     ],
   });
   return { repo: TestBed.inject(type), calls: fake.calls };
+}
+
+function setupTrips(result: { data: unknown; count?: number }) {
+  const fake = fakeClient(result);
+  const rpcCalls: unknown[][] = [];
+  const client = { ...fake.client, rpc: (...args: unknown[]) => (rpcCalls.push(args), fake.client.from('rpc')) };
+  TestBed.configureTestingModule({
+    providers: [
+      SupabaseTripRepository,
+      { provide: SUPABASE, useValue: client },
+      { provide: CurrentOrganization, useValue: { organizationId: () => 'org-1', membership: () => null } },
+      { provide: VehicleRepository, useValue: {} },
+      { provide: DriverRepository, useValue: {} },
+      { provide: TrailerRepository, useValue: {} },
+    ],
+  });
+  return { repo: TestBed.inject(SupabaseTripRepository), calls: fake.calls, rpcCalls };
 }
 
 const customerRow = {
@@ -105,6 +124,36 @@ describe('SupabaseCollection', () => {
     expect(vehicle?.statusHistory).toEqual([{ date: '2026-11-01', from: 'available', to: 'maintenance', reason: 'Revisão' }]);
     expect(vehicle?.acquisitionDate).toBe('');
     expect(vehicle && 'vehicleStatusChanges' in vehicle).toBe(false);
+  });
+
+  it('maps trips: timeline from trip_events, status list and date-range filters', async () => {
+    const { repo, calls } = setupTrips({
+      data: [
+        {
+          id: 't1',
+          revenue_amount: 900,
+          revenue_currency: 'USD',
+          trip_events: [{ id: 'e1', occurred_at: '2026-11-11T08:00:00+00:00', type: 'created', status: 'planned', location: 'Beira', note: 'n' }],
+        },
+      ],
+      count: 1,
+    });
+    const [trip] = (await repo.list({ statuses: ['in_transit', 'delayed'], from: '2026-11-01', to: '2026-11-30', sort: { field: 'revenue.amount', direction: 'desc' } })).items;
+    expect(trip.timeline).toEqual([{ id: 'e1', timestamp: '2026-11-11T08:00:00+00:00', type: 'created', status: 'planned', location: 'Beira', note: 'n' }]);
+    expect(trip.revenue).toEqual({ amount: 900, currency: 'USD' });
+    expect(calls).toContainEqual(['in', 'status', ['in_transit', 'delayed']]);
+    expect(calls).toContainEqual(['gte', 'planned_departure', '2026-11-01']);
+    expect(calls).toContainEqual(['lt', 'planned_departure', '2026-12-01']);
+    expect(calls).toContainEqual(['order', 'revenue_amount', { ascending: false }]);
+  });
+
+  it('creates trips through the create_trip RPC with the first timeline note', async () => {
+    const { repo, rpcCalls } = setupTrips({ data: 't-new' });
+    await repo.create({ reference: 'VG-1', revenue: { amount: 5, currency: 'MZN' }, timeline: [{ note: 'Criada por Ana' }] } as never).catch(() => undefined);
+    expect(rpcCalls[0]).toEqual([
+      'create_trip',
+      { p_trip: { reference: 'VG-1', revenue_amount: 5, revenue_currency: 'MZN', organization_id: 'org-1' }, p_note: 'Criada por Ana' },
+    ]);
   });
 
   it('does not query the database for non-uuid ids', async () => {

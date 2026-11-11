@@ -122,6 +122,11 @@ export abstract class SupabaseCollection<T extends { id: string }, Q extends Lis
     this.version.update((v) => v + 1);
   }
 
+  /** For changes made by the database on this table (triggers, RPCs of other repositories). */
+  markChanged(): void {
+    this.bump();
+  }
+
   protected fromRow(row: Row): T {
     const item: Row = {};
     for (const [column, value] of Object.entries(row)) item[toCamel(column)] = value;

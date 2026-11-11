@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { EntityInput } from '../data-access/query.model';
 import { DriverRepository, TrailerRepository, TripRepository, VehicleRepository } from '../data-access/repositories';
+import { BACKEND_KIND } from '../backend/backend';
 import { canTransition } from '../domain/trip-rules';
 import { ACTIVE_TRIP_STATUSES, Trip, TripStatus } from '../models';
 import { ClockService } from './clock.service';
@@ -12,6 +13,12 @@ export type TripInput = Omit<EntityInput<Trip>, 'timeline' | 'status' | 'actualD
  * assigned vehicle, driver and trailer statuses consistent. On the backend this becomes a
  * single transactional operation (RPC) protected by RLS.
  */
+/**
+ * Demo build only: resource statuses are synced here. With Supabase a database trigger does it
+ * transactionally (migration 20261111150000_trips.sql), so the browser must not.
+ */
+const SYNC_IN_BROWSER = BACKEND_KIND === 'mock';
+
 @Injectable({ providedIn: 'root' })
 export class TripWorkflowService {
   private readonly trips = inject(TripRepository);
@@ -37,7 +44,7 @@ export class TripWorkflowService {
     const before = await this.trips.getById(id);
     const updated = await this.trips.update(id, input);
     // If an active trip changes resources, release the old ones and commit the new ones.
-    if (before && ACTIVE_TRIP_STATUSES.includes(before.status)) {
+    if (SYNC_IN_BROWSER && before && ACTIVE_TRIP_STATUSES.includes(before.status)) {
       await this.release(before, id);
       await this.commit(updated);
     }
@@ -50,6 +57,7 @@ export class TripWorkflowService {
     if (!trip) throw new Error(`Trip ${id} not found`);
     if (!canTransition(trip.status, status)) throw new Error(`Invalid transition ${trip.status} → ${status}`);
     const updated = await this.trips.changeStatus(id, status, note, delayReason);
+    if (!SYNC_IN_BROWSER) return updated;
     if (status === 'in_transit' || status === 'delayed') await this.commit(updated);
     if (status === 'preparing' && updated.trailerId) await this.trailers.update(updated.trailerId, { status: 'in_use' });
     if (status === 'delivered' || status === 'completed' || status === 'cancelled' || status === 'planned') await this.release(updated, id);
@@ -58,7 +66,7 @@ export class TripWorkflowService {
 
   async delete(id: string): Promise<void> {
     const trip = await this.trips.getById(id);
-    if (trip) await this.release(trip, id);
+    if (SYNC_IN_BROWSER && trip) await this.release(trip, id);
     await this.trips.delete(id);
   }
 
