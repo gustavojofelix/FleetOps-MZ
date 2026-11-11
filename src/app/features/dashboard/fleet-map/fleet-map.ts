@@ -142,6 +142,9 @@ export class FleetMap {
     afterNextRender(() => {
       let resize: ResizeObserver | null = null;
       import('leaflet')
+        // Leaflet is CommonJS/UMD: the production bundle exposes it only as the default export,
+        // while the dev server also adds named exports. Use whichever exists.
+        .then((module) => ((module as unknown as { default?: typeof Leaflet }).default ?? module) as typeof Leaflet)
         .then((L) => {
           if (this.map || !this.canvas()) return;
           this.leaflet = L;
@@ -165,7 +168,10 @@ export class FleetMap {
           this.map.on('dragstart', () => this.followId.set(null));
           this.mapState.set('ready');
         })
-        .catch(() => this.mapState.set('error'));
+        .catch((error: unknown) => {
+          console.error('[fleet-map] Leaflet failed to initialise', error);
+          this.mapState.set('error');
+        });
       destroyRef.onDestroy(() => {
         resize?.disconnect();
         this.map?.remove();
